@@ -6,8 +6,6 @@
 name: Redazione notturna
 
 on:
-  schedule:
-    - cron: '7 1 * * *'   # 02:07 in Italia (03:07 con l'ora legale)
   workflow_dispatch:
 
 permissions:

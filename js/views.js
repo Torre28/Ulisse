@@ -78,8 +78,8 @@ function sessionPlan(min) {
   latest.filter(p => p.kind === 'notizia' && p.mode !== 'full' && !seen(p.id)).sort((a, b) => want(a) - want(b)).slice(0, 4).forEach((p, i) => cand.push({ id: p.id, ico: '📰', t: p.title, min: 6, run: () => openPrepared(p), pr: 8 - i }));
   latest.filter(p => p.kind === 'notizia' && p.mode === 'full' && !seen(p.id)).slice(0, 2).forEach((p, i) => cand.push({ id: p.id, ico: '🧭', t: 'Percorso: ' + p.title, min: 22, run: () => openPrepared(p), pr: 6 - i }));
   const sc = latest.find(p => p.kind === 'passione' && !seen(p.id)); if (sc) cand.push({ id: sc.id, ico: '✨', t: sc.title, min: 12, run: () => openPrepared(sc), pr: 7 });
-  const pa = latest.find(p => p.mode === 'parola' && !seen(p.id)); if (pa) cand.push({ id: pa.id, ico: '✝', t: 'La Parola: ' + (pa.headline || pa.title), min: 12, run: () => openPrepared(pa), pr: 5 });
-  const ho = currentHour(); cand.push({ id: 'ora-' + ho.k, ico: '🕯', t: ho.n, min: ho.k === 'ufficio' ? 20 : 10, run: () => go('specchio'), pr: 4 });
+  const pa = fedeOn() && latest.find(p => p.mode === 'parola' && !seen(p.id)); if (pa) cand.push({ id: pa.id, ico: '✝', t: 'La Parola: ' + (pa.headline || pa.title), min: 12, run: () => openPrepared(pa), pr: 5 });
+  const ho = currentHour(); if (fedeOn()) cand.push({ id: 'ora-' + ho.k, ico: '🕯', t: ho.n, min: ho.k === 'ufficio' ? 20 : 10, run: () => go('specchio'), pr: 4 });
   const c = S.cont.find(x => x.type === 'lesson'); if (c) cand.push({ id: 'c-' + c.id, ico: '↩', t: 'Riprendi: ' + c.title, min: 8, run: () => openLesson(c.id), pr: 7.5 });
   cand.sort((a, b) => b.pr - a.pr);
   const out = []; let tot = 0;
@@ -123,7 +123,7 @@ function catOf(e) {
   if (e.area === 'mondo') return e.th === 'Economia' ? 'Economia' : e.th === 'Scienza e tecnologia' ? 'Scienza e tecnologia' : 'Attualità e politica';
   return { scoperta: 'Passioni', lavoro: 'Lavoro e studio', fede: 'Fede', famiglia: 'Relazioni', amici: 'Relazioni', corpo: 'Corpo' }[e.area] || 'Passioni';
 }
-function myGoalCats() { return S.goalCats || ['Attualità e politica', 'Economia', 'Passioni', 'Lavoro e studio', 'Fede']; }
+function myGoalCats() { return (S.goalCats || ['Attualità e politica', 'Economia', 'Passioni', 'Lavoro e studio', 'Fede']).filter(c => c !== 'Fede' || fedeOn()); }
 function xpByCat(day) { const o = {}; for (const e of S.log) if (e.d === day && e.kind !== 'sessione') { const c = catOf(e); o[c] = (o[c] || 0) + (e.w || 1) * 10; } return o; }
 function ringSvg(pct, label, size = 84, stroke = 9) {
   const R = (size - stroke) / 2 - 1, C = 2 * Math.PI * R, c = size / 2;
@@ -172,6 +172,23 @@ function skillsCard() {
       : P('Cresce con le lezioni che confermi di aver letto e capito e con i ripassi.', 'small muted'));
 }
 
+/* ======================= CITAZIONI DEL GIORNO ======================= */
+function quotesCard() {
+  const themes = Object.keys(QUOTES).filter(t => t !== 'Fede' || fedeOn());
+  const mine = (S.quoteThemes && S.quoteThemes.length ? S.quoteThemes : themes).filter(t => themes.includes(t));
+  const r = seeded('cit' + today());
+  const list = mine.flatMap(t => QUOTES[t].map(q => ({ q, t }))).sort(() => r() - .5).slice(0, 8);
+  const track = h('div', { class: 'quotes' }, list.map(({ q: [txt, who, src], t }) => h('div', { class: 'quote' },
+    h('span', { class: 'mono' }, t), h('blockquote', null, '«' + txt + '»'), h('div', { class: 'small' }, h('b', null, who), src ? ' · ' + src : ''),
+    h('div', { class: 'row' }, h('button', { class: 'btn small ghost', onclick: () => { S.notes = S.notes || []; S.notes.unshift({ id: uid(), title: who, text: '«' + txt + '»\n\n— ' + who + (src ? ', ' + src : ''), tags: ['citazioni'], at: Date.now(), created: Date.now() }); save(); toast('Salvata nelle note'); } }, '♡ Salva'),
+      h('button', { class: 'btn small ghost', onclick: () => copyText('«' + txt + '» — ' + who) }, 'Copia')))));
+  const pick = h('div', { class: 'scrollx' }, themes.map(t => h('button', { class: 'chip', 'aria-pressed': mine.includes(t) ? 'true' : 'false', onclick: () => {
+    let cur = (S.quoteThemes && S.quoteThemes.length ? S.quoteThemes : themes).slice();
+    cur = cur.includes(t) ? cur.filter(x => x !== t) : cur.concat(t); S.quoteThemes = cur.length ? cur : [t]; save(); render();
+  } }, t)));
+  return card(h('div', { class: 'row between' }, h('h2', null, 'Parole per oggi'), h('span', { class: 'mono' }, 'scorri →')), pick, track);
+}
+
 /* ======================= OGGI ======================= */
 function contRow(c) {
   const open = () => {
@@ -212,13 +229,14 @@ function viewOggi() {
     header(S.name ? `${hello}, ${S.name}` : hello, new Date().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })),
     !storageOk && flat(P('Attenzione: questo browser non sta salvando i dati. Usa l\'app installata.')),
     sessionCard(),
+    quotesCard(),
     card(h('div', { class: 'row between' }, h('h2', null, 'Missioni'), h('div', { class: 'row' }, h('button', { class: 'btn small ghost', onclick: questSettings }, '⚙'), h('button', { class: 'btn small', onclick: addQuestSheet }, '+ La mia'))),
       S.autoQuests === false ? h('div', { class: 'note contesto' }, h('span', { class: 'mono' }, 'Stai trascurando'), h('div', { class: 'chips' }, neglected().slice(0, 3).map(a => h('button', { class: 'chip', title: 'Aggiungi una missione suggerita', onclick: () => { S.quests.push({ id: uid(), d, src: 'io', type: 'side', area: a, t: pickQuest(a, 'side'), done: false }); save(); render(); } }, '+ ' + AREAS[a].n)))) : null,
       h('span', { class: 'mono' }, 'Main quest'), main.length ? main.map(questEl) : h('div', { class: 'empty' }, 'Nessuna'),
       h('span', { class: 'mono' }, 'Side quest'), side.length ? side.map(questEl) : h('div', { class: 'empty' }, 'Nessuna')),
     h('div', { class: 'row' },
       h('button', { class: 'btn grow' + (due ? ' primary' : ''), onclick: reviewSheet }, due ? `Ripassa ${due} carte` : 'Nessun ripasso oggi'),
-      h('button', { class: 'btn grow', onclick: () => go('specchio') }, '✝ ' + ho.n)),
+      fedeOn() && h('button', { class: 'btn grow', onclick: () => go('specchio') }, '✝ ' + ho.n)),
     prepLatest().length ? card(h('div', { class: 'row between' }, h('h2', null, 'Preparato stanotte'), h('span', { class: 'mono' }, fmtDay(prepLatest()[0].date))),
       prepLatest().slice(0, 4).map(prepRow), prepLatest().length > 4 && h('button', { class: 'btn small ghost', onclick: () => { newsTab = 'percorsi'; go('notizie'); } }, 'tutti i ' + prepLatest().length + ' contenuti')) : null,
     S.cont.length ? card(h('div', { class: 'row between' }, h('h2', null, 'Da continuare'), S.cont.length > 4 && h('button', { class: 'btn small ghost', onclick: () => { qTab = 'cont'; go('quaderno'); } }, 'tutto')), S.cont.slice(0, 4).map(contRow)) : null,
@@ -227,7 +245,7 @@ function viewOggi() {
     dayCard(),
     skillsCard(),
     card(h('div', { class: 'row between' }, h('h2', null, 'Equilibrio'), h('span', { class: 'mono' }, 'ultimi 14 giorni')),
-      Object.keys(AREAS).map(a => h('div', { class: 'bar' }, h('span', null, AREAS[a].n), h('div', { class: 'track' }, h('div', { class: 'fill', style: { width: (b[a] / max * 100) + '%', background: areaColor(a) } })), h('span', { class: 'n' }, b[a]))),
+      activeAreas().map(a => h('div', { class: 'bar' }, h('span', null, AREAS[a].n), h('div', { class: 'track' }, h('div', { class: 'fill', style: { width: (b[a] / max * 100) + '%', background: areaColor(a) } })), h('span', { class: 'n' }, b[a]))),
       P('Le missioni dell\'app puntano alle aree più scoperte. Main quest 3 punti, side quest 1, lezioni 2, letture e ascolti meno.', 'small muted'))
   ];
 }
@@ -274,13 +292,14 @@ function withTimeout(p, ms) { return Promise.race([p, new Promise((_, ko) => set
 async function fetchNewsFor(key) {
   let items = [], ok = 0, tot = 0, srv = null;
   srv = await withTimeout(serverNews(), 9000).catch(() => null);
+  const ex = (key.startsWith('tema:') || key.startsWith('testata:') || (key === 'Principali' && (S.testate || []).length)) ? await withTimeout(serverExtra(), 9000).catch(() => null) : null;
   if (key.startsWith('testata:')) {
     const name = key.slice(8), custom = (S.feedsCustom || []).find(f => f.name === name);
     if (custom) { const xs = await withTimeout(fetchFeed(custom.url), 20000).catch(() => []); items = xs.map(i => Object.assign(i, { feed: name, src: i.src || name })); ok = items.length ? 1 : 0; tot = 1; srv = null; }
-    else if (srv && srv.testate && srv.testate[name]) { items = srv.testate[name].slice(); ok = tot = 1; }
+    else if (ex && ex.testate && ex.testate[name]) { items = ex.testate[name].slice(); ok = tot = 1; }
   } else if (key.startsWith('tema:')) {
     const name = key.slice(5);
-    if (srv && srv.temi && srv.temi[name]) { items = srv.temi[name].slice(); ok = tot = 1; }
+    if (ex && ex.temi && ex.temi[name]) { items = ex.temi[name].slice(); ok = tot = 1; }
     else if (!TEMI_NOMI.includes(name)) { // parola chiave personale: ricerca diretta (può non funzionare su tutti i browser)
       const xs = await withTimeout(fetchFeed(GN('/search', name + ' when:3d')), 20000).catch(() => []);
       items = xs.map(i => Object.assign(i, { feed: name })); ok = items.length ? 1 : 0; tot = 1; srv = null;
@@ -288,7 +307,7 @@ async function fetchNewsFor(key) {
   } else if (srv && (srv.sezioni[key] || []).length) {
     items = srv.sezioni[key].slice(); ok = tot = 1;
     // le testate a cui sei abbonato entrano nel flusso principale
-    if (key === 'Principali' && srv.testate) for (const t of S.testate || []) items = items.concat((srv.testate[t] || []).slice(0, 8));
+    if (key === 'Principali' && ex && ex.testate) for (const t of S.testate || []) items = items.concat((ex.testate[t] || []).slice(0, 8));
   }
   else {
     const feeds = key === 'temi' ? [] : S.feeds.filter(f => f.tag === key);
@@ -454,6 +473,8 @@ function viewScopri() {
   return [header('Scopri', 'allarga lo sguardo'), t,
     h('div', { class: 'card hero' }, h('span', { class: 'mono' }, 'Proposta del giorno · ' + dt.c), h('h2', null, dt.n), dt.hk && P(dt.hk, ''),
       h('div', { class: 'row' }, dtReady ? h('button', { class: 'btn primary', onclick: () => openPrepared(dtReady) }, '▶ Lezione pronta · ' + dtReady.chapters + ' capitoli') : null, h('button', { class: 'btn', onclick: () => openTopic(dt.id) }, 'Esplora'))),
+    curiosityDeck(),
+    doorsCard(),
     ready.length ? [h('h2', null, 'Pronte da scoprire'), h('div', { class: 'scrollx', style: { gap: '10px' } }, ready.slice(0, 12).map(p => h('button', { class: 'card', style: { cursor: 'pointer', textAlign: 'left', minWidth: '230px', maxWidth: '260px' }, onclick: () => openPrepared(p) },
       h('span', { class: 'mono' }, (topicOf(p.topic) || {}).c || 'Scoperta'), h('b', null, p.title), p.summary && h('span', { class: 'small muted' }, p.summary), h('span', { class: 'pill-ready' }, '~' + (p.chapters * 3) + ' min'))))] : null,
     tfa,
@@ -461,6 +482,33 @@ function viewScopri() {
     search, results,
     fresh.length ? flat(h('span', { class: 'mono' }, 'Rami che hai scoperto'), h('div', { class: 'chips' }, fresh.map(x => h('button', { class: 'chip', onclick: () => openTopic(x.id) }, x.n)))) : null,
     h('details', { class: 'card flat' }, h('summary', { style: { cursor: 'pointer' } }, h('b', null, 'Livello e modo di esplorare')), lv)];
+}
+/* mazzo di curiosità con immagini: si scorre come una storia */
+const CAT_EMOJI = { 'Cielo e Terra': '🌌', Vita: '🌿', Mente: '🧠', Storia: '🏛', Società: '⚖', Arte: '🎨', Mani: '🛠', Spirito: '🕊', Tecnica: '📡', Gioco: '♟', Scoperti: '🧭' };
+function curiosityDeck() {
+  const r = seeded('deck' + today());
+  const pool = allTopics().filter(t => t.hk && !S.explored[t.id] && (t.c !== 'Spirito' || fedeOn()) && (S.interests[t.id] || 0) > -2);
+  const picks = pool.sort(() => r() - .5).slice(0, 8);
+  if (!picks.length) return null;
+  const track = h('div', { class: 'deck' }, picks.map(t => {
+    const img = h('div', { class: 'deck-img' }, h('span', null, CAT_EMOJI[t.c] || '✨'));
+    wikiResolve(t.w || t.n).then(s => { if (s.thumbnail) { img.style.backgroundImage = `url("${s.originalimage?.source || s.thumbnail.source}")`; img.firstChild.remove(); } }).catch(() => { });
+    return h('button', { class: 'deck-card', onclick: () => openTopic(t.id) }, img,
+      h('div', { class: 'deck-body' }, h('span', { class: 'mono' }, (CAT_EMOJI[t.c] || '') + ' ' + t.c), h('h3', null, t.n), P(t.hk, 'small'), h('span', { class: 'pill-ready' }, 'Scopri →')));
+  }));
+  return h('div', null, h('div', { class: 'row between' }, h('h2', null, 'Lo sapevi?'), h('span', { class: 'mono' }, 'scorri →')), track);
+}
+/* tre porte: scegli d'istinto dove andare oggi */
+function doorsCard() {
+  const r = seeded('porte' + today() + Object.keys(S.explored).length);
+  const byCat = {}; allTopics().filter(t => !S.explored[t.id] && (t.c !== 'Spirito' || fedeOn())).forEach(t => (byCat[t.c] = byCat[t.c] || []).push(t));
+  const cats = Object.keys(byCat).sort(() => r() - .5).slice(0, 3);
+  if (cats.length < 3) return null;
+  const doors = cats.map(c => byCat[c][Math.floor(r() * byCat[c].length)]);
+  const colors = ['#c46234', '#1e1614', '#0b7d8f'];
+  return card(h('h2', null, 'Tre porte'), P('Scegli d\'istinto: dietro ognuna c\'è un mondo che non hai ancora esplorato.', 'small muted'),
+    h('div', { class: 'doors' }, doors.map((t, i) => h('button', { class: 'door', style: { background: colors[i] }, onclick: () => openTopic(t.id) },
+      h('span', { class: 'door-emo' }, CAT_EMOJI[t.c] || '✨'), h('span', { class: 'mono' }, t.c), h('b', null, t.n)))));
 }
 function openTopic(id) {
   const t = topicOf(id); if (!t) return;
@@ -561,7 +609,7 @@ function hourCard(o, current) {
 let specTab = 'oggi', litTab = 'vangelo';
 function liturgyCard() {
   const box = h('div', null, h('div', { class: 'spin' }));
-  serverNews().then(srv => {
+  serverFede().then(srv => {
     const L = srv.liturgia;
     if (!L) { box.replaceChildren(P('Le letture di oggi non sono ancora arrivate.', 'small muted'), linkBtn('https://www.vaticannews.va/it/vangelo-del-giorno-e-parola-del-giorno.html', 'Apri Vatican News')); return; }
     const paint = () => {
@@ -578,9 +626,24 @@ function liturgyCard() {
 }
 function gospelCard() {
   const box = h('div');
-  serverNews().then(srv => {
+  serverFede().then(srv => {
     const g = (srv.vangelo || [])[0];
-    if (!g || !(g.paras || []).length) { box.replaceChildren(linkBtn('https://getupandwalk.gesuiti.it/', 'Prega su Get Up and Walk')); return; }
+    if (!g || !(g.paras || []).length) {
+      const L = srv.liturgia;
+      if (L && (L.vangelo || []).length) {
+        const g2 = { ref: L.ref || 'Vangelo di oggi', link: L.link, paras: [
+          'Mi fermo. Respiro con calma e mi metto alla presenza di Dio: lui è qui, adesso, e mi aspetta.',
+          'Chiedo la grazia di ascoltare davvero, senza fretta, quello che oggi vuole dirmi.',
+          ...L.vangelo,
+          'Rileggo lentamente il brano. Quale parola, quale gesto, quale personaggio mi colpisce di più? Resto lì.',
+          ...(L.papi || []).length ? ['Le parole dei Papi su questo Vangelo:', ...L.papi] : [],
+          'Come un amico parla con un amico, dico al Signore quello che provo davanti a questa Parola: un grazie, una domanda, una fatica.',
+          'Concludo con il Padre nostro, e porto con me nella giornata una sola parola di questo Vangelo.'] };
+        box.replaceChildren(h('div', { class: 'row' }, h('span', { class: 'mono' }, g2.ref)), h('h3', null, 'Prega con il Vangelo di oggi'),
+          h('div', { class: 'row' }, h('button', { class: 'btn primary', onclick: () => gospelPrayer(g2) }, 'Inizia'), linkBtn('https://getupandwalk.gesuiti.it/', 'Get Up and Walk', 'ghost')));
+      } else box.replaceChildren(linkBtn('https://getupandwalk.gesuiti.it/', 'Prega su Get Up and Walk'));
+      return;
+    }
     box.replaceChildren(
       h('div', { class: 'row' }, h('span', { class: 'pill-ready' }, g.oggi ? '✓ di oggi' : 'del ' + fmtDay(g.date)), h('span', { class: 'mono' }, g.ref)),
       h('h3', null, g.title),
@@ -722,54 +785,6 @@ function viewQuaderno() {
 }
 
 /* ======================= IMPOSTAZIONI ======================= */
-function engineCard() {
-  const status = h('div', { class: 'small' });
-  const bar = h('div', { class: 'dl', hidden: true }, h('div', { class: 'dl-fill' }), h('span', { class: 'dl-txt' }));
-  const store = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px' } });
-  const sel = h('select', { disabled: true }, h('option', null, S.ai.localModel || 'caricamento elenco…'));
-  const gpu = hasWebGPU();
-  const nice = id => id.replace(/-q4f(16|32)_1-MLC$/, '').replace(/-/g, ' ');
-  const paintStore = async () => {
-    store.replaceChildren(h('div', { class: 'spin' }));
-    const info = await localStorageInfo();
-    store.replaceChildren(
-      h('span', { class: 'mono' }, 'Modelli scaricati su questo telefono'),
-      ...(info.models.length ? info.models.map(m => h('div', { class: 'row between', style: { borderTop: '1px solid var(--soft)', paddingTop: '6px' } },
-        h('div', null, h('b', { class: 'small' }, nice(m.id)), h('div', { class: 'mono' }, '~' + (m.mb >= 1000 ? (m.mb / 1000).toFixed(1) + ' GB' : m.mb + ' MB') + (m.id === S.ai.localModel ? ' · in uso' : ''))),
-        h('button', { class: 'btn small', onclick: async ev => { ev.currentTarget.disabled = true; try { await deleteLocalModel(m.id); toast('Modello eliminato: spazio liberato'); } catch (e) { toast('Non riuscito: ' + (e.message || e)); } paintStore(); } }, 'Elimina')))
-        : [P('Nessun modello scaricato.', 'small muted')]),
-      P('I modelli sono salvati nella memoria interna dell\'app (cache del browser), non tra i tuoi file. Si cancellano da qui, oppure disinstallando l\'app o cancellando i dati del sito in Chrome.' + (info.usedMB != null ? ` Spazio usato da Ulisse: ${info.usedMB >= 1000 ? (info.usedMB / 1000).toFixed(1) + ' GB' : info.usedMB + ' MB'}.` : ''), 'small muted'));
-  };
-  if (gpu) {
-    localModels().then(ms => {
-      const def = defaultLocal(ms);
-      sel.replaceChildren(...ms.map(m => h('option', { value: m.id, selected: m.id === (S.ai.localModel || def) ? true : null }, nice(m.id) + ' · ~' + (m.mb >= 1000 ? (m.mb / 1000).toFixed(1) + ' GB' : m.mb + ' MB'))));
-      sel.disabled = false;
-    }).catch(() => sel.replaceChildren(h('option', null, 'elenco non disponibile (serve la rete)')));
-    setTimeout(paintStore, 50);
-  }
-  sel.addEventListener('change', () => { S.ai.localModel = sel.value; save(); });
-  const test = h('button', { class: 'btn small primary', disabled: !gpu || null, onclick: async () => {
-    test.disabled = true; S.ai.localModel = sel.value || S.ai.localModel; save();
-    status.textContent = ''; bar.hidden = false;
-    onEngineProgress = r => {
-      const pct = Math.round((r.progress || 0) * 100), t = r.text || '';
-      const mb = t.match(/(\d+)\s*MB/i);
-      bar.querySelector('.dl-fill').style.width = pct + '%';
-      bar.querySelector('.dl-txt').textContent = /fetch|download|cache/i.test(t) ? `Scarico il modello · ${pct}%${mb ? ' · ' + mb[1] + ' MB' : ''}` : /shader|gpu|load|init/i.test(t) ? 'Avvio il modello…' : pct + '%';
-    };
-    try {
-      const t0 = Date.now(); const out = await localCall('Rispondi solo con JSON.', 'Scrivi {"saluto": "una frase di benvenuto in italiano"}', 60);
-      let msg = ''; try { msg = parseJSONLoose(out).saluto || ''; } catch (e) { msg = out.slice(0, 80); }
-      status.textContent = '✓ Pronto (' + Math.round((Date.now() - t0) / 1000) + ' s). ' + msg;
-    } catch (e) { status.textContent = '✗ ' + (e.message || e); }
-    onEngineProgress = null; bar.hidden = true; test.disabled = false; paintStore();
-  } }, 'Scarica e prova');
-  return card(h('h3', null, 'Motore sul telefono'),
-    P(gpu ? 'Un modello linguistico gira direttamente qui, gratis e anche offline una volta scaricato. È lento e scrive peggio del motore veloce: usalo come riserva.' : 'Questo browser non supporta WebGPU, quindi il modello sul telefono non è disponibile. I contenuti preparati e il motore veloce funzionano comunque.', 'small'),
-    gpu && h('label', { class: 'lab' }, 'Modello (più è grande, più scrive bene ma è lento e pesante)'), gpu && sel,
-    gpu && h('div', { class: 'row' }, test), bar, status, gpu && store);
-}
 function settingsSheet() {
   const name = h('input', { type: 'text', value: S.name, placeholder: 'Come ti chiami?' });
   const gkey = h('input', { type: 'text', value: S.ai.key, placeholder: 'Facoltativa: chiave Gemini (AIza…)', autocomplete: 'off' });
@@ -794,9 +809,6 @@ function settingsSheet() {
     card(h('h3', null, 'Redazione notturna'),
       P('Ogni notte un modello aperto, su un computer gratuito di GitHub, prepara i percorsi sulle notizie principali, la scoperta e la Parola del giorno. Li trovi la mattina, uguali per tutti quelli che usano l\'app.'),
       P(night.length ? `Ultima edizione: ${fmtDay(night[0].date)} · ${night.length} contenuti · modello ${PREP.modello || ''}` : 'Nessuna edizione ancora disponibile.', 'small muted')),
-    card(h('h3', null, 'Quale motore usare al momento'),
-      h('div', { class: 'chips' }, [['veloce', '⚡ Veloce (Groq)'], ['telefono', '📱 Sul telefono (lento, offline)']].map(([k, l]) => h('button', { class: 'chip', 'aria-pressed': (S.ai.mode || 'veloce') === k ? 'true' : 'false', onclick: ev => { S.ai.mode = k; save(); ev.currentTarget.parentElement.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === ev.currentTarget ? 'true' : 'false')); } }, l))),
-      P('Veloce: 10-20 secondi, scrive meglio, serve la chiave Groq. Sul telefono: nessun account e funziona offline, ma un capitolo richiede minuti e il modello è piccolo. I contenuti preparati in anticipo sono gli stessi in entrambi i casi.', 'small muted')),
     card(h('h3', null, 'Motore veloce · Groq (consigliato)'),
       P('Per le notizie non ancora pronte: spiegazione completa in 10-20 secondi. Gratis con un account Groq (niente carta di credito); se un modello raggiunge il limite del minuto l\'app passa da sola a un altro, e in ultimo al modello sul telefono. Groq non usa i tuoi dati per addestrare i modelli.', 'small'),
       h('label', { class: 'lab' }, 'Chiave Groq · ', h('a', { href: 'https://console.groq.com/keys', target: '_blank', rel: 'noopener' }, 'creala qui gratis')), groqKey,
@@ -805,7 +817,8 @@ function settingsSheet() {
         try { const t0 = Date.now(); const out = await groqCall('Rispondi solo con JSON.', 'Scrivi {"ok": "pronto"}', 50); groqStatus.textContent = '✓ Funziona: risposta in ' + ((Date.now() - t0) / 1000).toFixed(1) + ' s'; }
         catch (e) { groqStatus.textContent = '✗ ' + (e.message || e); S.ai.groqKey = old; }
       } }, 'Prova la chiave')), groqStatus),
-    engineCard(),
+    card(h('h3', null, 'Sezioni'),
+      h('label', { class: 'row' }, h('input', { type: 'checkbox', checked: fedeOn() ? true : null, onchange: e => { S.fede = e.target.checked; if (!S.fede) S.quests = S.quests.filter(q => !(q.area === 'fede' && q.src === 'app' && !q.done)); save(); } }), 'Mostra la parte di fede (Specchio, Vangelo, missioni e obiettivi di fede)')),
     card(h('h3', null, 'Lettura'), h('label', { class: 'lab' }, 'Dimensione del testo'),
       h('div', { class: 'chips' }, [[0.92, 'Piccolo'], [1, 'Normale'], [1.1, 'Grande'], [1.22, 'Molto grande']].map(([v, l]) => h('button', { class: 'chip', 'aria-pressed': (S.fontScale || 1) === v ? 'true' : 'false', onclick: ev => { S.fontScale = v; save(); applyLook(); ev.currentTarget.parentElement.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === ev.currentTarget ? 'true' : 'false')); } }, l))),
       h('label', { class: 'lab' }, 'Aspetto'),
@@ -834,7 +847,7 @@ function settingsSheet() {
 applyLook();
 for (const [id, L] of Object.entries(S.lessons)) if (L.gen && L.gen.notte) { S.prepMeta = S.prepMeta || {}; S.prepMeta[id] = { title: L.title, kind: L.kind, area: L.area, tags: L.tags || [], gen: { topic: L.gen.topic } }; delete S.lessons[id]; }
 save(); close(); render(); toast('Backup ripristinato'); } catch (e) { toast('Backup non valido'); } } }, 'Ripristina')),
-    flat(h('span', { class: 'mono' }, 'Ulisse v1.4'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Ollama (notte) e WebLLM (telefono). Codice: github.com/Torre28/Ulisse', 'small muted'))));
+    flat(h('span', { class: 'mono' }, 'Ulisse v1.5'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Ollama (notte) e WebLLM (telefono). Codice: github.com/Torre28/Ulisse', 'small muted'))));
 }
 
 /* primo avvio: per chi riceve l'app da un amico */
@@ -845,6 +858,7 @@ function welcomeSheet() {
     P('Un compagno per il tempo libero: le notizie con il loro perché, nuove passioni da scoprire, paper resi digeribili, preghiera e piccole missioni per tenere in equilibrio la vita.', ''),
     h('label', { class: 'lab' }, 'Come ti chiami?'), name,
     h('label', { class: 'lab' }, 'Su cosa vorresti diventare esperto? (facoltativo, separati da virgola)'), tech,
+    h('label', { class: 'row small' }, (() => { const c = h('input', { type: 'checkbox', checked: true }); c.addEventListener('change', () => { S.fede = c.checked; }); return c; })(), 'Includi la parte di fede cristiana (preghiera, Vangelo del giorno)'),
     P('Tutto quello che fai resta solo su questo telefono.', 'small muted'),
     h('button', { class: 'btn primary', onclick: () => {
       S.name = name.value.trim(); if (tech.value.trim()) S.techKw = tech.value.split(',').map(x => x.trim()).filter(Boolean);
@@ -868,11 +882,12 @@ function render() {
   if (document.querySelector('.sheet-bg')) return; // non ridisegnare sotto un foglio aperto
   const y = window.scrollY;
   app.replaceChildren(...VIEWS[route]().flat(Infinity).filter(Boolean));
-  $('#nav').replaceChildren(...Object.entries(SECTIONS).map(([k, l]) => h('button', { 'aria-current': k === route ? 'page' : null, onclick: () => go(k) }, h('span', { html: ICONS[k] }), l)));
+  $('#nav').style.gridTemplateColumns = `repeat(${fedeOn() ? 6 : 5},1fr)`;
+  $('#nav').replaceChildren(...Object.entries(SECTIONS).filter(([k]) => k !== 'specchio' || fedeOn()).map(([k, l]) => h('button', { 'aria-current': k === route ? 'page' : null, onclick: () => go(k) }, h('span', { html: ICONS[k] }), l)));
   window.scrollTo(0, y);
 }
 function go(k) {
-  if (!VIEWS[k]) k = 'oggi';
+  if (!VIEWS[k] || (k === 'specchio' && !fedeOn())) k = 'oggi';
   closeAllSheets();
   route = k; try { if (location.hash !== '#' + k) history.replaceState(null, '', '#' + k); } catch (e) { }
   render(); window.scrollTo(0, 0);
@@ -909,7 +924,7 @@ function ensureTodayQuests(force) {
   }
   save();
 }
-function neglected() { const b = balance(14), r = seeded(today()); return Object.keys(AREAS).sort((x, y) => (b[x] - b[y]) || (r() - .5)); }
+function neglected() { const b = balance(14), r = seeded(today()); return activeAreas().sort((x, y) => (b[x] - b[y]) || (r() - .5)); }
 function whyText(a, b) { const n = b[a]; return n === 0 ? `Nelle ultime due settimane non hai fatto nulla in «${AREAS[a].n}».` : `«${AREAS[a].n}» è tra le aree meno curate nelle ultime due settimane (${n}).`; }
 
 
@@ -987,7 +1002,7 @@ S = load();
 for (const [id, L] of Object.entries(S.lessons)) if (L.gen && L.gen.notte) { S.prepMeta = S.prepMeta || {}; S.prepMeta[id] = { title: L.title, kind: L.kind, area: L.area, tags: L.tags || [], gen: { topic: L.gen.topic } }; delete S.lessons[id]; }
 save();
 loadPiani().catch(() => { });
-loadPrep().then(() => { render(); setTimeout(prefetchPrepared, 1500); });
+loadPrep().then(() => { render(); setTimeout(prefetchPrepared, 5000); });
 window.addEventListener('hashchange', () => { const k = location.hash.slice(1); if (VIEWS[k] && k !== route) go(k); });
 go(location.hash.slice(1) || 'oggi');
 if (!S.onboarded) welcomeSheet();

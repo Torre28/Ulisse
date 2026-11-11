@@ -207,8 +207,7 @@ function openLesson(id, chapter) {
       h('div', { class: 'lesson-head' },
         h('div', { class: 'row' }, areaTag(L.area), L.kind && h('span', { class: 'tag muted' }, L.kind), L.gen && h('span', { class: 'tag muted' }, L.gen.notte ? 'di stanotte' : 'generata'), h('span', { class: 'mono' }, `${prog.seen.length}/${chs.length} capitoli`)),
         L.summary && h('p', { class: 'small muted', style: { margin: 0 } }, L.summary),
-        L.pending ? h('div', { class: 'note ' + (/scrittura/.test(L.pending) ? 'ipotesi' : 'contesto') }, h('span', { class: 'mono' }, /scrittura/.test(L.pending) ? '⏳ in arrivo' : 'nota'), P(L.pending),
-          L.offerLocal && L.src ? h('button', { class: 'btn small', style: { marginTop: '6px' }, onclick: () => { useLocalOnce = true; completeNewsLesson(L, { main: L.src.main, items: L.src.items }, L.src.mode || 'quick'); } }, '📱 Scrivila ora sul telefono (lento: alcuni minuti)') : null) : null),
+        L.pending ? h('div', { class: 'note ' + (/scrittura/.test(L.pending) ? 'ipotesi' : 'contesto') }, h('span', { class: 'mono' }, /scrittura/.test(L.pending) ? '⏳ in arrivo' : 'nota'), P(L.pending),) : null),
       h('div', { class: 'read-progress' }, h('div', { style: { width: Math.round((ci + 1) / Math.max(1, chs.length) * 100) + '%' } })),
       h('div', { class: 'chapters' }, chs.map((c, k) => h('button', { class: 'chip', 'aria-pressed': k === ci ? 'true' : 'false', onclick: () => show(k) }, (k + 1) + ' · ' + (c.label || 'Parte'), h('small', null, c.depth === 'profondo' ? '◆' : '◇')))),
       h('div', null, h('span', { class: 'mono' }, (ch.label || '') + (ch.depth ? ' · ' + ch.depth : '')), h('h2', { style: { marginTop: '4px' } }, ch.title)),
@@ -427,7 +426,8 @@ async function drawMap(box, legend, b) {
 /* altre fonti: notizie recenti dal nostro archivio + siti autorevoli del tema */
 function otherSources(name, theme) {
   const news = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px' } });
-  serverNews().then(srv => {
+  Promise.all([serverNews(), serverExtra().catch(() => ({}))]).then(([srv, ex]) => {
+    srv = Object.assign({}, srv, { temi: ex.temi || srv.temi, testate: ex.testate || srv.testate });
     const kw = keywords(name, 4).map(w => w.toLowerCase().slice(0, Math.max(4, w.length - 1)));
     const pool = [].concat(...Object.values(srv.sezioni || {}), ...Object.values(srv.temi || {}), ...Object.values(srv.testate || {}));
     const seen = new Set();

@@ -290,3 +290,51 @@ const BUILTIN_LESSONS = {
   }
 };
 
+
+/* citazioni del giorno: [testo, autore, fonte] — solo attribuzioni verificabili */
+const QUOTES = {
+  'Conoscenza': [
+    ['Fatti non foste a viver come bruti, ma per seguir virtute e canoscenza.', 'Dante Alighieri', 'Inferno XXVI, le parole di Ulisse'],
+    ['Considerate la vostra semenza.', 'Dante Alighieri', 'Inferno XXVI'],
+    ['Abbi il coraggio di servirti della tua intelligenza.', 'Immanuel Kant', 'Risposta alla domanda: che cos\'è l\'Illuminismo?'],
+    ['La sapienza è figliola della sperienza.', 'Leonardo da Vinci', 'Codice Forster'],
+    ['Se ho visto più lontano è perché stavo sulle spalle di giganti.', 'Isaac Newton', 'lettera a Robert Hooke, 1675'],
+    ['Il libro della natura è scritto in lingua matematica.', 'Galileo Galilei', 'Il Saggiatore (parafrasi)']
+  ],
+  'Tempo': [
+    ['Mentre si rimanda, la vita passa.', 'Seneca', 'Lettere a Lucilio, 1'],
+    ['Non abbiamo poco tempo: ne perdiamo molto.', 'Seneca', 'La brevità della vita'],
+    ['Cogli l\'attimo, confidando il meno possibile nel domani.', 'Orazio', 'Odi I, 11'],
+    ['Per ogni cosa c\'è il suo momento, il suo tempo per ogni faccenda sotto il cielo.', 'Qoèlet', 'Qo 3,1'],
+    ['Nel mezzo del cammin di nostra vita mi ritrovai per una selva oscura.', 'Dante Alighieri', 'Inferno I']
+  ],
+  'Coraggio': [
+    ['Non sono i fatti a turbare gli uomini, ma i giudizi che danno sui fatti.', 'Epitteto', 'Manuale, 5'],
+    ['Non abbiate paura! Aprite, anzi, spalancate le porte a Cristo!', 'Giovanni Paolo II', 'omelia del 22 ottobre 1978'],
+    ['Sperare contro ogni speranza.', 'San Paolo', 'Rm 4,18 — il motto di Giorgio La Pira'],
+    ['Libertà va cercando, ch\'è sì cara, come sa chi per lei vita rifiuta.', 'Dante Alighieri', 'Purgatorio I'],
+    ['Il coraggio, uno non se lo può dare.', 'Alessandro Manzoni', 'I promessi sposi, cap. XXV']
+  ],
+  'Amicizia e amore': [
+    ['Un amico fedele è rifugio sicuro: chi lo trova, trova un tesoro.', 'Siracide', 'Sir 6,14'],
+    ['La carità è magnanima, benevola è la carità.', 'San Paolo', '1Cor 13,4'],
+    ['Ama e fa\' ciò che vuoi.', 'Sant\'Agostino', 'Commento alla prima lettera di Giovanni'],
+    ['L\'amor che move il sole e l\'altre stelle.', 'Dante Alighieri', 'Paradiso XXXIII'],
+    ['Amor, ch\'a nullo amato amar perdona.', 'Dante Alighieri', 'Inferno V']
+  ],
+  'Fede': [
+    ['Ci hai fatti per te, e il nostro cuore è inquieto finché non riposa in te.', 'Sant\'Agostino', 'Confessioni I, 1'],
+    ['Venite a me, voi tutti che siete stanchi e oppressi, e io vi darò ristoro.', 'Gesù', 'Mt 11,28'],
+    ['Il cuore ha le sue ragioni, che la ragione non conosce.', 'Blaise Pascal', 'Pensieri'],
+    ['E \'n la sua volontade è nostra pace.', 'Dante Alighieri', 'Paradiso III'],
+    ['La gloria di Dio è l\'uomo vivente.', 'Sant\'Ireneo di Lione', 'Contro le eresie IV'],
+    ['Dio è amore.', 'San Giovanni', '1Gv 4,8']
+  ],
+  'Lavoro e impegno': [
+    ['Prega e lavora.', 'Regola benedettina', 'motto «Ora et labora»'],
+    ['Come il ferro arrugginisce senza esercizio, così l\'ingegno si guasta se non si adopera.', 'Leonardo da Vinci', 'Codice Atlantico (parafrasi)'],
+    ['Chi ben comincia è a metà dell\'opera.', 'Orazio', 'Epistole I, 2 (dimidium facti qui coepit habet)'],
+    ['Datti da fare per ciò che dipende da te.', 'Epitteto', 'Manuale, 1 (parafrasi)'],
+    ['Qualsiasi cosa vi dica, fatela.', 'Maria', 'Gv 2,5']
+  ]
+};

@@ -1,0 +1,32 @@
+# Orologio di Ulisse: l'unico workflow con orari, avvia gli altri.
+# GitHub esegue gli orari solo se l'ultima modifica a queste righe è stata
+# fatta da una persona del repository: se le esecuzioni automatiche non partono,
+# apri questo file su GitHub, cambia un carattere in questo commento e salva.
+name: Orologio
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'      # notizie ogni mezz'ora
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  avvia:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Notizie
+        run: gh workflow run notizie.yml -R ${{ github.repository }}
+      - name: Capire al volo (ore pari, dalle 6 alle 22 ora italiana)
+        run: |
+          H=$(TZ=Europe/Rome date +%H); M=$(date +%M)
+          if [ $((10#$H % 2)) -eq 0 ] && [ $((10#$H)) -ge 6 ] && [ $((10#$H)) -le 22 ] && [ $((10#$M)) -lt 30 ]; then gh workflow run capire.yml -R ${{ github.repository }}; fi
+      - name: Redazione notturna (alle 2)
+        run: |
+          H=$(TZ=Europe/Rome date +%H); M=$(date +%M)
+          if [ "$H" = "02" ] && [ $((10#$M)) -lt 30 ]; then gh workflow run redazione.yml -R ${{ github.repository }}; fi

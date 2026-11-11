@@ -69,6 +69,25 @@ async function fetchServerNews() {
   for (const u of urls) { try { const d = await getJSON(u, 12000); if (d && d.sezioni) return d; } catch (e) { last = e; } }
   throw last || new Error('notizie non raggiungibili');
 }
+/* file aggiuntivi più leggeri: temi e testate, fede (letture e Vangelo) */
+function dataLoader(file, keyLS) {
+  let mem = null, t = 0, job = null;
+  try { const c = JSON.parse(localStorage.getItem(keyLS) || 'null'); if (c) { mem = c.data; t = c.t; } } catch (e) { }
+  return async () => {
+    if (mem && Date.now() - t < 10 * 60e3) return mem;
+    const p = repoPath(), q = Math.floor(Date.now() / 300000);
+    if (!job) job = (async () => {
+      for (const u of [`https://raw.githubusercontent.com/${p}/dati/${file}?t=${q}`, `https://cdn.jsdelivr.net/gh/${p}@dati/${file}`]) { try { const d = await getJSON(u, 12000); if (d) return d; } catch (e) { } }
+      // compatibilità con il vecchio formato, tutto in notizie.json
+      const all = await fetchServerNews(); return all;
+    })().then(d => { mem = d; t = Date.now(); try { localStorage.setItem(keyLS, JSON.stringify({ t, data: d })); } catch (e) { } return d; }).finally(() => { job = null; });
+    if (mem && Date.now() - t < 24 * 3600e3) { job.catch(() => { }); return mem; }
+    return job;
+  };
+}
+const serverExtra = dataLoader('extra.json', 'ulisse.extra');
+const serverFede = dataLoader('fede.json', 'ulisse.fede');
+
 /* mostra subito l'ultima copia salvata e la aggiorna in sottofondo: le notizie non restano mai bloccate */
 async function serverNews() {
   const fresh = SRV && Date.now() - SRVt < 10 * 60e3;

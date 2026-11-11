@@ -4,8 +4,6 @@
 name: Notizie
 
 on:
-  schedule:
-    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -29,7 +27,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout --orphan dati
           git rm -rfq .
-          cp /tmp/notizie.json notizie.json
-          git add notizie.json
+          cp /tmp/notizie.json /tmp/extra.json /tmp/fede.json .
+          git add notizie.json extra.json fede.json
           git commit -qm "Notizie $(TZ=Europe/Rome date '+%F %H:%M')"
           git push -f origin dati

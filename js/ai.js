@@ -4,8 +4,8 @@
    Due fonti, entrambe gratuite e senza limiti:
    1. la «redazione notturna» (GitHub Actions + modello aperto) che prepara
       ogni notte i contenuti in contenuti/indice.json;
-   2. un modello che gira SUL TELEFONO, nel browser, con WebGPU (WebLLM),
-      per le richieste al momento.
+   2. Groq (gratuito con account) per le richieste al momento;
+      la scheda istantanea senza IA come riserva.
    Facoltativo: chiave personale Gemini, per chi la vuole.
    Le istruzioni sono condivise con la redazione in prompts/piani.json.
    ====================================================================== */
@@ -35,7 +35,7 @@ async function fetchLessonFile(item) {
 }
 async function prefetchPrepared() {
   if (!('caches' in window)) return;
-  const items = PREP.items.slice().sort((a, b) => b.date.localeCompare(a.date)).slice(0, 40);
+  const items = PREP.items.slice().sort((a, b) => b.date.localeCompare(a.date)).slice(0, 15);
   for (const it of items) { if (allLessons()[it.id]) continue; try { await fetchLessonFile(it); } catch (e) { } }
 }
 const PREPMEM = {}; // lezioni pronte: in memoria e nella cache, non nella memoria permanente (che è piccola)
@@ -51,72 +51,12 @@ function prepForNews(it, mode) {
   return PREP.items.filter(p => !mode || mode === 'quick' || p.mode === 'full').find(p => p.kind === 'notizia' && (p.ref === it.link || (p.headline && (() => { const o = tokenSet(p.headline); let n = 0; for (const x of ts) if (o.has(x)) n++; return n >= 3 && n / Math.min(ts.size, o.size) >= 0.5; })())));
 }
 
-/* ---------------- modello sul telefono (WebLLM, WebGPU) ---------------- */
-let webllm = null, engine = null, engineModel = null, engineLoading = null, onEngineProgress = null;
-const hasWebGPU = () => !!navigator.gpu;
-async function loadWebLLM() {
-  if (!webllm) webllm = await import('https://esm.run/@mlc-ai/web-llm');
-  return webllm;
-}
-async function localModels() {
-  const w = await loadWebLLM();
-  let f16 = false;
-  try { const ad = await navigator.gpu.requestAdapter(); f16 = !!(ad && ad.features.has('shader-f16')); } catch (e) { }
-  const q = f16 ? 'q4f16_1' : 'q4f32_1';
-  const ok = /^(Qwen3-(0\.6|1\.7|4)B|Qwen2\.5-(0\.5|1\.5|3)B-Instruct|gemma-2-2b-it|Llama-3\.2-(1|3)B-Instruct|Phi-3\.5-mini-instruct)/;
-  return w.prebuiltAppConfig.model_list.filter(m => ok.test(m.model_id) && m.model_id.includes(q) && !/1k$/.test(m.model_id))
-    .map(m => ({ id: m.model_id, mb: Math.round(m.vram_required_MB || 0) }))
-    .sort((a, b) => a.mb - b.mb);
-}
-function defaultLocal(list) {
-  const pick = re => (list.find(m => re.test(m.id)) || {}).id;
-  return pick(/^Qwen3-1\.7B/) || pick(/^Qwen2\.5-1\.5B/) || pick(/^Qwen/) || (list[0] || {}).id;
-}
-/* modelli scaricati: dove sono, quanto pesano, come eliminarli */
-async function localStorageInfo() {
-  const out = { models: [], usedMB: null, quotaMB: null };
-  try { const est = await navigator.storage.estimate(); out.usedMB = Math.round(est.usage / 1e6); out.quotaMB = Math.round(est.quota / 1e6); } catch (e) { }
-  try {
-    const w = await loadWebLLM();
-    for (const m of w.prebuiltAppConfig.model_list) { try { if (await w.hasModelInCache(m.model_id)) out.models.push({ id: m.model_id, mb: Math.round(m.vram_required_MB || 0) }); } catch (e) { } }
-  } catch (e) { }
-  return out;
-}
-async function deleteLocalModel(id) {
-  const w = await loadWebLLM();
-  if (engine && engineModel === id) { try { await engine.unload(); } catch (e) { } engine = null; engineModel = null; }
-  await w.deleteModelAllInfoInCache(id);
-  if (S.ai.localModel === id) { S.ai.localModel = ''; save(); }
-}
-async function getEngine() {
-  if (engine && engineModel === S.ai.localModel) return engine;
-  if (engineLoading) return engineLoading;
-  if (!hasWebGPU()) throw new Error('Questo browser non supporta WebGPU: il modello sul telefono non può girare. Usa i contenuti preparati stanotte.');
-  engineLoading = (async () => {
-    const w = await loadWebLLM();
-    if (!S.ai.localModel) { S.ai.localModel = defaultLocal(await localModels()); save(); }
-    try { await navigator.storage?.persist?.(); } catch (e) { }
-    if (engine) { try { await engine.unload(); } catch (e) { } }
-    engine = await w.CreateMLCEngine(S.ai.localModel, { initProgressCallback: r => onEngineProgress && onEngineProgress(r) }, { context_window_size: 6144 });
-    engineModel = S.ai.localModel; return engine;
-  })();
-  try { return await engineLoading; } finally { engineLoading = null; }
-}
-async function localCall(system, user, maxTok) {
-  const e = await getEngine();
-  const sys = /^Qwen3/.test(S.ai.localModel) ? system + '\n/no_think' : system;
-  const messages = [{ role: 'system', content: sys + '\nRispondi esclusivamente con un oggetto JSON valido, senza testo prima o dopo.' }, { role: 'user', content: user }];
-  // alcune versioni di WebLLM non riescono a preparare il vincolo «json_object» su certi modelli:
-  // in quel caso si genera senza vincolo e si estrae il JSON dalla risposta
-  if (!localCall.noGrammar) {
-    try {
-      const r = await e.chat.completions.create({ messages, temperature: 0.5, max_tokens: maxTok, response_format: { type: 'json_object' } });
-      return r.choices[0].message.content || '';
-    } catch (err) { if (!/grammar|std::string|response_format|json/i.test(err.message || '')) throw err; localCall.noGrammar = true; }
-  }
-  const r = await e.chat.completions.create({ messages, temperature: 0.4, max_tokens: maxTok });
-  return r.choices[0].message.content || '';
-}
+/* il modello sul telefono è stato tolto: scaldava e rallentava il telefono senza dare risultati utili.
+   All'avvio si libera lo spazio occupato da eventuali modelli già scaricati. */
+const hasWebGPU = () => false;
+const useLocal = () => false;
+let onEngineProgress = null;
+(async () => { try { for (const k of await caches.keys()) if (/webllm|tvmjs|mlc/i.test(k)) await caches.delete(k); } catch (e) { } })();
 
 /* ---------------- Gemini (facoltativo, con chiave personale) ---------------- */
 const GEM = 'https://generativelanguage.googleapis.com/v1beta';
@@ -157,18 +97,15 @@ async function groqCall(system, user, maxTok) {
   }
   throw Object.assign(last || new Error('Groq non disponibile'), { groq: true });
 }
-const hasGroq = () => !!S.ai.groqKey && S.ai.mode !== 'telefono';
+const hasGroq = () => !!S.ai.groqKey;
 
 /* ---------------- interfaccia comune ---------------- */
 // ordine: Groq (veloce) → Gemini (se scelto) → modello sul telefono
-const useLocal = () => !hasGroq() && (S.ai.provider !== 'gemini' || !S.ai.key);
-// (il motore sul telefono viene usato solo dopo una richiesta esplicita o se scelto in ⚙)
-const aiReady = () => hasGroq() || (S.ai.provider === 'gemini' && !!S.ai.key) || hasWebGPU();
-let useLocalOnce = false;
+const aiReady = () => hasGroq() || (S.ai.provider === 'gemini' && !!S.ai.key);
 async function aiText(system, user, maxTok) {
-  if (hasGroq()) { try { return await groqCall(system, user, Math.min(maxTok, 4000)); } catch (e) { if (!e.groq) throw e; if (!hasWebGPU()) throw new Error('Groq ha raggiunto il limite di questo momento: riprova tra un minuto.'); } }
+  if (hasGroq()) { try { return await groqCall(system, user, Math.min(maxTok, 4000)); } catch (e) { if (!e.groq) throw e; if (!(S.ai.provider === 'gemini' && S.ai.key)) throw new Error('Groq ha raggiunto il limite di questo momento: riprova tra un minuto.'); } }
   if (S.ai.provider === 'gemini' && S.ai.key) return geminiCall(system, user, maxTok);
-  return localCall(system, user, maxTok);
+  throw new Error('Serve la chiave gratuita di Groq (⚙ → Motore veloce)');
 }
 function parseJSONLoose(txt) {
   let t = String(txt).replace(/<think>[\s\S]*?<\/think>/g, '').replace(/^\s*```(?:json)?/i, '').replace(/```\s*$/, '').trim();
@@ -245,7 +182,7 @@ async function generateWithProgress(title, run) {
   const err = h('div');
   const spin = h('div', { class: 'spin' });
   const close = openSheet(title, pad(h('div', { class: 'card' }, spin, lines, bar,
-    P(useLocal() ? 'Il modello lavora sul telefono: tieni l\'app aperta. Una lezione breve richiede alcuni minuti.' : 'Con il modello veloce di solito bastano 10-20 secondi.', 'small muted')), err), () => { onEngineProgress = null; });
+    P('Con il modello veloce di solito bastano 10-20 secondi.', 'small muted')), err), () => { onEngineProgress = null; });
   const log = t => { lines.append(h('div', null, '· ' + t)); };
   onEngineProgress = r => { const t = r.text || ''; bar.textContent = /fetch|download|cache/i.test(t) ? `Scarico il modello sul telefono: ${Math.round((r.progress || 0) * 100)}% (solo la prima volta, poi resta salvato)` : /load|gpu|shader/i.test(t) ? 'Avvio il modello…' : t.slice(0, 120); };
   try {
@@ -262,19 +199,15 @@ async function generateWithProgress(title, run) {
 }
 function needAI() {
   if (aiReady()) return true;
-  openSheet('Modello sul telefono non disponibile', pad(card(
-    P(hasWebGPU() ? 'Configura il motore in ⚙.' : 'Questa spiegazione non è ancora pronta e su questo dispositivo il modello locale non può girare, perché il browser non ha accesso alla scheda video (WebGPU).', ''),
-    !hasWebGPU() && h('ul', { class: 'small', style: { margin: 0, paddingLeft: '1.2em' } },
-      h('li', null, 'Le spiegazioni delle notizie principali vengono preparate in automatico ogni due ore: riprova più tardi.'),
-      h('li', null, 'Sul PC: usa Chrome o Edge aggiornati, attiva «Usa accelerazione grafica» nelle impostazioni del browser e riavvialo. Su Linux può servire attivare WebGPU da chrome://flags. Controlla su chrome://gpu se compare «WebGPU: Hardware accelerated».'),
-      h('li', null, 'Sul Pixel 7 con Chrome aggiornato dovrebbe funzionare; su iPhone serve iOS 26.')),
-    P('Nel frattempo trovi i contenuti preparati stanotte in Oggi, Notizie, Scopri e Specchio. In ⚙ puoi anche inserire una chiave Gemini facoltativa.', 'small muted'),
-    h('button', { class: 'btn primary', onclick: () => { closeAllSheets(); settingsSheet(); } }, 'Apri le impostazioni'))));
+  openSheet('Serve il motore veloce', pad(card(
+    P('Per creare al momento una lezione nuova serve una chiave gratuita di Groq: 10-20 secondi per una spiegazione completa, senza carta di credito.', ''),
+    P('Senza chiave trovi comunque tutto ciò che la redazione prepara in anticipo e le schede istantanee delle notizie.', 'small muted'),
+    h('button', { class: 'btn primary', onclick: () => { closeAllSheets(); settingsSheet(); } }, 'Inserisci la chiave'))));
   return false;
 }
 function saveGenerated(L, meta) {
   L.id = 'g-' + uid(); L.area = meta.area; L.kind = meta.kind; L.title = L.title || meta.title || 'Lezione';
-  L.gen = { at: Date.now(), model: hasGroq() ? (S.ai.groqModel || GROQ_MODELS[0]) : useLocal() ? S.ai.localModel : S.ai.model, ref: meta.ref || null, topic: meta.topic || null };
+  L.gen = { at: Date.now(), model: hasGroq() ? (S.ai.groqModel || GROQ_MODELS[0]) : S.ai.model, ref: meta.ref || null, topic: meta.topic || null };
   S.lessons[L.id] = L; save();
   contAdd({ type: 'lesson', id: L.id, title: L.title, area: L.area });
   return L;
@@ -320,16 +253,15 @@ async function genNewsLesson(cluster, mode) {
   const auto = autoAI();
   base.pending = auto ? (mode === 'quick' ? 'La spiegazione completa è in scrittura: arriva qui da sola tra pochi secondi.' : 'Il percorso completo è in scrittura: i capitoli arrivano uno alla volta.') : 'Questa è la scheda istantanea. La spiegazione completa arriverà con il prossimo giro della redazione (ogni due ore).';
   base.src = { main: it, items: cluster.items.slice(0, 8), mode };
-  base.offerLocal = !auto && hasWebGPU();
   const L = saveGenerated(base, { area: 'mondo', kind: 'notizia', ref: it.link, title: it.title });
   openLesson(L.id);
   if (auto) completeNewsLesson(L, cluster, mode);
 }
 /* motori automatici: solo quelli veloci. Il modello sul telefono parte solo se lo chiedi (o se l'hai scelto in ⚙) */
-const autoAI = () => hasGroq() || (S.ai.provider === 'gemini' && !!S.ai.key) || (S.ai.mode === 'telefono' && hasWebGPU());
+const autoAI = () => hasGroq() || (S.ai.provider === 'gemini' && !!S.ai.key);
 async function completeNewsLesson(L, cluster, mode) {
   const it = cluster.main;
-  L.pending = 'La spiegazione completa è in scrittura…'; L.offerLocal = false; save(); window.dispatchEvent(new CustomEvent('lesson-updated', { detail: L.id }));
+  L.pending = 'La spiegazione completa è in scrittura…'; save(); window.dispatchEvent(new CustomEvent('lesson-updated', { detail: L.id }));
   try {
     const prior = await priorNews(it.title, mode === 'quick' ? 14 : 45).catch(() => []);
     const wiki = await wikiContext(it.title + ' ' + (it.desc || ''), 2);
@@ -341,7 +273,7 @@ async function completeNewsLesson(L, cluster, mode) {
       L.chapters = chs.slice(); save(); window.dispatchEvent(new CustomEvent('lesson-updated', { detail: L.id }));
     });
     Object.assign(L, full, { title: full.title || it.title, pending: null, summary: full.summary || L.summary });
-    L.gen.model = hasGroq() ? (S.ai.groqModel || GROQ_MODELS[0]) : useLocal() ? S.ai.localModel : S.ai.model;
+    L.gen.model = hasGroq() ? (S.ai.groqModel || GROQ_MODELS[0]) : S.ai.model;
     save(); window.dispatchEvent(new CustomEvent('lesson-updated', { detail: L.id }));
     toast('Spiegazione completa pronta');
   } catch (e) {

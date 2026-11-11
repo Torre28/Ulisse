@@ -174,6 +174,8 @@ const AREAS = {
   lavoro: { n: 'Studio e lavoro' }, fede: { n: 'Fede' }, famiglia: { n: 'Famiglia' }, amici: { n: 'Amici' },
   corpo: { n: 'Corpo' }, mondo: { n: 'Mondo' }, scoperta: { n: 'Scoperta' }
 };
+const fedeOn = () => !S || S.fede !== false;
+const activeAreas = () => Object.keys(AREAS).filter(a => a !== 'fede' || fedeOn());
 const areaColor = a => `var(--${AREAS[a] ? a : 'scoperta'})`;
 const areaTag = a => h('span', { class: 'tag', style: { color: areaColor(a) } }, (AREAS[a] || AREAS.scoperta).n);
 function addLog(area, kind, title, w = 1, th) { S.log.push({ d: today(), t: Date.now(), area, kind, title, w, th }); if (S.log.length > 3000) S.log = S.log.slice(-3000); save(); }

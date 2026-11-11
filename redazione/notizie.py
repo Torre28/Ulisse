@@ -68,6 +68,14 @@ TESTATE = {
 NOMI = {'ilpost': 'Il Post', 'ansa': 'ANSA', 'news.google': 'Google News'}
 
 
+def slim(i):
+    """Una notizia nel formato più leggero possibile: il file deve caricarsi in fretta anche col telefono."""
+    d = {'title': i['title'], 'src': i.get('src') or i.get('feed', ''), 'link': i['link'], 'date': iso(i['ts'])}
+    if i.get('desc') and i['desc'] != i['title']:
+        d['desc'] = i['desc'][:220]
+    return d
+
+
 def iso(ts):
     return datetime.fromtimestamp(ts, timezone.utc).isoformat() if ts else None
 
@@ -88,9 +96,9 @@ def vangelo():
     for it in root.iter('item'):
         html_ = it.findtext('{http://purl.org/rss/1.0/modules/content/}encoded') or it.findtext('description') or ''
         text_all = R.strip(html_)
-        ref = re.search(r'commento (?:di|a) ((?:Mt|Mc|Lc|Gv)\s?\d+[,.:]\s?[\d\-.,a-z ]+)', text_all + ' ' + (it.findtext('title') or ''))
+        ref = re.search(r'((?:Mt|Mc|Lc|Gv|Matteo|Marco|Luca|Giovanni)\s?\d+\s?[,.:]\s?\d+[\d\-.,a-z ]*)', (it.findtext('title') or '') + ' ' + text_all)
         if not ref:
-            continue  # non è un commento al Vangelo: si scarta
+            continue  # nessun brano dei Vangeli citato: non è il commento al Vangelo
         paras = [R.strip(p) for p in re.findall(r'<p[^>]*>(.*?)</p>', html_, re.S)]
         if len([p for p in paras if len(p) > 40]) < 4 and it.findtext('link'):
             try:
@@ -151,7 +159,7 @@ def main(out):
         if tag == 'Principali':
             items += libere(res)
             items.sort(key=lambda i: -i['ts'])
-        res['sezioni'][tag] = [{'title': i['title'], 'src': i['src'], 'link': i['link'], 'date': iso(i['ts']), 'desc': i['desc'], 'feed': i['feed']} for i in items[:140 if tag == 'Principali' else 80]]
+        res['sezioni'][tag] = [slim(i) for i in items[:100 if tag == 'Principali' else 45]]
     import re as _re
     res['temi'] = {}
     for nome, (q, must) in TEMI.items():
@@ -160,7 +168,7 @@ def main(out):
             rx = _re.compile(must, _re.I)
             its = [i for i in its if rx.search(i['title'] + ' ' + i['desc'])]
             its.sort(key=lambda i: -i['ts'])
-            res['temi'][nome] = [{'title': i['title'], 'src': i['src'], 'link': i['link'], 'date': iso(i['ts']), 'desc': i['desc'], 'feed': nome} for i in its[:30]]
+            res['temi'][nome] = [slim(dict(i, feed=nome)) for i in its[:20]]
         except Exception as e:
             R.log('tema non raggiungibile:', nome, e)
         time.sleep(0.5)
@@ -174,7 +182,7 @@ def main(out):
         try:
             its = R.parse_rss(R.get(R.gn_search(f'site:{dominio} when:2d')))
             its.sort(key=lambda i: -i['ts'])
-            res['testate'][nome] = [{'title': i['title'], 'src': nome, 'link': i['link'], 'date': iso(i['ts']), 'desc': i['desc'], 'feed': nome} for i in its[:30]]
+            res['testate'][nome] = [slim(dict(i, src=nome, feed=nome)) for i in its[:15]]
         except Exception as e:
             R.log('testata non raggiungibile:', nome, e)
         time.sleep(0.4)
@@ -192,7 +200,13 @@ def main(out):
         prior[t] = [{'title': p['title'], 'src': p['src'], 'date': iso(p['ts'])} for p in R.prior_news(t, 30)]
         time.sleep(1)
     res['antefatti'] = prior
-    json.dump(res, open(out, 'w', encoding='utf-8'), ensure_ascii=False)
+    base = os.path.dirname(out) or '.'
+    extra = {'aggiornato': res['aggiornato'], 'temi': res.pop('temi', {}), 'testate': res.pop('testate', {})}
+    fede = {'aggiornato': res['aggiornato'], 'vangelo': res.pop('vangelo', []), 'liturgia': res.pop('liturgia', None)}
+    json.dump(res, open(out, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
+    json.dump(extra, open(os.path.join(base, 'extra.json'), 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
+    json.dump(fede, open(os.path.join(base, 'fede.json'), 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
+    R.log('dimensioni:', {f: os.path.getsize(os.path.join(base, f)) // 1024 for f in (os.path.basename(out), 'extra.json', 'fede.json')}, 'KB')
     R.log('notizie:', {k: len(v) for k, v in res['sezioni'].items()}, '· antefatti per', len(prior), 'storie')
 
 
