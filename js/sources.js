@@ -144,3 +144,31 @@ async function bookSearch(term, n = 5) {
   const j = await getJSON(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(term)}&langRestrict=it&maxResults=${n}&printType=books`);
   return (j.items || []).map(b => ({ title: b.volumeInfo.title, authors: (b.volumeInfo.authors || []).join(', '), year: (b.volumeInfo.publishedDate || '').slice(0, 4), link: b.volumeInfo.infoLink, desc: (b.volumeInfo.description || '').slice(0, 220) }));
 }
+
+
+/* ---------------- brani pertinenti: da una voce lunga, solo ciò che serve rispetto a dove arrivi ---------------- */
+async function wikiParagraphs(title) {
+  const j = await getJSON(`${WP}/w/api.php?action=parse&page=${encodeURIComponent(title)}&prop=text&redirects=1&disableeditsection=1&format=json&origin=*`);
+  const doc = new DOMParser().parseFromString(j.parse.text['*'], 'text/html');
+  doc.querySelectorAll('sup, .reference, .mw-editsection, table, style, .thumb, figure, .noprint, .navbox, .metadata').forEach(e => e.remove());
+  const out = []; let sec = 'Introduzione';
+  for (const el of doc.querySelectorAll('h2, h3, p')) {
+    if (/^H[23]$/.test(el.tagName)) { sec = el.textContent.replace(/\[.*?\]/g, '').trim(); continue; }
+    if (/^(Note|Bibliografia|Voci correlate|Collegamenti esterni|Altri progetti)$/i.test(sec)) continue;
+    const t = el.textContent.replace(/\s+/g, ' ').trim();
+    if (t.length > 120) out.push({ sec, text: t });
+  }
+  return { title: j.parse.title, paras: out };
+}
+function rankByContext(paras, contextText, n = 5) {
+  const tok = t => String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').split(/[^a-z0-9]+/).filter(w => w.length >= 4 && !STOP.has(w)).map(w => w.slice(0, 7));
+  const ctx = {}; tok(contextText).forEach(w => { ctx[w] = (ctx[w] || 0) + 1; });
+  const df = {}; const toks = paras.map(p => { const s = new Set(tok(p.text + ' ' + p.sec)); s.forEach(w => { df[w] = (df[w] || 0) + 1; }); return s; });
+  const N = paras.length || 1;
+  const scored = paras.map((p, i) => {
+    let sc = 0, hits = [];
+    toks[i].forEach(w => { if (ctx[w]) { sc += Math.min(ctx[w], 3) * Math.log(1 + N / df[w]); hits.push(w); } });
+    return { ...p, i, score: sc / Math.sqrt(1 + toks[i].size / 40), hits };
+  }).filter(p => p.score > 0);
+  return scored.sort((a, b) => b.score - a.score).slice(0, n).sort((a, b) => a.i - b.i);
+}

@@ -65,6 +65,60 @@ function prepRow(p) {
     h('b', null, p.title), p.headline && p.headline !== p.title ? h('span', { class: 'small muted' }, p.headline) : (p.summary ? h('span', { class: 'small muted' }, p.summary) : null));
 }
 
+/* ======================= SESSIONE A TEMPO ======================= */
+let sessMin = null;
+const doneToday = id => S.log.some(e => e.d === today() && e.ref === id);
+function sessionPlan(min) {
+  const cand = [];
+  const latest = PREP.items.slice().sort((a, b) => (b.date + (b.id || '')).localeCompare(a.date + (a.id || '')));
+  const seen = id => S.progress[id] && S.progress[id].done;
+  const due = dueCards().length;
+  if (due) cand.push({ id: 'ripasso', ico: '🗂', t: `Ripassa ${Math.min(due, 15)} carte`, min: Math.max(2, Math.min(8, Math.ceil(Math.min(due, 15) * 0.4))), run: reviewSheet, pr: 9 });
+  latest.filter(p => p.kind === 'notizia' && p.mode !== 'full' && !seen(p.id)).slice(0, 4).forEach((p, i) => cand.push({ id: p.id, ico: '📰', t: p.title, min: 6, run: () => openPrepared(p), pr: 8 - i }));
+  latest.filter(p => p.kind === 'notizia' && p.mode === 'full' && !seen(p.id)).slice(0, 2).forEach((p, i) => cand.push({ id: p.id, ico: '🧭', t: 'Percorso: ' + p.title, min: 22, run: () => openPrepared(p), pr: 6 - i }));
+  const sc = latest.find(p => p.kind === 'passione' && !seen(p.id)); if (sc) cand.push({ id: sc.id, ico: '✨', t: sc.title, min: 12, run: () => openPrepared(sc), pr: 7 });
+  const pa = latest.find(p => p.mode === 'parola' && !seen(p.id)); if (pa) cand.push({ id: pa.id, ico: '✝', t: 'La Parola: ' + (pa.headline || pa.title), min: 12, run: () => openPrepared(pa), pr: 5 });
+  const ho = currentHour(); cand.push({ id: 'ora-' + ho.k, ico: '🕯', t: ho.n, min: ho.k === 'ufficio' ? 20 : 10, run: () => go('specchio'), pr: 4 });
+  const c = S.cont.find(x => x.type === 'lesson'); if (c) cand.push({ id: 'c-' + c.id, ico: '↩', t: 'Riprendi: ' + c.title, min: 8, run: () => openLesson(c.id), pr: 7.5 });
+  cand.sort((a, b) => b.pr - a.pr);
+  const out = []; let tot = 0;
+  for (const x of cand) { if (tot + x.min <= min + 3) { out.push(x); tot += x.min; } }
+  return { items: out, tot };
+}
+function sessionCard() {
+  const chips = h('div', { class: 'time-chips' }, [5, 15, 30, 60].map(m => h('button', { class: 'chip', 'aria-pressed': sessMin === m ? 'true' : 'false', onclick: () => { sessMin = sessMin === m ? null : m; render(); } }, m === 60 ? '1 ora+' : m + ' min')));
+  if (!sessMin) return h('div', { class: 'card hero' }, h('span', { class: 'mono' }, 'Quanto tempo hai adesso?'), chips, P('Ti preparo un percorso su misura con quello che è già pronto: si apre all\'istante.', 'small'));
+  const plan = sessionPlan(sessMin);
+  return h('div', { class: 'card hero' }, h('div', { class: 'row between' }, h('span', { class: 'mono' }, `Il tuo percorso · circa ${plan.tot} min`), h('button', { class: 'btn small', onclick: () => { sessMin = null; render(); } }, '✕')), chips,
+    plan.items.length ? h('div', null, plan.items.map(x => h('div', { class: 'sess' + (doneToday(x.id) ? ' done' : '') }, h('div', { class: 'ico' }, x.ico), h('div', null, h('b', null, x.t), h('span', { class: 'min' }, x.min + ' min')),
+      h('button', { class: 'btn small primary', onclick: () => { S.log.push({ d: today(), t: Date.now(), area: 'scoperta', kind: 'sessione', title: x.t, w: 0, ref: x.id }); save(); x.run(); } }, '▶')))) : P('Non c\'è ancora nulla di pronto: torna dopo il prossimo giro della redazione.', 'small'));
+}
+/* competenze: crescono con lezioni, capitoli letti e ripassi */
+function themeOf(L) {
+  if (L.kind === 'fede') return 'Fede e Scrittura';
+  if (L.kind === 'tecnico') return 'Tecnica e ricerca';
+  if (L.kind === 'passione') { const t = L.gen && L.gen.topic && topicOf(L.gen.topic); return t ? t.n : (L.tags || [])[0] || 'Scoperte'; }
+  const tg = (L.tags || []).map(x => String(x).toLowerCase()).join(' ') + ' ' + (L.title || '').toLowerCase();
+  if (/elezion|governo|parlament|senato|camera|partit|legge|ministr|premier|costituz|meloni|referendum/.test(tg)) return 'Politica italiana';
+  if (/guerra|ucraina|russia|israele|gaza|cina|usa|nato|ue|europa|diplomaz|esteri/.test(tg)) return 'Esteri e geopolitica';
+  if (/econom|borsa|inflaz|banc|mercat|tass|lavoro|pil|bce/.test(tg)) return 'Economia';
+  if (/scien|ricerc|spazio|clima|salute|tecnolog/.test(tg)) return 'Scienza e tecnologia';
+  return 'Attualità';
+}
+function skills() {
+  const pts = {};
+  for (const [id, pr] of Object.entries(S.progress)) { const L = allLessons()[id]; if (!L) continue; const th = themeOf(L); pts[th] = (pts[th] || 0) + (pr.seen || []).length * 2 + (pr.done ? 10 : 0); }
+  for (const c of S.cards) { if (!c.reps) continue; const L = Object.values(S.lessons).find(l => l.title === c.from); if (L) { const th = themeOf(L); pts[th] = (pts[th] || 0) + Math.min(c.reps, 5); } }
+  return Object.entries(pts).map(([n, p]) => { const lv = Math.floor(Math.sqrt(p / 12)) + 1, lo = (lv - 1) ** 2 * 12, hi = lv ** 2 * 12; return { n, p, lv, frac: (p - lo) / (hi - lo) }; }).sort((a, b) => b.p - a.p);
+}
+const LV_NAME = ['', 'Curioso', 'Informato', 'Consapevole', 'Esperto', 'Maestro'];
+function skillsCard() {
+  const sk = skills().slice(0, 6);
+  if (!sk.length) return null;
+  return card(h('div', { class: 'row between' }, h('h2', null, 'Il tuo sapere'), h('span', { class: 'mono' }, 'cresce con ciò che leggi e ripassi')),
+    sk.map(x => h('div', { class: 'lvl' }, h('span', null, x.n), h('span', { class: 'mono' }, 'liv. ' + x.lv + ' · ' + (LV_NAME[Math.min(x.lv, 5)] || 'Maestro')), h('div', { class: 'track' }, h('div', { class: 'fill', style: { width: Math.round(x.frac * 100) + '%' } })))));
+}
+
 /* ======================= OGGI ======================= */
 function contRow(c) {
   const open = () => {
@@ -104,6 +158,7 @@ function viewOggi() {
   return [
     header(S.name ? `${hello}, ${S.name}` : hello, new Date().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })),
     !storageOk && flat(P('Attenzione: questo browser non sta salvando i dati. Usa l\'app installata.')),
+    sessionCard(),
     card(h('div', { class: 'row between' }, h('h2', null, 'Missioni'), h('button', { class: 'btn small', onclick: addQuestSheet }, '+ La mia')),
       h('span', { class: 'mono' }, 'Main quest'), main.length ? main.map(questEl) : h('div', { class: 'empty' }, 'Nessuna'),
       h('span', { class: 'mono' }, 'Side quest'), side.length ? side.map(questEl) : h('div', { class: 'empty' }, 'Nessuna')),
@@ -115,6 +170,7 @@ function viewOggi() {
     S.cont.length ? card(h('div', { class: 'row between' }, h('h2', null, 'Da continuare'), S.cont.length > 4 && h('button', { class: 'btn small ghost', onclick: () => { qTab = 'cont'; go('quaderno'); } }, 'tutto')), S.cont.slice(0, 4).map(contRow)) : null,
     h('button', { class: 'card', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => openTopic(dt.id) },
       h('span', { class: 'mono' }, 'Scoperta del giorno · ' + dt.c), h('h3', null, dt.n), dt.hk && P(dt.hk)),
+    skillsCard(),
     card(h('div', { class: 'row between' }, h('h2', null, 'Equilibrio'), h('span', { class: 'mono' }, 'ultimi 14 giorni')),
       Object.keys(AREAS).map(a => h('div', { class: 'bar' }, h('span', null, AREAS[a].n), h('div', { class: 'track' }, h('div', { class: 'fill', style: { width: (b[a] / max * 100) + '%', background: areaColor(a) } })), h('span', { class: 'n' }, b[a]))),
       P('Le missioni dell\'app puntano alle aree più scoperte. Main quest 3 punti, side quest 1, lezioni 2, letture e ascolti meno.', 'small muted'))
@@ -122,7 +178,7 @@ function viewOggi() {
 }
 
 /* ======================= NOTIZIE ======================= */
-let newsTab = 'Principali', newsCache = {};
+let newsTab = 'Principali', newsCache = (() => { try { return JSON.parse(localStorage.getItem('ulisse.news') || '{}'); } catch (e) { return {}; } })();
 function viewNotizie() {
   const tl = NEWS_TAGS.map(t => [t, t]).concat([['temi', 'I miei temi'], ['ascolta', '🎧 Ascolta'], ['percorsi', 'Percorsi']]);
   const body = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } });
@@ -164,7 +220,9 @@ async function loadNews(box) {
   try {
     if (!newsCache[key] || Date.now() - newsCache[key].t > 15 * 60e3) {
       newsJobs[key] = newsJobs[key] || fetchNewsFor(key).finally(() => { delete newsJobs[key]; });
-      newsCache[key] = await newsJobs[key];
+      if (!newsCache[key]) newsCache[key] = await newsJobs[key];
+      else newsJobs[key].then(c => { newsCache[key] = c; try { localStorage.setItem('ulisse.news', JSON.stringify(newsCache)); } catch (e) { } if (newsTab === key && box.isConnected && !document.querySelector('.sheet-bg')) render(); }).catch(() => { });
+      try { localStorage.setItem('ulisse.news', JSON.stringify(newsCache)); } catch (e) { }
     }
     if (newsTab !== key || !box.isConnected) return;
     const c = newsCache[key];
@@ -178,17 +236,17 @@ const lessonForRef = ref => ref && Object.values(S.lessons).filter(l => l.gen &&
 function newsCard(cl) {
   const it = cl.main;
   const done = lessonForRef(it.link) || [];
-  const night = prepForNews(it);
+  const night = prepForNews(it, 'quick'), nightFull = prepForNews(it, 'full');
   const more = cl.items.length > 1 ? h('details', null, h('summary', { class: 'mono', style: { cursor: 'pointer' } }, `come ne parlano ${cl.items.length} testate`),
     h('div', { class: 'cluster' }, cl.items.slice(0, 10).map(i => h('a', { href: i.link, target: '_blank', rel: 'noopener' }, h('span', null, (i.src || i.feed) + ' · '), i.title)))) : null;
   return h('div', { class: 'card news' },
     h('div', { class: 'row' }, h('span', { class: 'src' }, [cl.srcs.slice(0, 3).join(' · ') + (cl.srcs.length > 3 ? ' +' + (cl.srcs.length - 3) : ''), fmtDate(it.date)].filter(Boolean).join(' · ')), cl.items.length >= 3 && h('span', { class: 'badge' }, 'in evidenza')),
     h('h3', null, it.title), it.desc && h('p', null, it.desc), more,
-    night ? h('button', { class: 'btn small primary', onclick: () => openPrepared(night) }, '▶ ' + (night.mode === 'full' ? 'Percorso completo' : 'Capire al volo') + ' pronto da stanotte') : null,
+    (night || nightFull) ? h('div', { class: 'row' }, night && h('span', { class: 'pill-ready' }, '⚡ capire al volo pronto'), nightFull && h('span', { class: 'pill-ready' }, '🧭 percorso pronto')) : null,
     done.length ? h('div', { class: 'sources' }, done.map(l => h('button', { class: 'btn small primary', onclick: () => openLesson(l.id) }, '▶ ' + (l.chapters.length > 4 ? 'Percorso' : 'Capire') + ' pronto'))) : null,
     h('div', { class: 'row' },
-      h('button', { class: 'btn small' + (night ? '' : ' primary'), onclick: () => genNewsLesson(cl, 'quick') }, 'Capire al volo'),
-      h('button', { class: 'btn small', onclick: () => genNewsLesson(cl, 'full') }, 'Percorso completo'),
+      h('button', { class: 'btn small primary', onclick: () => genNewsLesson(cl, 'quick') }, 'Capire · 5 min'),
+      h('button', { class: 'btn small', onclick: () => genNewsLesson(cl, 'full') }, 'Percorso · 20 min'),
       it.link && h('a', { class: 'btn small ghost', href: it.link, target: '_blank', rel: 'noopener', onclick: () => addLog('mondo', 'notizia', it.title, 0.5) }, 'Leggi'),
       h('button', { class: 'btn small ghost', 'aria-label': 'Ascolta il titolo', onclick: () => speak(it.title + '. ' + (it.desc || '')) }, '🔊')));
 }
@@ -416,7 +474,7 @@ function viewQuaderno() {
     flt.addEventListener('input', paint); paint();
     body = [h('div', { class: 'row' }, h('button', { class: 'btn grow' + (due ? ' primary' : ''), onclick: reviewSheet }, due ? `Ripassa ${due} carte` : 'Niente da ripassare oggi'), h('button', { class: 'btn', onclick: newCardSheet }, '+ Carta')), flt, box];
   } else if (qTab === 'lezioni') {
-    const ls = Object.values(allLessons()).sort((a, b) => (b.gen?.at || 0) - (a.gen?.at || 0));
+    const ls = Object.values(allLessons()).filter(l => l.chapters).sort((a, b) => (b.gen?.at || 0) - (a.gen?.at || 0));
     body = [h('div', { class: 'row' }, h('button', { class: 'btn grow', onclick: importSheet }, 'Importa una lezione')),
       ls.map(L => h('div', null, lessonCard(L), S.lessons[L.id] && h('button', { class: 'btn small ghost', onclick: () => { delete S.lessons[L.id]; contDone('lesson', L.id); save(); render(); } }, 'Elimina')))];
   } else {
@@ -458,6 +516,8 @@ function engineCard() {
 function settingsSheet() {
   const name = h('input', { type: 'text', value: S.name, placeholder: 'Come ti chiami?' });
   const gkey = h('input', { type: 'text', value: S.ai.key, placeholder: 'Facoltativa: chiave Gemini (AIza…)', autocomplete: 'off' });
+  const groqKey = h('input', { type: 'text', value: S.ai.groqKey || '', placeholder: 'gsk_…', autocomplete: 'off' });
+  const groqStatus = h('div', { class: 'small muted' });
   const useG = h('input', { type: 'checkbox', checked: S.ai.provider === 'gemini' ? true : null });
   const feeds = h('textarea', { style: { fontFamily: 'var(--f-mono)', fontSize: '11.5px', minHeight: '150px' } }); feeds.value = S.feeds.map(f => [f.tag, f.name, f.url].join(' | ')).join('\n');
   const niche = h('input', { type: 'text', value: S.niche.join(', ') });
@@ -468,6 +528,14 @@ function settingsSheet() {
     card(h('h3', null, 'Redazione notturna'),
       P('Ogni notte un modello aperto, su un computer gratuito di GitHub, prepara i percorsi sulle notizie principali, la scoperta e la Parola del giorno. Li trovi la mattina, uguali per tutti quelli che usano l\'app.'),
       P(night.length ? `Ultima edizione: ${fmtDay(night[0].date)} · ${night.length} contenuti · modello ${PREP.modello || ''}` : 'Nessuna edizione ancora disponibile.', 'small muted')),
+    card(h('h3', null, 'Motore veloce · Groq (consigliato)'),
+      P('Per le notizie non ancora pronte: spiegazione completa in 10-20 secondi. Gratis con un account Groq (niente carta di credito); se un modello raggiunge il limite del minuto l\'app passa da sola a un altro, e in ultimo al modello sul telefono. Groq non usa i tuoi dati per addestrare i modelli.', 'small'),
+      h('label', { class: 'lab' }, 'Chiave Groq · ', h('a', { href: 'https://console.groq.com/keys', target: '_blank', rel: 'noopener' }, 'creala qui gratis')), groqKey,
+      h('div', { class: 'row' }, h('button', { class: 'btn small', onclick: async () => {
+        groqStatus.textContent = 'Provo…'; const old = S.ai.groqKey; S.ai.groqKey = groqKey.value.trim();
+        try { const t0 = Date.now(); const out = await groqCall('Rispondi solo con JSON.', 'Scrivi {"ok": "pronto"}', 50); groqStatus.textContent = '✓ Funziona: risposta in ' + ((Date.now() - t0) / 1000).toFixed(1) + ' s'; }
+        catch (e) { groqStatus.textContent = '✗ ' + (e.message || e); S.ai.groqKey = old; }
+      } }, 'Prova la chiave')), groqStatus),
     engineCard(),
     card(h('label', { class: 'lab' }, 'Nome'), name,
       h('label', { class: 'lab' }, 'Fonti delle notizie (una per riga: sezione | nome | indirizzo RSS). Sezioni: ' + NEWS_TAGS.join(', ')), feeds,
@@ -477,6 +545,7 @@ function settingsSheet() {
       pad(P('Se un giorno vorrai più qualità e velocità, puoi usare una chiave gratuita di Google Gemini al posto del modello sul telefono. Non è necessaria.', 'small muted'), gkey, h('label', { class: 'row small' }, useG, 'Usa Gemini invece del modello sul telefono'))),
     h('button', { class: 'btn primary', onclick: () => {
       S.name = name.value.trim();
+      S.ai.groqKey = groqKey.value.trim();
       S.ai.key = gkey.value.trim(); S.ai.provider = useG.checked && S.ai.key ? 'gemini' : 'locale';
       const fs = feeds.value.split('\n').map(l => l.split('|').map(x => x.trim())).filter(p => p.length >= 3 && /^https?:/.test(p[2])).map(([tag, n, u]) => ({ tag: NEWS_TAGS.includes(tag) ? tag : 'Principali', name: n, url: u }));
       if (fs.length) S.feeds = fs;
@@ -488,8 +557,10 @@ function settingsSheet() {
       P('I tuoi dati (missioni, carte, lezioni, diario) restano su questo telefono. Ogni tanto copia il backup e salvalo in una nota o mandalo a te stesso.', 'small muted'),
       h('div', { class: 'row' }, h('button', { class: 'btn', onclick: () => copyText(JSON.stringify(S)) }, 'Copia backup'),
         h('button', { class: 'btn', onclick: () => { try { const a = h('a', { href: URL.createObjectURL(new Blob([JSON.stringify(S)], { type: 'application/json' })), download: 'ulisse-backup-' + today() + '.json' }); document.body.append(a); a.click(); a.remove(); } catch (e) { toast('Download non disponibile qui'); } } }, 'Scarica file')),
-      imp, h('button', { class: 'btn', onclick: () => { try { const d = JSON.parse(imp.value); if (!d.v) throw 0; localStorage.setItem(KEY, JSON.stringify(d)); S = load(); save(); close(); render(); toast('Backup ripristinato'); } catch (e) { toast('Backup non valido'); } } }, 'Ripristina')),
-    flat(h('span', { class: 'mono' }, 'Ulisse v0.5'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Ollama (notte) e WebLLM (telefono). Codice: github.com/Torre28/Ulisse', 'small muted'))));
+      imp, h('button', { class: 'btn', onclick: () => { try { const d = JSON.parse(imp.value); if (!d.v) throw 0; localStorage.setItem(KEY, JSON.stringify(d)); S = load();
+for (const [id, L] of Object.entries(S.lessons)) if (L.gen && L.gen.notte) { S.prepMeta = S.prepMeta || {}; S.prepMeta[id] = { title: L.title, kind: L.kind, area: L.area, tags: L.tags || [], gen: { topic: L.gen.topic } }; delete S.lessons[id]; }
+save(); close(); render(); toast('Backup ripristinato'); } catch (e) { toast('Backup non valido'); } } }, 'Ripristina')),
+    flat(h('span', { class: 'mono' }, 'Ulisse v1.0'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Ollama (notte) e WebLLM (telefono). Codice: github.com/Torre28/Ulisse', 'small muted'))));
 }
 
 /* primo avvio: per chi riceve l'app da un amico */
@@ -623,9 +694,11 @@ function newCardSheet() {
 
 
 /* ======================= AVVIO ======================= */
-S = load(); save();
+S = load();
+for (const [id, L] of Object.entries(S.lessons)) if (L.gen && L.gen.notte) { S.prepMeta = S.prepMeta || {}; S.prepMeta[id] = { title: L.title, kind: L.kind, area: L.area, tags: L.tags || [], gen: { topic: L.gen.topic } }; delete S.lessons[id]; }
+save();
 loadPiani().catch(() => { });
-loadPrep().then(() => render());
+loadPrep().then(() => { render(); setTimeout(prefetchPrepared, 1500); });
 window.addEventListener('hashchange', () => { const k = location.hash.slice(1); if (VIEWS[k] && k !== route) go(k); });
 go(location.hash.slice(1) || 'oggi');
 if (!S.onboarded) welcomeSheet();

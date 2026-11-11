@@ -19,8 +19,8 @@
     "https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=it&gl=IT&ceid=IT:it"
   ],
   "passioni": [],
-  "modello_rapido": "qwen3:4b",
+  "modello_rapido": "qwen3:8b",
   "rapidi_per_giro": 12,
-  "minuti_rapidi": 50,
+  "minuti_rapidi": 55,
   "argomenti_per_giro": 2
 }

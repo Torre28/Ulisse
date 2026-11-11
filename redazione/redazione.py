@@ -17,7 +17,14 @@ from datetime import datetime, timedelta, timezone
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CFG = json.load(open(os.path.join(ROOT, 'redazione', 'config.json'), encoding='utf-8'))
 PIANI = json.load(open(os.path.join(ROOT, 'prompts', 'piani.json'), encoding='utf-8'))
+PIANI['sys'] = PIANI['sys'].replace('{{ESEMPIO}}', PIANI.get('esempio', ''))
 PROVA = '--prova' in sys.argv
+def _arg(name, default):
+    return int(sys.argv[sys.argv.index(name) + 1]) if name in sys.argv else default
+PARTE, PARTI = _arg('--parte', 0), _arg('--parti', 1)  # giri paralleli: ognuno prende una fetta delle storie
+GROQ_KEY = os.environ.get('GROQ_API_KEY', '')
+GROQ_MODELS = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'llama-3.3-70b-versatile']
+USE_GROQ = False  # attivato per i lavori di qualità (percorsi notturni) se c'è la chiave
 RAPIDO = '--rapido' in sys.argv  # giro rapido: solo «Capire al volo» sulle notizie nuove, ogni due ore
 OUT = os.environ.get('RAPIDI_DIR') if RAPIDO and os.environ.get('RAPIDI_DIR') else os.path.join(ROOT, 'contenuti')
 OLLAMA = os.environ.get('OLLAMA_URL', 'http://127.0.0.1:11434')
@@ -151,9 +158,47 @@ def day(ts):
 
 
 # ------------------------------------------------------------------ modello
+_groq_window = []  # (istante, token stimati) dell'ultimo minuto
+
+
+def groq(system, user, max_tok):
+    """Groq gratuito: ~8000 token al minuto per modello. Si rispetta il ritmo e si cambia modello se serve."""
+    est = (len(system) + len(user)) // 3 + max_tok
+    while True:
+        now = time.time()
+        _groq_window[:] = [(t, n) for t, n in _groq_window if now - t < 62]
+        if sum(n for _, n in _groq_window) + est <= 7500 or not _groq_window:
+            break
+        time.sleep(3)
+    _groq_window.append((time.time(), est))
+    for model in GROQ_MODELS:
+        body = {'model': model, 'messages': [{'role': 'system', 'content': system}, {'role': 'user', 'content': user}],
+                'temperature': 0.5, 'max_completion_tokens': max_tok, 'response_format': {'type': 'json_object'}}
+        if 'gpt-oss' in model:
+            body['reasoning_effort'] = 'low'
+        try:
+            req = urllib.request.Request('https://api.groq.com/openai/v1/chat/completions', data=json.dumps(body).encode(),
+                                         headers={'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_KEY, 'User-Agent': UA})
+            with urllib.request.urlopen(req, timeout=120) as r:
+                return json.loads(r.read())['choices'][0]['message']['content']
+        except urllib.error.HTTPError as e:
+            log('  groq', model, e.code, e.read().decode('utf-8', 'replace')[:120])
+            if e.code == 429:
+                time.sleep(5)
+            continue
+        except Exception as e:
+            log('  groq', model, str(e)[:120])
+    raise RuntimeError('groq non disponibile')
+
+
 def llm(system, user, max_tok):
     if PROVA:
         return json.dumps(FINTO_LLM(user))
+    if USE_GROQ and GROQ_KEY:
+        try:
+            return groq(system, user, min(max_tok, 3500))
+        except Exception as e:
+            log('  ripiego sul modello locale:', str(e)[:80])
     body = {'model': MODEL, 'stream': False, 'format': 'json', 'think': False,
             'messages': [{'role': 'system', 'content': system}, {'role': 'user', 'content': user}],
             'options': {'num_ctx': CFG['contesto_token'], 'num_predict': max_tok, 'temperature': 0.5}}
@@ -369,8 +414,10 @@ def main():
     jobs = []
     if RAPIDO:  # solo le storie nuove, le più riprese dai giornali per prime
         stories = [c for c in stories if c['main']['title'] not in {x.get('headline') for x in INDEX['items']}]
-        jobs = [('notizia_rapida', c, 6) for c in stories[:CFG['rapidi_per_giro']]]
-        jobs += [('argomento', None, 8)] * CFG.get('argomenti_per_giro', 0)
+        mine = stories[PARTE::PARTI][:max(1, CFG['rapidi_per_giro'] // PARTI)]
+        jobs = [('notizia_rapida', c, 8) for c in mine]
+        if PARTE == PARTI - 1:
+            jobs += [('argomento', None, 10)] * CFG.get('argomenti_per_giro', 0)
     for c in ([] if RAPIDO else stories[:CFG['percorsi_completi']]):
         jobs.append(('notizia_completa', c, 50))
     if CFG.get('scoperta_del_giorno') and not RAPIDO:
@@ -387,10 +434,14 @@ def main():
             log('tempo finito, mi fermo qui')
             break
         try:
+            global USE_GROQ
+            USE_GROQ = bool(GROQ_KEY) and not RAPIDO and kind in ('notizia_completa', 'bibbia', 'scoperta', 'passione')
             if kind.startswith('notizia'):
                 quick = kind == 'notizia_rapida'
                 log(('Capire al volo: ' if quick else 'Percorso completo: ') + c['main']['title'])
-                ctx = news_context(c, prior_news(c['main']['title'], 14 if quick else 45), wiki_context(c['main']['title'] + ' ' + c['main']['desc'], 2 if quick else 4))
+                ctx = news_context(c, prior_news(c['main']['title'], 14 if quick else 45), wiki_context(c['main']['title'] + ' ' + c['main']['desc'], 2 if quick or USE_GROQ else 4))
+                if USE_GROQ:
+                    ctx = ctx[:6000]
                 L = build_lesson(kind, 'notizia', ctx, 1800 if quick else 2600)
                 save_lesson(L, {'area': 'mondo', 'kind': 'notizia', 'mode': 'quick' if quick else 'full', 'ref': c['main']['link'], 'headline': c['main']['title'], 'srcs': c['srcs'][:6]})
             elif kind == 'scoperta':

@@ -41,7 +41,14 @@ def main(out):
         res['sezioni'][tag] = [{'title': i['title'], 'src': i['src'], 'link': i['link'], 'date': iso(i['ts']), 'desc': i['desc'], 'feed': i['feed']} for i in items[:80]]
     # antefatti per le storie principali (servono al «Capire al volo» sul telefono)
     prior = {}
-    for c in R.cluster([dict(i, ts=0) for i in res['sezioni']['Principali']])[:12]:
+    tops = []
+    for tag, k in (('Principali', 15), ('Italia', 6), ('Mondo', 6), ('Economia', 4), ('Scienza', 3)):
+        tops += R.cluster([dict(i, ts=0) for i in res['sezioni'][tag]])[:k]
+    seen = set()
+    for c in tops:
+        if c['main']['title'] in seen:
+            continue
+        seen.add(c['main']['title'])
         t = c['main']['title']
         prior[t] = [{'title': p['title'], 'src': p['src'], 'date': iso(p['ts'])} for p in R.prior_news(t, 30)]
         time.sleep(1)

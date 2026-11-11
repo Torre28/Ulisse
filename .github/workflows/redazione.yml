@@ -23,6 +23,7 @@ jobs:
     timeout-minutes: 345
     env:
       OLLAMA_MODELS: /home/runner/.ollama/models
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}   # facoltativa: percorsi notturni scritti da un modello più grande
     steps:
       - uses: actions/checkout@v4
 

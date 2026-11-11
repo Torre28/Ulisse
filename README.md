@@ -7,10 +7,12 @@ App personale (PWA) per allargare lo sguardo nel tempo libero: notizie con il lo
 1. Apri https://torre28.github.io/Ulisse/ con Chrome su Android.
 2. Menu ⋮ → «Installa app» (o «Aggiungi a schermata Home»).
 
-## Come funziona l'intelligenza (gratis, senza account)
-- **Redazione notturna** (`.github/workflows/redazione.yml`, `redazione/`): ogni notte GitHub Actions avvia un modello aperto con Ollama (configurabile in `redazione/config.json`), legge le notizie principali e scrive percorsi completi, «capire al volo», la scoperta e la Parola del giorno in `contenuti/`. Gratuito per i repository pubblici. Si lancia anche a mano da Actions → Redazione notturna → Run workflow. In `config.json` puoi aggiungere le tue passioni in `"passioni"`: ogni notte ne avanza una puntata.
-- **Modello sul telefono**: con WebGPU (Chrome su Android, Safari da iOS 26) l'app scarica una volta un modello piccolo (WebLLM) e lo usa per le richieste al momento.
-- Le istruzioni per scrivere le lezioni sono condivise in `prompts/piani.json`.
+## Come funziona l'intelligenza (gratis)
+- **Notizie** (`notizie.yml`, ogni 30 min): feed raccolti lato server, raggruppati per storia, con antefatti; ramo `dati`.
+- **Capire al volo** (`capire.yml`, ogni 2 ore, 4 lavori in parallelo con Ollama `qwen3:8b`): spiegazioni delle storie nuove e lezioni del catalogo; ramo `rapidi`.
+- **Redazione notturna** (`redazione.yml`): percorsi completi, scoperta e Parola del giorno in `contenuti/`. Con il secret facoltativo `GROQ_API_KEY` (Settings → Secrets → Actions) i percorsi vengono scritti da un modello più grande.
+- **Nell'app**: ciò che è pronto si apre all'istante (precaricato nella cache). Per il resto, una scheda istantanea con fonti, antefatti, voci e mappa; poi la spiegazione completa da Groq (chiave gratuita in ⚙, 10-20 s) oppure dal modello sul telefono (WebGPU).
+- Istruzioni e modello di qualità condivisi in `prompts/piani.json`.
 
 ## Struttura
 - `index.html` — guscio dell'app

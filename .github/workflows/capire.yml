@@ -1,6 +1,7 @@
-# «Capire al volo» pronti in anticipo: ogni due ore un modello aperto più piccolo e
-# veloce (qwen3:4b) prepara le spiegazioni delle storie nuove. Pubblica sul ramo
-# «rapidi», riscritto ogni volta (tiene solo gli ultimi due giorni).
+# «Capire al volo» pronti in anticipo: ogni due ore quattro lavori in parallelo,
+# ognuno con un modello aperto (qwen3:8b), preparano le spiegazioni delle storie
+# nuove di tutte le sezioni e qualche lezione del catalogo di Scopri.
+# Il risultato va sul ramo «rapidi», riscritto ogni volta (solo ultimi due giorni).
 name: Capire al volo
 
 on:
@@ -16,18 +17,22 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  capire:
+  scrivi:
     runs-on: ubuntu-latest
     timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      matrix:
+        parte: [0, 1, 2, 3]
     env:
       OLLAMA_MODELS: /home/runner/.ollama/models
-      RAPIDI_DIR: /tmp/rapidi/contenuti
+      RAPIDI_DIR: /tmp/parte/contenuti
     steps:
       - uses: actions/checkout@v4
-      - name: Recupera i contenuti già pronti
+      - name: Indice dei contenuti già pronti (per non rifarli)
         run: |
-          mkdir -p /tmp/rapidi
-          if git fetch -q origin rapidi; then git archive origin/rapidi | tar -x -C /tmp/rapidi; fi
+          mkdir -p /tmp/parte/contenuti
+          if git fetch -q origin rapidi; then git show origin/rapidi:contenuti/indice.json > /tmp/parte/contenuti/indice.json || true; fi
       - uses: actions/cache@v4
         with:
           path: /home/runner/.ollama/models
@@ -39,17 +44,38 @@ jobs:
           nohup ollama serve > /tmp/ollama.log 2>&1 &
           for i in $(seq 1 30); do curl -s http://127.0.0.1:11434/api/version && break; sleep 2; done
           ollama pull "$(python3 -c 'import json;print(json.load(open("redazione/config.json"))["modello_rapido"])')"
-      - name: Scrivi i «Capire al volo»
-        run: python3 redazione/redazione.py --rapido
-      - name: Pubblica sul ramo rapidi
-        if: always()
+      - name: Scrivi
         run: |
-          [ -f /tmp/rapidi/contenuti/indice.json ] || exit 0
+          python3 redazione/redazione.py --rapido --parte ${{ matrix.parte }} --parti 4
+          # nell'indice della parte restano solo i contenuti nuovi
+          python3 -c "import json;p='/tmp/parte/contenuti/indice.json';d=json.load(open(p));import datetime;d['items']=[x for x in d['items'] if __import__('os').path.exists('/tmp/parte/'+x['file'])];json.dump(d,open(p,'w'))"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: parte-${{ matrix.parte }}
+          path: /tmp/parte
+          if-no-files-found: ignore
+          retention-days: 1
+
+  pubblica:
+    needs: scrivi
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: /tmp/parti
+      - name: Unisci e pubblica sul ramo rapidi
+        run: |
+          mkdir -p /tmp/base
+          if git fetch -q origin rapidi; then git archive origin/rapidi | tar -x -C /tmp/base; fi
+          python3 redazione/unisci.py /tmp/base /tmp/parti/*
           git config user.name "Redazione di Ulisse"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -q --orphan rapidi-nuovo
           git rm -rfq .
-          cp -r /tmp/rapidi/contenuti contenuti
+          cp -r /tmp/base/contenuti contenuti
           git add contenuti
           git commit -qm "Capire al volo $(TZ=Europe/Rome date '+%F %H:%M')"
           git push -f origin rapidi-nuovo:rapidi

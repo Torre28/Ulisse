@@ -11,7 +11,7 @@
    ====================================================================== */
 
 let PIANI = null;
-async function loadPiani() { if (!PIANI) PIANI = await getJSON('prompts/piani.json'); return PIANI; }
+async function loadPiani() { if (!PIANI) { PIANI = await getJSON('prompts/piani.json'); PIANI.sys = PIANI.sys.replace('{{ESEMPIO}}', PIANI.esempio || ''); } return PIANI; }
 const LEVEL_TXT = () => (PIANI ? PIANI.livelli[S.level] : '') || 'curioso con basi minime';
 
 /* ---------------- contenuti preparati stanotte ---------------- */
@@ -26,16 +26,29 @@ async function loadPrep() {
   return PREP;
 }
 const prepLatest = () => { const ds = PREP.items.filter(i => !i.base).map(i => i.date).sort(); const d = ds[ds.length - 1]; return PREP.items.filter(i => i.date === d && !i.base); };
+/* le lezioni pronte si scaricano in anticipo nella cache del telefono: aprirle è istantaneo, anche offline */
+const LCACHE = 'ulisse-lezioni';
+async function fetchLessonFile(item) {
+  const url = new URL((item.base || '') + item.file, location.href).href;
+  try { const c = await caches.open(LCACHE); const hit = await c.match(url); if (hit) return hit.json(); const r = await fetchT(url, {}, 15000); if (r.ok) { c.put(url, r.clone()); return r.json(); } } catch (e) { }
+  return getJSON(url);
+}
+async function prefetchPrepared() {
+  if (!('caches' in window)) return;
+  const items = PREP.items.slice().sort((a, b) => b.date.localeCompare(a.date)).slice(0, 40);
+  for (const it of items) { if (allLessons()[it.id]) continue; try { await fetchLessonFile(it); } catch (e) { } }
+}
+const PREPMEM = {}; // lezioni pronte: in memoria e nella cache, non nella memoria permanente (che è piccola)
 async function openPrepared(item) {
-  if (!S.lessons[item.id]) {
-    try { const L = await getJSON((item.base || '') + item.file); S.lessons[item.id] = L; save(); }
+  if (!allLessons()[item.id]) {
+    try { const L = await fetchLessonFile(item); PREPMEM[item.id] = L; S.prepMeta = S.prepMeta || {}; S.prepMeta[item.id] = { title: L.title, kind: L.kind, area: L.area, tags: L.tags || [], gen: { topic: L.gen && L.gen.topic } }; save(); }
     catch (e) { toast('Non riesco a scaricare questa lezione'); return; }
   }
   openLesson(item.id);
 }
-function prepForNews(it) {
+function prepForNews(it, mode) {
   const ts = tokenSet(it.title);
-  return PREP.items.find(p => p.kind === 'notizia' && (p.ref === it.link || (p.headline && (() => { const o = tokenSet(p.headline); let n = 0; for (const x of ts) if (o.has(x)) n++; return n >= 3 && n / Math.min(ts.size, o.size) >= 0.5; })())));
+  return PREP.items.filter(p => !mode || mode === 'quick' || p.mode === 'full').find(p => p.kind === 'notizia' && (p.ref === it.link || (p.headline && (() => { const o = tokenSet(p.headline); let n = 0; for (const x of ts) if (o.has(x)) n++; return n >= 3 && n / Math.min(ts.size, o.size) >= 0.5; })())));
 }
 
 /* ---------------- modello sul telefono (WebLLM, WebGPU) ---------------- */
@@ -99,10 +112,37 @@ async function geminiCall(system, user, maxTok) {
   return (j.candidates?.[0]?.content?.parts || []).filter(p => !p.thought).map(p => p.text || '').join('');
 }
 
+/* ---------------- Groq (facoltativo, gratuito con account): velocissimo ---------------- */
+const GROQ = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODELS = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'llama-3.3-70b-versatile', 'qwen/qwen3-32b'];
+async function groqCall(system, user, maxTok) {
+  const models = [S.ai.groqModel || GROQ_MODELS[0], ...GROQ_MODELS].filter((m, i, a) => a.indexOf(m) === i);
+  let last;
+  for (const model of models) {
+    const body = { model, messages: [{ role: 'system', content: system }, { role: 'user', content: user }], temperature: 0.5, max_completion_tokens: maxTok, response_format: { type: 'json_object' } };
+    if (/gpt-oss/.test(model)) body.reasoning_effort = 'low';
+    try {
+      const r = await fetchT(GROQ, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + S.ai.groqKey }, body: JSON.stringify(body) }, 60000);
+      const j = await r.json().catch(() => ({}));
+      if (r.ok) return j.choices?.[0]?.message?.content || '';
+      last = new Error(j.error?.message || 'HTTP ' + r.status);
+      if (r.status === 401) throw new Error('Chiave Groq non valida');
+      // limite del minuto o del giorno su questo modello: prova il successivo
+    } catch (e) { if (/non valida/.test(e.message)) throw e; last = e; }
+  }
+  throw Object.assign(last || new Error('Groq non disponibile'), { groq: true });
+}
+const hasGroq = () => !!S.ai.groqKey;
+
 /* ---------------- interfaccia comune ---------------- */
-const useLocal = () => S.ai.provider !== 'gemini' || !S.ai.key;
-const aiReady = () => useLocal() ? hasWebGPU() : !!S.ai.key;
-async function aiText(system, user, maxTok) { return useLocal() ? localCall(system, user, maxTok) : geminiCall(system, user, maxTok); }
+// ordine: Groq (veloce) → Gemini (se scelto) → modello sul telefono
+const useLocal = () => !hasGroq() && (S.ai.provider !== 'gemini' || !S.ai.key);
+const aiReady = () => hasGroq() || (S.ai.provider === 'gemini' && !!S.ai.key) || hasWebGPU();
+async function aiText(system, user, maxTok) {
+  if (hasGroq()) { try { return await groqCall(system, user, Math.min(maxTok, 4000)); } catch (e) { if (!e.groq) throw e; if (!hasWebGPU()) throw new Error('Groq ha raggiunto il limite di questo momento: riprova tra un minuto.'); } }
+  if (S.ai.provider === 'gemini' && S.ai.key) return geminiCall(system, user, maxTok);
+  return localCall(system, user, maxTok);
+}
 function parseJSONLoose(txt) {
   let t = String(txt).replace(/<think>[\s\S]*?<\/think>/g, '').replace(/^\s*```(?:json)?/i, '').replace(/```\s*$/, '').trim();
   const a = t.indexOf('{'), b = t.lastIndexOf('}');
@@ -125,8 +165,19 @@ function cleanChapter(ch, p) {
   if (!blocks.length) throw new Error('capitolo vuoto');
   return { label: ch.label || p.label, title: ch.title || p.label, depth: p.depth, blocks };
 }
+async function buildLessonOneShot(planKey, metaKey, context, log) {
+  const PI = await loadPiani();
+  const plan = PI.piani[planKey];
+  log('Scrivo la lezione (modello veloce)…');
+  const user = `${context}\n\nPIANO DELLA LEZIONE (scrivi TUTTI i capitoli, in quest'ordine):\n${plan.map((p, i) => `${i + 1}. ${p.label} (${p.depth}): ${p.spec}`).join('\n')}\n\nMetadati: ${PI.meta[metaKey]}\nRispondi con un JSON così: {"title":"…","summary":"…","tags":[],"chapters":[ ${PI.schema_capitolo} ],"cards":[{"q":"…","a":"…"}],"branches":[{"name":"…","why":"…"}],"next":"…"}\n${PI.blocchi}`;
+  const J = await aiJSON(PI.sys, user, 4000);
+  const chapters = (J.chapters || []).map((c, i) => { try { return cleanChapter(c, plan[i] || plan[plan.length - 1]); } catch (e) { return null; } }).filter(Boolean);
+  if (!chapters.length) throw new Error('lezione vuota');
+  return { title: J.title, summary: J.summary, tags: J.tags || [], cards: (J.cards || []).filter(c => c && c.q && c.a), branches: (J.branches || []).filter(b => b && b.name), next: J.next, chapters };
+}
 async function buildLesson(planKey, metaKey, context, log, onChapter) {
   const PI = await loadPiani();
+  if (hasGroq() && planKey !== 'notizia_completa') { try { const L = await buildLessonOneShot(planKey, metaKey, context, log); onChapter && onChapter(L.chapters, L.chapters.length); return L; } catch (e) { if (!hasWebGPU()) throw e; log('Modello veloce non disponibile, passo a quello sul telefono'); } }
   const plan = PI.piani[planKey], local = useLocal();
   const planTxt = plan.map((p, i) => `${i + 1}. ${p.label} (${p.depth}): ${p.spec}`).join('\n');
   const chapters = [];
@@ -150,7 +201,7 @@ async function buildLesson(planKey, metaKey, context, log, onChapter) {
 
 /* ---------------- contesti per ogni tipo di lezione ---------------- */
 function newsContext(cluster, prior, wiki) {
-  const it = cluster.main, lite = useLocal();
+  const it = cluster.main, lite = useLocal() || hasGroq(); // contesto compatto: Groq gratuito accetta ~8000 token al minuto
   const L = [`Livello del lettore: ${LEVEL_TXT()}. Oggi è il ${new Date().toLocaleDateString('it-IT')}.`, `NOTIZIA: «${it.title}»`, '', '### Come ne parlano le testate (oggi)'];
   cluster.items.slice(0, lite ? 4 : 8).forEach(i => L.push(`- [${i.src || i.feed || ''}] ${i.title}${i.desc ? ' — ' + i.desc.slice(0, lite ? 160 : 360) : ''} (${fmtDay(i.date)}) ${i.link || ''}`));
   if (prior.length) { L.push('', '### Notizie delle ultime settimane sullo stesso tema (dalla più vecchia)'); prior.slice(lite ? -8 : -18).forEach(i => L.push(`- ${fmtDay(i.date)} [${i.src || ''}] ${i.title}`)); }
@@ -165,7 +216,7 @@ async function generateWithProgress(title, run) {
   const err = h('div');
   const spin = h('div', { class: 'spin' });
   const close = openSheet(title, pad(h('div', { class: 'card' }, spin, lines, bar,
-    P(useLocal() ? 'Il modello lavora sul telefono: tieni l\'app aperta. Una lezione breve richiede alcuni minuti.' : 'Di solito ci vuole meno di un minuto.', 'small muted')), err), () => { onEngineProgress = null; });
+    P(useLocal() ? 'Il modello lavora sul telefono: tieni l\'app aperta. Una lezione breve richiede alcuni minuti.' : 'Con il modello veloce di solito bastano 10-20 secondi.', 'small muted')), err), () => { onEngineProgress = null; });
   const log = t => { lines.append(h('div', null, '· ' + t)); };
   onEngineProgress = r => { const t = r.text || ''; bar.textContent = /fetch|download|cache/i.test(t) ? `Scarico il modello sul telefono: ${Math.round((r.progress || 0) * 100)}% (solo la prima volta, poi resta salvato)` : /load|gpu|shader/i.test(t) ? 'Avvio il modello…' : t.slice(0, 120); };
   try {
@@ -194,39 +245,72 @@ function needAI() {
 }
 function saveGenerated(L, meta) {
   L.id = 'g-' + uid(); L.area = meta.area; L.kind = meta.kind; L.title = L.title || meta.title || 'Lezione';
-  L.gen = { at: Date.now(), model: useLocal() ? S.ai.localModel : S.ai.model, ref: meta.ref || null, topic: meta.topic || null };
+  L.gen = { at: Date.now(), model: hasGroq() ? (S.ai.groqModel || GROQ_MODELS[0]) : useLocal() ? S.ai.localModel : S.ai.model, ref: meta.ref || null, topic: meta.topic || null };
   S.lessons[L.id] = L; save();
   contAdd({ type: 'lesson', id: L.id, title: L.title, area: L.area });
   return L;
 }
 
 /* ---------------- i quattro tipi di richiesta al momento ---------------- */
-async function genNewsLesson(cluster, mode) {
-  if (!needAI()) return;
+/* ---------------- scheda istantanea (senza IA, 1-3 secondi) ---------------- */
+async function instantLesson(cluster) {
   const it = cluster.main;
-  const ready = prepForNews(it);
+  const [prior, ents] = await Promise.all([
+    withTimeout(priorNews(it.title, 30), 6000).catch(() => []),
+    withTimeout((async () => {
+      const rs = await wikiSearch(keywords(it.title + ' ' + (it.desc || ''), 6).join(' '), 5);
+      const out = await Promise.all(rs.map(r => wikiSummary(r.title).catch(() => null)));
+      return out.filter(x => x && x.extract && x.type !== 'disambiguation');
+    })(), 6000).catch(() => [])]);
+  const chapters = [];
+  chapters.push({ label: 'La notizia', title: it.title, depth: 'assaggio', blocks: [
+    it.desc ? { type: 'text', md: it.desc } : null,
+    cluster.items.length > 1 ? { type: 'steps', title: 'Come la raccontano ' + cluster.items.length + ' testate', items: cluster.items.slice(0, 8).map(x => ({ title: x.src || x.feed || 'Fonte', text: x.title + (x.desc ? ' — ' + x.desc.slice(0, 220) : '') })) } : null,
+    { type: 'links', title: 'Leggi gli articoli', items: cluster.items.slice(0, 5).filter(x => x.link).map(x => ({ title: x.title, url: x.link, note: x.src || '' })) }
+  ].filter(Boolean) });
+  if (prior.length) chapters.push({ label: 'Antefatti', title: 'Cosa è successo prima', depth: 'assaggio', blocks: [
+    { type: 'note', kind: 'contesto', md: 'Le notizie uscite nelle settimane precedenti sullo stesso tema, dalla più vecchia: tocca una data per aprirla.' },
+    { type: 'timeline', events: prior.slice(-14).map(p => ({ year: fmtDay(p.date) || '', title: p.title, text: p.src ? 'Fonte: ' + p.src : '' })) }] });
+  if (ents.length) chapters.push({ label: 'Chi e cosa', title: 'Le voci per capire', depth: 'assaggio', blocks: [
+    { type: 'glossary', title: 'Persone, luoghi e istituzioni citati', items: ents.map(e => ({ term: e.title, def: e.extract.split(/(?<=\.)\s/).slice(0, 4).join(' ') })) }] });
+  const geo = ents.filter(e => e.coordinates);
+  if (geo.length) chapters.push({ label: 'Dove', title: 'I luoghi della notizia', depth: 'assaggio', blocks: [
+    { type: 'map', title: 'Dove succede', places: geo.map(e => ({ name: e.title, lat: e.coordinates.lat, lon: e.coordinates.lon, note: e.description || '' })), groups: [] }] });
+  return { title: it.title, summary: 'Scheda istantanea: fonti, antefatti e voci chiave raccolti in automatico.', tags: [], cards: [], branches: ents.slice(0, 4).map(e => ({ name: e.title, why: e.description || '' })), chapters };
+}
+
+/* notizia: pronta → subito; altrimenti scheda istantanea e, intanto, la spiegazione completa */
+async function genNewsLesson(cluster, mode) {
+  const it = cluster.main;
+  const ready = prepForNews(it, mode);
   if (ready) { openPrepared(ready); return; }
-  return generateWithProgress(mode === 'quick' ? 'Capire al volo' : 'Percorso completo', async log => {
-    log('Raccolgo gli antefatti');
+  const mine = (lessonForRef(it.link) || []).find(l => !l.pending && (mode === 'full' ? l.chapters.length > 4 : true));
+  if (mine) { openLesson(mine.id); return; }
+  toast('Preparo la scheda…', 1500);
+  const base = await instantLesson(cluster);
+  const ai = aiReady();
+  base.pending = ai ? (mode === 'quick' ? 'La spiegazione completa è in scrittura: arriva qui da sola tra pochi secondi.' : 'Il percorso completo è in scrittura: i capitoli arrivano uno alla volta.') : 'Questa è la scheda istantanea. La spiegazione completa arriverà con il prossimo giro della redazione (ogni due ore).';
+  const L = saveGenerated(base, { area: 'mondo', kind: 'notizia', ref: it.link, title: it.title });
+  openLesson(L.id);
+  if (!ai) return;
+  try {
     const prior = await priorNews(it.title, mode === 'quick' ? 14 : 45).catch(() => []);
-    log('Leggo il contesto su Wikipedia');
-    const wiki = await wikiContext(it.title + ' ' + (it.desc || ''), mode === 'quick' || useLocal() ? 2 : 4);
-    if (useLocal()) log('Preparo il modello sul telefono');
-    let L = null;
-    // appena è pronto il primo capitolo la lezione si apre; gli altri arrivano mentre leggi
-    const onChapter = (chs, total) => {
-      if (!L) {
-        L = saveGenerated({ title: it.title, chapters: chs.slice(), cards: [], branches: [], writing: total }, { area: 'mondo', kind: 'notizia', ref: it.link, title: it.title });
-        document.querySelectorAll('.sheet-bg').forEach(e => e.remove()); onEngineProgress = null;
-        openLesson(L.id);
-      } else { L.chapters = chs.slice(); L.writing = chs.length < total ? total : 0; save(); }
-      window.dispatchEvent(new CustomEvent('lesson-updated', { detail: L.id }));
-    };
-    const full = await buildLesson(mode === 'quick' ? 'notizia_rapida' : 'notizia_completa', 'notizia', newsContext(cluster, prior, wiki), log, onChapter);
-    Object.assign(L, full, { title: full.title || it.title, writing: 0 }); save();
-    window.dispatchEvent(new CustomEvent('lesson-updated', { detail: L.id }));
-    toast('Lezione completa'); return null;
-  });
+    const wiki = await wikiContext(it.title + ' ' + (it.desc || ''), 2);
+    const quiet = () => { };
+    let first = true;
+    const full = await buildLesson(mode === 'quick' ? 'notizia_rapida' : 'notizia_completa', 'notizia', newsContext(cluster, prior, wiki), quiet, chs => {
+      if (mode === 'quick') return;
+      if (first) { first = false; L.instant = L.chapters; }
+      L.chapters = chs.slice(); save(); window.dispatchEvent(new CustomEvent('lesson-updated', { detail: L.id }));
+    });
+    Object.assign(L, full, { title: full.title || it.title, pending: null, summary: full.summary || L.summary });
+    L.gen.model = hasGroq() ? (S.ai.groqModel || GROQ_MODELS[0]) : useLocal() ? S.ai.localModel : S.ai.model;
+    save(); window.dispatchEvent(new CustomEvent('lesson-updated', { detail: L.id }));
+    toast('Spiegazione completa pronta');
+  } catch (e) {
+    L.pending = 'Non sono riuscito a scrivere la spiegazione completa (' + (e.message || e) + '). Resta la scheda istantanea; riprova più tardi.';
+    save(); window.dispatchEvent(new CustomEvent('lesson-updated', { detail: L.id }));
+  }
 }
 async function genTopicLesson(t) {
   if (!needAI()) return;

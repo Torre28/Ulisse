@@ -161,9 +161,10 @@ function renderBlocks(blocks, ctx) {
 }
 
 
-function allLessons() { return Object.assign({}, BUILTIN_LESSONS, S.lessons); }
+function allLessons() { return Object.assign({}, BUILTIN_LESSONS, S.prepMeta || {}, typeof PREPMEM !== 'undefined' ? PREPMEM : {}, S.lessons); }
 function openLesson(id, chapter) {
   const L = allLessons()[id]; if (!L) { toast('Lezione non trovata'); return; }
+  if (!L.chapters) { const it = PREP.items.find(p => p.id === id); if (it) { openPrepared(it); } else toast('Lezione non più disponibile'); return; }
   S.lastLesson = id;
   const prog = S.progress[id] || (S.progress[id] = { seen: [], done: false, at: 0 });
   if (chapter === undefined) chapter = prog.at || 0;
@@ -183,7 +184,9 @@ function openLesson(id, chapter) {
     host.replaceChildren(
       h('div', { class: 'lesson-head' },
         h('div', { class: 'row' }, areaTag(L.area), L.kind && h('span', { class: 'tag muted' }, L.kind), L.gen && h('span', { class: 'tag muted' }, L.gen.notte ? 'di stanotte' : 'generata'), h('span', { class: 'mono' }, `${prog.seen.length}/${chs.length} capitoli`)),
-        L.summary && h('p', { class: 'small muted', style: { margin: 0 } }, L.summary)),
+        L.summary && h('p', { class: 'small muted', style: { margin: 0 } }, L.summary),
+        L.pending ? h('div', { class: 'note ' + (/scrittura/.test(L.pending) ? 'ipotesi' : 'contesto') }, h('span', { class: 'mono' }, /scrittura/.test(L.pending) ? '⏳ in arrivo' : 'nota'), P(L.pending)) : null),
+      h('div', { class: 'read-progress' }, h('div', { style: { width: Math.round((ci + 1) / Math.max(1, chs.length) * 100) + '%' } })),
       h('div', { class: 'chapters' }, chs.map((c, k) => h('button', { class: 'chip', 'aria-pressed': k === ci ? 'true' : 'false', onclick: () => show(k) }, (k + 1) + ' · ' + (c.label || 'Parte'), h('small', null, c.depth === 'profondo' ? '◆' : '◇')))),
       h('div', null, h('span', { class: 'mono' }, (ch.label || '') + (ch.depth ? ' · ' + ch.depth : '')), h('h2', { style: { marginTop: '4px' } }, ch.title)),
       h('div', { class: 'row' }, h('button', { class: 'btn small', onclick: () => speak(ch.title + '. ' + (ch.blocks || []).filter(b => b.type === 'text' || b.type === 'note').map(b => b.md).join(' ')) }, '🔊 Ascolta'), h('button', { class: 'btn small ghost', onclick: stopSpeak }, 'Stop')),
@@ -268,22 +271,48 @@ function reviewSheet() {
 }
 
 
-/* ---------------- scheda di un ramo ---------------- */
+/* ---------------- scheda di un ramo: intro + ciò che serve rispetto alla lezione di partenza ---------------- */
+function lessonContextText(L) {
+  const parts = [L.title, L.summary, ...(L.tags || [])];
+  for (const c of L.chapters || []) { parts.push(c.title); for (const b of c.blocks || []) { if (b.md) parts.push(b.md); if (b.items) b.items.forEach(x => parts.push(x.term || x.title || '', x.def || x.text || '')); if (b.events) b.events.forEach(x => parts.push(x.title)); } }
+  return parts.filter(Boolean).join(' ').slice(0, 20000);
+}
 function branchSheet(b, L, topic) {
   const id = catalogAdd(b.name, topic ? topic.c : 'Scoperti', b.why, topic ? topic.id : null);
-  const wiki = h('div', null, h('div', { class: 'spin' }));
-  wikiSearch(b.name, 1).then(async rs => {
-    if (!rs.length) { wiki.replaceChildren(P('Nessuna voce enciclopedica trovata.', 'small muted')); return; }
-    const s = await wikiSummary(rs[0].title);
-    wiki.replaceChildren(P(s.extract || '', 'small'), wikiReader(rs[0].title));
-  }).catch(() => wiki.replaceChildren(P('Wikipedia non raggiungibile.', 'small muted')));
+  const ctxText = lessonContextText(L) + ' ' + (b.why || '');
+  const intro = h('div', null, h('div', { class: 'spin' }));
+  const passages = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px' } }, h('div', { class: 'spin' }));
+  const custom = h('div');
+  const renderCard = c => custom.replaceChildren(card(h('span', { class: 'mono' }, 'Spiegato per te'), h('div', { class: 'prose', html: md(c.md) }),
+    (c.facts || []).length ? h('ul', { class: 'small', style: { margin: 0, paddingLeft: '1.2em' } }, c.facts.map(f => h('li', null, f))) : null));
+  if (b.md) renderCard(b);
+  (async () => {
+    let page = null;
+    try { const rs = await wikiSearch(b.name, 1); if (rs[0]) page = await wikiParagraphs(rs[0].title); } catch (e) { }
+    if (!page || !page.paras.length) { intro.replaceChildren(P(b.md ? '' : 'Nessuna voce enciclopedica trovata per questo ramo.', 'small muted')); passages.replaceChildren(); return; }
+    const first = page.paras.slice(0, 2).map(p => p.text).join(' ').split(/(?<=\.)\s/).slice(0, 5).join(' ');
+    intro.replaceChildren(h('div', { class: 'prose' }, h('p', null, first)), h('span', { class: 'mono' }, 'fonte: Wikipedia, «' + page.title + '»'));
+    const top = rankByContext(page.paras.slice(2), ctxText, 5);
+    passages.replaceChildren(...(top.length ? top.map(p => h('div', { class: 'note contesto' }, h('span', { class: 'mono' }, p.sec), P(p.text))) : [P('Nessun passaggio particolarmente legato alla lezione: leggi l\'introduzione o la voce completa.', 'small muted')]),
+      wikiReader(page.title));
+  })();
   openSheet(b.name, pad(
     b.link || b.why ? h('div', { class: 'note contesto' }, h('span', { class: 'mono' }, 'Perché è collegato a «' + (L.title || '') + '»'), P(b.link || b.why)) : null,
-    b.md ? card(h('div', { class: 'prose', html: md(b.md) })) : null,
+    card(h('span', { class: 'mono' }, 'In breve'), intro),
+    custom,
+    !b.md && aiReady() ? h('button', { class: 'btn primary', onclick: async ev => {
+      const btn = ev.currentTarget; btn.disabled = true; btn.textContent = 'Scrivo…';
+      try {
+        const PI = await loadPiani();
+        const c = await aiJSON(PI.sys, `Lezione di partenza: «${L.title}». ${L.summary || ''}\nTemi della lezione: ${(L.chapters || []).map(x => x.title).join('; ')}\n` + PI.ramo.replace('{name}', b.name).replace('{why}', b.why || '') + `\nRispondi con un JSON così: ${PI.schema_ramo}`, 1600);
+        if (!c.md) throw new Error('risposta vuota');
+        Object.assign(b, { md: c.md, facts: c.facts || [], link: c.link || b.why }); save(); renderCard(b); btn.remove();
+      } catch (e) { btn.disabled = false; btn.textContent = 'Riprova'; toast(e.message || 'Non riuscito'); }
+    } }, 'Spiegamelo in relazione a questa lezione') : null,
     (b.facts || []).length ? card(h('h3', null, 'Fatti chiave'), h('ul', { class: 'small', style: { margin: 0, paddingLeft: '1.2em' } }, b.facts.map(f => h('li', null, f))),
       h('button', { class: 'btn small', onclick: () => { addCard(b.name + ': fatti chiave', b.facts.join(' · '), L.area, L.title); toast('Nel Quaderno'); } }, '+ Quaderno')) : null,
-    card(h('span', { class: 'mono' }, 'Dall\'enciclopedia'), wiki),
-    h('div', { class: 'row' }, h('button', { class: 'btn primary', onclick: () => { document.querySelectorAll('.sheet-bg').forEach(e => e.remove()); openTopic(id); } }, 'Esploralo come argomento: podcast, libri, lezione'))));
+    card(h('h3', null, 'Cosa ti serve per capire «' + (L.title || '').slice(0, 60) + '»'), P('I passaggi della voce enciclopedica più legati alla lezione da cui arrivi.', 'small muted'), passages),
+    h('button', { class: 'btn', onclick: () => { document.querySelectorAll('.sheet-bg').forEach(e => e.remove()); openTopic(id); } }, 'Esploralo come argomento: podcast, libri, lezioni')));
 }
 
 /* ---------------- lettura di una voce di Wikipedia capitolo per capitolo ---------------- */
