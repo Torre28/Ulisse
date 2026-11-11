@@ -72,6 +72,22 @@ function defaultLocal(list) {
   const pick = re => (list.find(m => re.test(m.id)) || {}).id;
   return pick(/^Qwen3-1\.7B/) || pick(/^Qwen2\.5-1\.5B/) || pick(/^Qwen/) || (list[0] || {}).id;
 }
+/* modelli scaricati: dove sono, quanto pesano, come eliminarli */
+async function localStorageInfo() {
+  const out = { models: [], usedMB: null, quotaMB: null };
+  try { const est = await navigator.storage.estimate(); out.usedMB = Math.round(est.usage / 1e6); out.quotaMB = Math.round(est.quota / 1e6); } catch (e) { }
+  try {
+    const w = await loadWebLLM();
+    for (const m of w.prebuiltAppConfig.model_list) { try { if (await w.hasModelInCache(m.model_id)) out.models.push({ id: m.model_id, mb: Math.round(m.vram_required_MB || 0) }); } catch (e) { } }
+  } catch (e) { }
+  return out;
+}
+async function deleteLocalModel(id) {
+  const w = await loadWebLLM();
+  if (engine && engineModel === id) { try { await engine.unload(); } catch (e) { } engine = null; engineModel = null; }
+  await w.deleteModelAllInfoInCache(id);
+  if (S.ai.localModel === id) { S.ai.localModel = ''; save(); }
+}
 async function getEngine() {
   if (engine && engineModel === S.ai.localModel) return engine;
   if (engineLoading) return engineLoading;
@@ -89,7 +105,16 @@ async function getEngine() {
 async function localCall(system, user, maxTok) {
   const e = await getEngine();
   const sys = /^Qwen3/.test(S.ai.localModel) ? system + '\n/no_think' : system;
-  const r = await e.chat.completions.create({ messages: [{ role: 'system', content: sys }, { role: 'user', content: user }], temperature: 0.5, max_tokens: maxTok, response_format: { type: 'json_object' } });
+  const messages = [{ role: 'system', content: sys + '\nRispondi esclusivamente con un oggetto JSON valido, senza testo prima o dopo.' }, { role: 'user', content: user }];
+  // alcune versioni di WebLLM non riescono a preparare il vincolo «json_object» su certi modelli:
+  // in quel caso si genera senza vincolo e si estrae il JSON dalla risposta
+  if (!localCall.noGrammar) {
+    try {
+      const r = await e.chat.completions.create({ messages, temperature: 0.5, max_tokens: maxTok, response_format: { type: 'json_object' } });
+      return r.choices[0].message.content || '';
+    } catch (err) { if (!/grammar|std::string|response_format|json/i.test(err.message || '')) throw err; localCall.noGrammar = true; }
+  }
+  const r = await e.chat.completions.create({ messages, temperature: 0.4, max_tokens: maxTok });
   return r.choices[0].message.content || '';
 }
 

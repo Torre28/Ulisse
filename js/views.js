@@ -724,30 +724,51 @@ function viewQuaderno() {
 /* ======================= IMPOSTAZIONI ======================= */
 function engineCard() {
   const status = h('div', { class: 'small' });
-  const prog = h('div', { class: 'small muted' });
+  const bar = h('div', { class: 'dl', hidden: true }, h('div', { class: 'dl-fill' }), h('span', { class: 'dl-txt' }));
+  const store = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px' } });
   const sel = h('select', { disabled: true }, h('option', null, S.ai.localModel || 'caricamento elenco…'));
   const gpu = hasWebGPU();
-  if (gpu) localModels().then(ms => {
-    const def = defaultLocal(ms);
-    sel.replaceChildren(...ms.map(m => h('option', { value: m.id, selected: m.id === (S.ai.localModel || def) ? true : null }, m.id.replace(/-q4f(16|32)_1-MLC$/, '') + ' · ~' + (m.mb >= 1000 ? (m.mb / 1000).toFixed(1) + ' GB' : m.mb + ' MB'))));
-    sel.disabled = false;
-  }).catch(() => sel.replaceChildren(h('option', null, 'elenco non disponibile (serve la rete)')));
+  const nice = id => id.replace(/-q4f(16|32)_1-MLC$/, '').replace(/-/g, ' ');
+  const paintStore = async () => {
+    store.replaceChildren(h('div', { class: 'spin' }));
+    const info = await localStorageInfo();
+    store.replaceChildren(
+      h('span', { class: 'mono' }, 'Modelli scaricati su questo telefono'),
+      ...(info.models.length ? info.models.map(m => h('div', { class: 'row between', style: { borderTop: '1px solid var(--soft)', paddingTop: '6px' } },
+        h('div', null, h('b', { class: 'small' }, nice(m.id)), h('div', { class: 'mono' }, '~' + (m.mb >= 1000 ? (m.mb / 1000).toFixed(1) + ' GB' : m.mb + ' MB') + (m.id === S.ai.localModel ? ' · in uso' : ''))),
+        h('button', { class: 'btn small', onclick: async ev => { ev.currentTarget.disabled = true; try { await deleteLocalModel(m.id); toast('Modello eliminato: spazio liberato'); } catch (e) { toast('Non riuscito: ' + (e.message || e)); } paintStore(); } }, 'Elimina')))
+        : [P('Nessun modello scaricato.', 'small muted')]),
+      P('I modelli sono salvati nella memoria interna dell\'app (cache del browser), non tra i tuoi file. Si cancellano da qui, oppure disinstallando l\'app o cancellando i dati del sito in Chrome.' + (info.usedMB != null ? ` Spazio usato da Ulisse: ${info.usedMB >= 1000 ? (info.usedMB / 1000).toFixed(1) + ' GB' : info.usedMB + ' MB'}.` : ''), 'small muted'));
+  };
+  if (gpu) {
+    localModels().then(ms => {
+      const def = defaultLocal(ms);
+      sel.replaceChildren(...ms.map(m => h('option', { value: m.id, selected: m.id === (S.ai.localModel || def) ? true : null }, nice(m.id) + ' · ~' + (m.mb >= 1000 ? (m.mb / 1000).toFixed(1) + ' GB' : m.mb + ' MB'))));
+      sel.disabled = false;
+    }).catch(() => sel.replaceChildren(h('option', null, 'elenco non disponibile (serve la rete)')));
+    setTimeout(paintStore, 50);
+  }
   sel.addEventListener('change', () => { S.ai.localModel = sel.value; save(); });
   const test = h('button', { class: 'btn small primary', disabled: !gpu || null, onclick: async () => {
     test.disabled = true; S.ai.localModel = sel.value || S.ai.localModel; save();
-    status.textContent = 'Scarico e preparo il modello (solo la prima volta, poi resta sul telefono)…';
-    onEngineProgress = r => { prog.textContent = Math.round((r.progress || 0) * 100) + '% · ' + (r.text || '').slice(0, 120); };
+    status.textContent = ''; bar.hidden = false;
+    onEngineProgress = r => {
+      const pct = Math.round((r.progress || 0) * 100), t = r.text || '';
+      const mb = t.match(/(\d+)\s*MB/i);
+      bar.querySelector('.dl-fill').style.width = pct + '%';
+      bar.querySelector('.dl-txt').textContent = /fetch|download|cache/i.test(t) ? `Scarico il modello · ${pct}%${mb ? ' · ' + mb[1] + ' MB' : ''}` : /shader|gpu|load|init/i.test(t) ? 'Avvio il modello…' : pct + '%';
+    };
     try {
       const t0 = Date.now(); const out = await localCall('Rispondi solo con JSON.', 'Scrivi {"saluto": "una frase di benvenuto in italiano"}', 60);
-      status.textContent = '✓ Pronto. Risposta di prova in ' + Math.round((Date.now() - t0) / 1000) + ' s: ' + out.slice(0, 90);
+      let msg = ''; try { msg = parseJSONLoose(out).saluto || ''; } catch (e) { msg = out.slice(0, 80); }
+      status.textContent = '✓ Pronto (' + Math.round((Date.now() - t0) / 1000) + ' s). ' + msg;
     } catch (e) { status.textContent = '✗ ' + (e.message || e); }
-    onEngineProgress = null; test.disabled = false;
+    onEngineProgress = null; bar.hidden = true; test.disabled = false; paintStore();
   } }, 'Scarica e prova');
   return card(h('h3', null, 'Motore sul telefono'),
-    P(gpu ? 'Un modello linguistico gira direttamente qui, gratis, senza account né limiti, anche offline una volta scaricato. Serve per le richieste al momento: «Capire al volo», lezioni su un argomento, paper, Bibbia.' : 'Questo browser non supporta WebGPU, quindi il modello sul telefono non è disponibile. Su Android usa Chrome aggiornato; su iPhone serve iOS 26 o successivo. I contenuti preparati stanotte funzionano comunque.'),
-    gpu && h('label', { class: 'lab' }, 'Modello: più è grande, più scrive bene ma più è lento e pesante'), gpu && sel,
-    gpu && h('div', { class: 'row' }, test), status, prog,
-    P('Consiglio: su Android 1,5-2 miliardi di parametri (circa 1-1,5 GB); su iPhone i modelli più piccoli. Le lezioni brevi richiedono qualche minuto.', 'small muted'));
+    P(gpu ? 'Un modello linguistico gira direttamente qui, gratis e anche offline una volta scaricato. È lento e scrive peggio del motore veloce: usalo come riserva.' : 'Questo browser non supporta WebGPU, quindi il modello sul telefono non è disponibile. I contenuti preparati e il motore veloce funzionano comunque.', 'small'),
+    gpu && h('label', { class: 'lab' }, 'Modello (più è grande, più scrive bene ma è lento e pesante)'), gpu && sel,
+    gpu && h('div', { class: 'row' }, test), bar, status, gpu && store);
 }
 function settingsSheet() {
   const name = h('input', { type: 'text', value: S.name, placeholder: 'Come ti chiami?' });

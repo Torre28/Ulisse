@@ -224,3 +224,6 @@ nav.bottom button[aria-current="page"]{color:var(--terra)}
 html[data-theme="dark"]{--bg:#141010;--panel:#1b1615;--paper:#211b19;--ink:#f1e9df;--muted:#ab9d93;--line:#3a302c;--soft:#2a2220;--accent:#f1e9df;--on-accent:#141010;--terra:#e08458;--terra-soft:#3a251c;--hl:#3d2f1c;--shadow:none;--ok:#49c08a;--bad:#ff7a66;color-scheme:dark}
 html[data-theme="light"]{--bg:#f3eee6;--panel:#faf6f0;--paper:#fffdf9;--ink:#1e1614;--muted:#6b5e57;--line:#e1d6c8;--soft:#ece4d8;--accent:#1e1614;--on-accent:#fffdf9;--terra:#c46234;--terra-soft:#f6e3d6;--hl:#fbe9c9;--ok:#1f7a4d;--bad:#b0392a;color-scheme:light}
 .leaflet-container{isolation:isolate;z-index:0}
+.dl{position:relative;height:28px;border-radius:14px;background:var(--soft);overflow:hidden}
+.dl-fill{position:absolute;inset:0 auto 0 0;width:0;background:var(--terra);transition:width .3s}
+.dl-txt{position:relative;z-index:1;display:block;text-align:center;line-height:28px;font-family:var(--f-mono);font-size:12px;color:var(--ink);mix-blend-mode:normal}
