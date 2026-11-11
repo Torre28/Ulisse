@@ -291,7 +291,7 @@ const newsJobs = {};
 function withTimeout(p, ms) { return Promise.race([p, new Promise((_, ko) => setTimeout(() => ko(new Error('tempo scaduto')), ms))]); }
 async function fetchNewsFor(key) {
   let items = [], ok = 0, tot = 0, srv = null;
-  srv = await withTimeout(serverNews(), 9000).catch(() => null);
+  srv = await withTimeout(serverNews(), 15000).catch(() => null);
   const ex = (key.startsWith('tema:') || key.startsWith('testata:') || (key === 'Principali' && (S.testate || []).length)) ? await withTimeout(serverExtra(), 9000).catch(() => null) : null;
   if (key.startsWith('testata:')) {
     const name = key.slice(8), custom = (S.feedsCustom || []).find(f => f.name === name);
@@ -351,6 +351,7 @@ function temiPicker() {
 }
 async function loadNews(box, forceKey) {
   const key = forceKey || newsTab;
+  await null; // aspetta che la pagina sia montata: con la copia già in memoria prima la sezione restava vuota
   try {
     if (!newsCache[key] || Date.now() - newsCache[key].t > 15 * 60e3) {
       newsJobs[key] = newsJobs[key] || fetchNewsFor(key).finally(() => { delete newsJobs[key]; });
@@ -847,7 +848,7 @@ function settingsSheet() {
 applyLook();
 for (const [id, L] of Object.entries(S.lessons)) if (L.gen && L.gen.notte) { S.prepMeta = S.prepMeta || {}; S.prepMeta[id] = { title: L.title, kind: L.kind, area: L.area, tags: L.tags || [], gen: { topic: L.gen.topic } }; delete S.lessons[id]; }
 save(); close(); render(); toast('Backup ripristinato'); } catch (e) { toast('Backup non valido'); } } }, 'Ripristina')),
-    flat(h('span', { class: 'mono' }, 'Ulisse v1.5'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Ollama (notte) e WebLLM (telefono). Codice: github.com/Torre28/Ulisse', 'small muted'))));
+    flat(h('span', { class: 'mono' }, 'Ulisse v1.5.1'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Groq (gratuito) e Ollama (notte). Codice: github.com/Torre28/Ulisse', 'small muted'))));
 }
 
 /* primo avvio: per chi riceve l'app da un amico */
