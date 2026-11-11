@@ -614,7 +614,7 @@ function liturgyCard() {
     const L = srv.liturgia;
     if (!L) { box.replaceChildren(P('Le letture di oggi non sono ancora arrivate.', 'small muted'), linkBtn('https://www.vaticannews.va/it/vangelo-del-giorno-e-parola-del-giorno.html', 'Apri Vatican News')); return; }
     const paint = () => {
-      const txt = { vangelo: L.vangelo, letture: L.letture, papi: L.papi }[litTab] || [];
+      const txt = { vangelo: L.vangelo, letture: L.letture, papi: cleanPapi(L.papi) }[litTab] || [];
       box.replaceChildren(
         h('div', { class: 'row' }, h('span', { class: 'pill-ready' }, L.date === today() ? '✓ di oggi' : 'del ' + fmtDay(L.date)), L.ref && h('span', { class: 'mono' }, 'Vangelo: ' + L.ref)),
         h('div', { class: 'chips' }, [['vangelo', 'Vangelo'], ['letture', 'Letture'], ['papi', 'Commento dei Papi']].filter(([k]) => (L[k] || []).length).map(([k, l]) => h('button', { class: 'chip', 'aria-pressed': litTab === k ? 'true' : 'false', onclick: () => { litTab = k; paint(); } }, l))),
@@ -632,14 +632,7 @@ function gospelCard() {
     if (!g || !(g.paras || []).length) {
       const L = srv.liturgia;
       if (L && (L.vangelo || []).length) {
-        const g2 = { ref: L.ref || 'Vangelo di oggi', link: L.link, paras: [
-          'Mi fermo. Respiro con calma e mi metto alla presenza di Dio: lui è qui, adesso, e mi aspetta.',
-          'Chiedo la grazia di ascoltare davvero, senza fretta, quello che oggi vuole dirmi.',
-          ...L.vangelo,
-          'Rileggo lentamente il brano. Quale parola, quale gesto, quale personaggio mi colpisce di più? Resto lì.',
-          ...(L.papi || []).length ? ['Le parole dei Papi su questo Vangelo:', ...L.papi] : [],
-          'Come un amico parla con un amico, dico al Signore quello che provo davanti a questa Parola: un grazie, una domanda, una fatica.',
-          'Concludo con il Padre nostro, e porto con me nella giornata una sola parola di questo Vangelo.'] };
+        const g2 = { ref: L.ref || 'Vangelo di oggi', link: L.link, steps: vaticanPrayerSteps(L) };
         box.replaceChildren(h('div', { class: 'row' }, h('span', { class: 'mono' }, g2.ref)), h('h3', null, 'Prega con il Vangelo di oggi'),
           h('div', { class: 'row' }, h('button', { class: 'btn primary', onclick: () => gospelPrayer(g2) }, 'Inizia'), linkBtn('https://getupandwalk.gesuiti.it/', 'Get Up and Walk', 'ghost')));
       } else box.replaceChildren(linkBtn('https://getupandwalk.gesuiti.it/', 'Prega su Get Up and Walk'));
@@ -652,7 +645,31 @@ function gospelCard() {
   }).catch(() => box.replaceChildren(linkBtn('https://getupandwalk.gesuiti.it/', 'Prega su Get Up and Walk')));
   return h('div', { class: 'card hero' }, h('span', { class: 'mono' }, 'Preghiera guidata sul Vangelo · Get Up and Walk, gesuiti'), box);
 }
+/* commento dei Papi senza le righe di servizio della pagina (donazioni, copyright) */
+function cleanPapi(xs) {
+  const out = [];
+  for (const t of xs || []) { if (/contributo per una grande missione|sostienici|^©|riproduzione in formato|Fondazione di Religione|newsletter|iscriviti/i.test(t)) break; out.push(t); }
+  return out;
+}
+/* preghiera guidata in passi chiari costruita sulle letture di Vatican News */
+function vaticanPrayerSteps(L) {
+  const v = (L.vangelo || []).slice(), head = [];
+  while (v.length && (/^Dal Vangelo/i.test(v[0]) || /^(Mt|Mc|Lc|Gv)\s?\d/.test(v[0]))) head.push(v.shift());
+  const papi = cleanPapi(L.papi), sp = [];
+  let cur = [];
+  for (const t of papi) { cur.push(t); if (cur.join(' ').length > 700) { sp.push(cur); cur = []; } }
+  if (cur.length) sp.push(cur);
+  return [
+    { t: 'Mi preparo', p: ['Mi fermo. Respiro con calma e mi metto alla presenza di Dio: lui è qui, adesso, e mi aspetta.', 'Chiedo la grazia di ascoltare davvero, senza fretta, quello che oggi vuole dirmi.'] },
+    { t: 'Ascolto il Vangelo', h: head.join(' · '), p: v },
+    { t: 'Rileggo', p: ['Rileggo il brano lentamente, magari ad alta voce.', 'Quale parola, quale gesto, quale personaggio mi colpisce di più? Mi fermo lì, senza fretta: non devo capire tutto, solo restare con ciò che mi tocca.'] },
+    ...sp.map((x, n) => ({ t: 'Con le parole dei Papi' + (sp.length > 1 ? ` (${n + 1}/${sp.length})` : ''), p: x })),
+    { t: 'Parlo con il Signore', p: ['Come un amico parla con un amico, dico al Signore quello che provo davanti a questa Parola: un grazie, una domanda, una fatica.'] },
+    { t: 'Concludo', p: ['Recito il Padre nostro.', 'Porto con me nella giornata una sola parola di questo Vangelo.'] }
+  ].filter(x => x.p.length);
+}
 function gospelPrayer(g) {
+  if (g.steps) return guidedSteps(g, g.steps);
   const steps = []; let cur = [];
   for (const p of g.paras) { cur.push(p); if (cur.join(' ').length > 420 || /^(Come un amico|Recito|Mi preparo|Chiedo|Leggo|Immagino|Mi metto)/i.test(p)) { steps.push(cur); cur = []; } }
   if (cur.length) steps.push(cur);
@@ -666,6 +683,21 @@ function gospelPrayer(g) {
       done ? card(h('h3', null, 'Amen.'), P('Se vuoi, lascia una riga nel diario su ciò che ti ha toccato.'), h('button', { class: 'btn', onclick: journalSheet }, 'Scrivi nel diario'), linkBtn(g.link, 'Fonte: Get Up and Walk', 'ghost'))
         : card(h('span', { class: 'mono' }, `passo ${i + 1} di ${steps.length}`), h('div', { class: 'prose' }, steps[i].map(t => h('p', null, t)))),
       !done && h('div', { class: 'row' }, h('button', { class: 'btn', disabled: i === 0, onclick: () => { i--; stopSpeak(); show(); } }, '‹'), h('button', { class: 'btn', onclick: () => speak(steps[i].join(' ')) }, '🔊'), h('button', { class: 'btn primary grow', onclick: () => { i++; stopSpeak(); show(); } }, i === steps.length - 1 ? 'Concludi' : 'Avanti ›')));
+    host.parentElement && (host.parentElement.scrollTop = 0);
+  };
+  show();
+}
+function guidedSteps(g, steps) {
+  let i = 0;
+  const host = pad();
+  openSheet(g.ref, host);
+  addLog('fede', 'vangelo', g.ref, 2);
+  const show = () => {
+    const done = i >= steps.length, st = steps[i];
+    host.replaceChildren(h('div', { class: 'read-progress' }, h('div', { style: { width: Math.round(Math.min(i + 1, steps.length) / steps.length * 100) + '%' } })),
+      done ? card(h('h3', null, 'Amen.'), P('Se vuoi, lascia una riga nel diario su ciò che ti ha toccato.'), h('button', { class: 'btn', onclick: journalSheet }, 'Scrivi nel diario'), linkBtn(g.link, 'Letture e commento su Vatican News', 'ghost'))
+        : card(h('span', { class: 'mono' }, `passo ${i + 1} di ${steps.length}`), h('h3', null, st.t), st.h && h('p', { class: 'mono' }, st.h), h('div', { class: 'prose' }, st.p.map(t => h('p', null, t)))),
+      !done && h('div', { class: 'row' }, h('button', { class: 'btn', disabled: i === 0, onclick: () => { i--; stopSpeak(); show(); } }, '‹'), h('button', { class: 'btn', onclick: () => speak(st.p.join(' ')) }, '🔊'), h('button', { class: 'btn primary grow', onclick: () => { i++; stopSpeak(); show(); } }, i === steps.length - 1 ? 'Concludi' : 'Avanti ›')));
     host.parentElement && (host.parentElement.scrollTop = 0);
   };
   show();
@@ -848,7 +880,7 @@ function settingsSheet() {
 applyLook();
 for (const [id, L] of Object.entries(S.lessons)) if (L.gen && L.gen.notte) { S.prepMeta = S.prepMeta || {}; S.prepMeta[id] = { title: L.title, kind: L.kind, area: L.area, tags: L.tags || [], gen: { topic: L.gen.topic } }; delete S.lessons[id]; }
 save(); close(); render(); toast('Backup ripristinato'); } catch (e) { toast('Backup non valido'); } } }, 'Ripristina')),
-    flat(h('span', { class: 'mono' }, 'Ulisse v1.5.1'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Groq (gratuito) e Ollama (notte). Codice: github.com/Torre28/Ulisse', 'small muted'))));
+    flat(h('span', { class: 'mono' }, 'Ulisse v1.5.2'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Groq (gratuito) e Ollama (notte). Codice: github.com/Torre28/Ulisse', 'small muted'))));
 }
 
 /* primo avvio: per chi riceve l'app da un amico */

@@ -222,7 +222,10 @@ async function instantLesson(cluster) {
     withTimeout((async () => {
       const rs = await wikiSearch(keywords(it.title + ' ' + (it.desc || ''), 6).join(' '), 5);
       const out = await Promise.all(rs.map(r => wikiSummary(r.title).catch(() => null)));
-      return out.filter(x => x && x.extract && x.type !== 'disambiguation');
+      // solo nomi propri e sigle che compaiono davvero nel testo (niente voci per parole comuni)
+      const txt = ' ' + it.title + ' ' + (it.desc || '') + ' ';
+      const proper = t => t.split(/[\s()]+/).some(w => w.length > 2 && /^[A-ZÀ-Ý]/.test(w) && new RegExp('[^.!?:«"]\\s' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b').test(txt));
+      return out.filter(x => x && x.extract && x.type !== 'disambiguation' && proper(x.title));
     })(), 6000).catch(() => [])]);
   const chapters = [];
   chapters.push({ label: 'La notizia', title: it.title, depth: 'assaggio', blocks: [

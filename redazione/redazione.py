@@ -92,6 +92,9 @@ def liturgia(day=None):
     letture = section('Letture del Giorno', STOPS)
     vangelo = section('Vangelo del Giorno', STOPS)
     papi = section('Le Parole dei Papi', STOPS)
+    for k, l in enumerate(papi):
+        if re.search(r'contributo per una grande missione|sostienici|^©|riproduzione in formato|Fondazione di Religione', l, re.I):
+            papi = papi[:k]; break
     ref = next((m.group(0) for l in vangelo[:4] for m in [re.search(r'\b(Mt|Mc|Lc|Gv)\s?\d+[,.]\s?[\d\-.,a-z]+', l)] if m), '')
     if not vangelo:
         raise RuntimeError('pagina della liturgia senza Vangelo')
