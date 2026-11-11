@@ -1,7 +1,7 @@
 # Orologio di Ulisse: l'unico workflow con orari, avvia gli altri.
 # GitHub esegue gli orari solo se l'ultima modifica a queste righe è stata
 # fatta da una persona del repository: se le esecuzioni automatiche non partono,
-# apri questo file su GitHub, cambia un carattere in questo commento e salva.
+# apri questo file su GitHub, cambia un carattere in questo commentoz e salva.
 name: Orologio
 
 on:
