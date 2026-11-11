@@ -20,7 +20,6 @@ FONTI_LIBERE = {
     'AGI': (None, 'agi.it'),
     'Adnkronos': (None, 'adnkronos.com'),
     'Open': ('https://www.open.online/feed/', 'open.online'),
-    'Fanpage': (None, 'fanpage.it'),
     'Avvenire': (None, 'avvenire.it'),
     'Sky TG24': (None, 'tg24.sky.it'),
     'Euronews': (None, 'it.euronews.com'),
