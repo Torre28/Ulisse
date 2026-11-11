@@ -1,1 +1,165 @@
-{"items": []}
+{
+ "items": [
+  {
+   "id": "n-2026-11-11-aa80ec54",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Scontro Trump-Netanyahu: guerra e tensioni nel Medio Oriente",
+   "summary": "Un acceso confronto telefonico tra Trump e Netanyahu ha acceso nuove tensioni tra Stati Uniti, Israele e Iran.",
+   "date": "2026-11-11",
+   "ref": "https://news.google.com/rss/articles/CBMie0FVX3lxTE9YNXNEeG50RGNhZmZCSG9QUUtRc0ZqWGM5NXY4cHktN1ppLU1GdHdVRVFpRVUweGhPWmpmV2ZWTEh2MlMyWUNKb1ViNEw4TndLQkJ6Zk1xd2RpRWE3aUFMV0x4TEhLLUl1RWlQZG1jb0RCVzE0UEwwb29OZw?oc=5",
+   "headline": "Media: scontro telefonico Trump-Netanyahu su operazioni contro l'Iran",
+   "srcs": [
+    "Sky TG24",
+    "RaiNews"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-11/n-2026-11-11-aa80ec54.json"
+  },
+  {
+   "id": "n-2026-11-11-e1fd7c0a",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Droni e caccia: quando i cieli diventano teatri di guerra",
+   "summary": "I cieli dei Paesi baltici sono sotto allerta per droni e caccia della Nato, segno di un conflitto che si spande anche nello spazio aereo.",
+   "date": "2026-11-11",
+   "ref": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPMUxHQm92WEQweVdJczl0TWFiMUhTeEU2SDlJMURtd0M1anBqVXdnR2dyNlpLOXdQenN6NFRzOWhObnBpRk5CSnJvbS1oRTJqdkt3MFRWNmxlSVpHcWJGT0l1OWRVVWhxSUU3M3RkdTAtcDYyZGVEX3BCNFlQT05LZUJRNlJ0eU1ZOTgxWjlqWi1hRk1JWktPcXpCejFlOXZrd3oxVmtUVTF4OXd3bnNfcW95RXdJZ9IBaEFVX3lxTE03Zk54UUdqNVdldjBHNVhZdWM3VXJmZmVsUXNWM3BpeWlGSWFPcTBNQ2dpb2FJT3g0VUtPcHFIU2NuczJwaGY2ZVhrdTFSLV83dGNGTC11U3BPN1kyMEt0R09HYl82QXc3?oc=5",
+   "headline": "Allarme droni nei cieli dei Paesi baltici: caccia della Nato in volo",
+   "srcs": [
+    "Tgcom24",
+    "ANSA"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-11/n-2026-11-11-e1fd7c0a.json"
+  },
+  {
+   "id": "n-2026-11-11-8724423d",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Un terremoto tra Calabria e Sicilia",
+   "summary": "Un sisma di magnitudo 4.1 ha scosso il mar Tirreno tra Calabria e Sicilia il 11 novembre 2026.",
+   "date": "2026-11-11",
+   "ref": "https://news.google.com/rss/articles/CBMizgFBVV95cUxON3lLdFpuNG5nUjA0SUlXSHgxcEtCem1OOGlSN1R4MXI4OUpDTTBqcUJqZ0x3Y0lSU3JfdmM0TXl6NC1KaXRHSThYTF9Gb0tKejN5a1pOU0tfbGMxTjFKNkhuMERrdDRKcnk5RDI2YUxlVm9yUnRKeWlCdDk2bzg0UGpRR2Z0U0hhT05RdG1Sb0pmWW03Q3A5NDh0eVdIYnU5TnVlbUhNMjZVRWdxcS05SVpfdktGWUE1dVRiOFVSTVBNYjBpck9GV2t0UGVFQdIB0wFBVV95cUxQTm1iOTVMUXRsU0NiRDJLbTQ3SkV2Z1Z1aEhGTkRHODNYdDA0a0FpdWVoSEhCMUdwaF9UaHB4c3JjOFFiaHRBa0tBaUtqV0FBS1FVTU9xbVRtbEswX0hEUUZ4dlh2bW5ZQjVjWE9OSS0yaW9yRWppTmJCM2I1RkNGS0pxOEJFdTVxNS1ValJEVmxORFdmdFhsTHpDeEZ1eHpGVTctaXdfU0RrVG5udW1Nb0ZSYktKay10Q09haG1fLWdvMWZlandicEhlWGlNb2tJT3k4?oc=5",
+   "headline": "Nuova scossa di terremoto di 4.1 nel mar Tirreno, sisma avvertito tra Calabria e Sicilia · CosenzaChannel.it",
+   "srcs": [
+    "Cosenza Channel",
+    "Fanpage"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-11/n-2026-11-11-8724423d.json"
+  },
+  {
+   "id": "n-2026-11-11-abb68454",
+   "kind": "passione",
+   "mode": "scoperta",
+   "title": "Ascolta gli uccelli: un passatempo che ti apre gli occhi",
+   "summary": "Ascoltare gli uccelli ti aiuta a stare attento, a scoprire la natura e a sentire il mondo in modo nuovo.",
+   "date": "2026-11-11",
+   "ref": "topic:birdwatching:2026-11-11",
+   "headline": null,
+   "srcs": [],
+   "topic": "birdwatching",
+   "chapters": 4,
+   "file": "contenuti/2026-11-11/n-2026-11-11-abb68454.json"
+  },
+  {
+   "id": "n-2026-11-11-b59a37ca",
+   "kind": "fede",
+   "mode": "parola",
+   "title": "La strada di Emmaus: un viaggio di speranza",
+   "summary": "Un viaggio di due discepoli che incontra il Risorto e scopre il significato della Pasqua.",
+   "date": "2026-11-11",
+   "ref": "bibbia:Luca 24:2026-11-11",
+   "headline": "Luca 24",
+   "srcs": [],
+   "topic": null,
+   "chapters": 5,
+   "file": "contenuti/2026-11-11/n-2026-11-11-b59a37ca.json"
+  },
+  {
+   "id": "n-2026-11-11-ad506293",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Le tensioni tra Ucraina e Russia nel 2026",
+   "summary": "L'Ucraina e la Russia continuano a discutere, ma ci sono ancora differenze importanti, mentre i raid russi causano blackout in 8 regioni ucraine.",
+   "date": "2026-11-11",
+   "ref": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxPVGd3blFCRVN1c1ItYTM1eFc2NmdNblBPcjRzT1dDWGoxYlpSVlJFcEZEWTZucVdPT3luaDZfM0pSUEduMGZpN1VCSzBDb2RSN1NPSFA5OW9fTGdqeDlkOVpPTnVRaG1ZVlpRVU1LTXJucklaUklYa0xZOFBWZTNuOHEyNS1MNEh0YkM0?oc=5",
+   "headline": "Ucraina-Russia, Kiev: restano divergenze sostanziali ma possibile continuare negoziati. Blackout in 8 regioni ucraine per raid russi",
+   "srcs": [
+    "Il Sole 24 ORE"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-11/n-2026-11-11-ad506293.json"
+  },
+  {
+   "id": "n-2026-11-11-5a07f368",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Negoziazioni Ucraina-Russia: cosa succede adesso",
+   "summary": "Negoziazioni trilaterali tra Ucraina, Russia e Usa a Abu Dhabi, con annuncio di incontro tra Putin e Zelensky e scambio di prigionieri.",
+   "date": "2026-11-11",
+   "ref": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOYWNyUGY4SFRZZkl0RWFsRE9HMEZqN0E3NFV2NGxXYnctVkgtbEJfd290bW1wY1pMdnZoakpLSlI4c1g0QlNnOE9OQTA3cm5WNHV2LXV4dlpxdno4ZG1SeUEwRzExRzRycXU3Q0h3T0xqdUFtVDQydTJsVTdodnFSNThDY0JrejRY?oc=5",
+   "headline": "Ucraina, Kushner ad Abu Dhabi: \"Domani vedremo Putin a Mosca, poi Zelensky a Dublino\" LIVE",
+   "srcs": [
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-11/n-2026-11-11-5a07f368.json"
+  },
+  {
+   "id": "n-2026-11-11-0fbe8596",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Taglio dell’Irpef: cosa cambia per le tasse",
+   "summary": "Nel 2026 è stato deciso di ridurre l’Irpef per 3,7 milioni di italiani, con un beneficio medio di 450 euro.",
+   "date": "2026-11-11",
+   "ref": "https://www.ansa.it/sito/notizie/economia/pmi/2026/11/11/istat-frena-la-crescita-delloccupazione-nel-2026-2027-giu-la-disoccupazione_c6c2b0c5-93d2-4ea9-99a9-84315413c5b2.html",
+   "headline": "'Con il taglio dell'Irpef per 3,7 milioni di persone, beneficio medio di 450 euro'",
+   "srcs": [
+    "QuiFinanza"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-11/n-2026-11-11-0fbe8596.json"
+  },
+  {
+   "id": "n-2026-11-11-1299ee99",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Berlusconi e i media: un passo indietro",
+   "summary": "Pier Silvio Berlusconi dice che non entrerà in politica e apre le porte a Enrico Mentana a Mediaset.",
+   "date": "2026-11-11",
+   "ref": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQZXJCN212RkxxX041Y0N2cldFVU8wbzJ0VXZ2ckxqMkVSMmVjTFFROGxFUzB3RU80eHBfOUJ5bmRUOHpnU0t5ajllS0lhR0taTEpwcVVJWUtDTVFpVnlBYkRaVWVYMEQ2dlp3aDZ1RHdMcDRKV2ZRbzdPMHdwTEtqODJEWXRJZVk5cU5OdFFiZE5sUmdIRG51blY0YkJ5N2ZSV1R4X2kzbjdZX2Z6VV8wNDdCSVMyN3gzZGRzTU1QcVBGd0s3TlFXOGNkM3XSAdIBQVVfeXFMTkZTQmNqano3RXBnX1F6T0RuMjY1Z1ozVHVfZUc4dUxJcWtUeWYxY3ZzX1BWaXg3aTAxSFF3d2hRbXIxcWM3N0RNSmRLRVhuS3VJOTF4YW8zQnRsOVNUUXZka19Iek8xWG01UHBobnYxZ3JwN2hsM0FWUE43UnhWbWN1LVhyclRLQ3RKWnNRRUVEZWRLb3AyQmtzejdHaWFhdEVwR2ZXWnZSb2tzdEZDZERjQzFrcEgwZTJRRGpwTHV3NFUyOVIxWUZ4RndKclBpZHVB?oc=5",
+   "headline": "Pier Silvio Berlusconi: «Né io né Marina scenderemo in politica. Per Mentana porte sempre aperte. Fazio? Mi piace, ma aspetto la fine del suo contratto...»",
+   "srcs": [
+    "Corriere della Sera"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-11/n-2026-11-11-1299ee99.json"
+  },
+  {
+   "id": "n-2026-11-11-1bfee1c8",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Claude sfida Office con nuovi strumenti",
+   "summary": "Anthropic presenta nuovi strumenti come Sheets, Whiteboards e Data per competere con Microsoft e Google.",
+   "date": "2026-11-11",
+   "ref": "https://news.google.com/rss/articles/CBMickFVX3lxTE5rX0dlSUxyU194ZXVqOTZVY2J1MHowY1dTYVktMUI4ZjZnOVJSNjVsVzViNVY5aE1DX0NrNzlIR3RqS1dJRk5fRTdhOEp3dVVwY2tVX25NWmdQbl9JWHJOVmZSN0ptQWdGX2ZVLThQZ3dUZw?oc=5",
+   "headline": "Claude sfida Office con Whiteboards, Sheets e Data",
+   "srcs": [
+    "Punto Informatico"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-11/n-2026-11-11-1bfee1c8.json"
+  }
+ ],
+ "aggiornato": "2026-11-11T16:40:02.178601+00:00",
+ "modello": "qwen3:8b"
+}
