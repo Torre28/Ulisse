@@ -15,6 +15,8 @@ const DEFAULT_FEEDS = [
   { name: 'ANSA', url: 'https://www.ansa.it/sito/ansait_rss.xml', tag: 'Principali' }
 ];
 const NEWS_TAGS = ['Principali', 'Italia', 'Mondo', 'Economia', 'Scienza'];
+/* temi seguiti: raccolti dalla redazione con ricerche ragionate (vedi redazione/notizie.py) */
+const TEMI_NOMI = ['Spazio e astronomia', 'Elettronica e semiconduttori', 'Intelligenza artificiale', 'Fiorentina', 'Firenze', 'Toscana', 'Clima e ambiente', 'Energia', 'Scienza e medicina', 'Chiesa e Papa', 'Europa e UE', 'Medio Oriente', 'Ucraina e Russia', 'Stati Uniti', 'Cina e Asia', 'Economia italiana', 'Tecnologia', 'Cultura e libri', 'Formula 1 e motori'];
 
 /* podcast: id Apple Podcasts quando noto, altrimenti si cerca per nome */
 const DEFAULT_PODCASTS = [

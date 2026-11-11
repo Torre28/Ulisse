@@ -189,7 +189,7 @@ function openLesson(id, chapter) {
       h('div', { class: 'read-progress' }, h('div', { style: { width: Math.round((ci + 1) / Math.max(1, chs.length) * 100) + '%' } })),
       h('div', { class: 'chapters' }, chs.map((c, k) => h('button', { class: 'chip', 'aria-pressed': k === ci ? 'true' : 'false', onclick: () => show(k) }, (k + 1) + ' · ' + (c.label || 'Parte'), h('small', null, c.depth === 'profondo' ? '◆' : '◇')))),
       h('div', null, h('span', { class: 'mono' }, (ch.label || '') + (ch.depth ? ' · ' + ch.depth : '')), h('h2', { style: { marginTop: '4px' } }, ch.title)),
-      h('div', { class: 'row' }, h('button', { class: 'btn small', onclick: () => speak(ch.title + '. ' + (ch.blocks || []).filter(b => b.type === 'text' || b.type === 'note').map(b => b.md).join(' ')) }, '🔊 Ascolta'), h('button', { class: 'btn small ghost', onclick: stopSpeak }, 'Stop')),
+      h('div', { class: 'row' }, h('button', { class: 'btn small ghost', onclick: () => noteSheet({ title: 'Nota: ' + L.title, from: L.title }) }, '📝 Nota'), h('button', { class: 'btn small', onclick: () => speak(ch.title + '. ' + (ch.blocks || []).filter(b => b.type === 'text' || b.type === 'note').map(b => b.md).join(' ')) }, '🔊 Ascolta'), h('button', { class: 'btn small ghost', onclick: stopSpeak }, 'Stop')),
       ...renderBlocks(ch.blocks, L),
       isLast && (L.branches || []).length ? h('div', { class: 'card flat' }, h('h3', null, 'Rami da esplorare'), P('Argomenti collegati: aprili per una scheda di approfondimento.', 'small muted'), L.branches.filter(b => b && b.name).map(b => h('button', { class: 'card', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => branchSheet(b, L, topic) }, h('b', null, b.name + ' →'), b.why && h('span', { class: 'small muted' }, b.why)))) : null,
       h('div', { class: 'stop' },
@@ -198,14 +198,17 @@ function openLesson(id, chapter) {
         h('div', { class: 'row' },
           ci > 0 && h('button', { class: 'btn small', onclick: () => show(ci - 1) }, '‹ Indietro'),
           !isLast && (ci < chs.length - 1 ? h('button', { class: 'btn small primary', onclick: () => show(ci + 1) }, 'Continua ›') : h('button', { class: 'btn small', disabled: true }, '… il capitolo ' + (ci + 2) + ' è in scrittura')),
-          isLast && h('button', { class: 'btn small primary', onclick: () => finish() }, `Concludi e salva ${(L.cards || []).length} carte`),
+          isLast && h('button', { class: 'btn small primary', onclick: () => finish() }, '✓ Ho letto e capito'),
+          isLast && h('button', { class: 'btn small', onclick: () => skim() }, 'Ho solo scorso'),
           isLast && topic && h('button', { class: 'btn small', onclick: () => { finish(true); genTopicLesson(topic); } }, '↓ Più a fondo' + (L.next ? ': ' + L.next : '')),
           h('button', { class: 'btn small ghost', onclick: close }, 'Chiudi'))));
     host.parentElement && (host.parentElement.scrollTop = 0);
   }
+  function skim() { prog.skimmed = true; contDone('lesson', id); save(); toast('Ok: non la conto tra le cose imparate'); close(); }
   function finish(silent) {
     let added = 0;
     for (const c of L.cards || []) if (c && c.q && !S.cards.some(x => x.front === c.q)) { addCard(c.q, c.a, L.area, L.title); added++; }
+    prog.read = true;
     if (!prog.done) { prog.done = true; addLog(L.area || 'scoperta', 'lezione', L.title, 2); bumpInterest((L.tags || []).concat(L.gen && L.gen.topic ? [L.gen.topic] : []), 3); }
     contDone('lesson', id); save();
     if (!silent) toast(added ? `${added} carte nel Quaderno` : 'Lezione completata');
@@ -312,7 +315,7 @@ function branchSheet(b, L, topic) {
     (b.facts || []).length ? card(h('h3', null, 'Fatti chiave'), h('ul', { class: 'small', style: { margin: 0, paddingLeft: '1.2em' } }, b.facts.map(f => h('li', null, f))),
       h('button', { class: 'btn small', onclick: () => { addCard(b.name + ': fatti chiave', b.facts.join(' · '), L.area, L.title); toast('Nel Quaderno'); } }, '+ Quaderno')) : null,
     card(h('h3', null, 'Cosa ti serve per capire «' + (L.title || '').slice(0, 60) + '»'), P('I passaggi della voce enciclopedica più legati alla lezione da cui arrivi.', 'small muted'), passages),
-    h('button', { class: 'btn', onclick: () => { document.querySelectorAll('.sheet-bg').forEach(e => e.remove()); openTopic(id); } }, 'Esploralo come argomento: podcast, libri, lezioni')));
+    h('button', { class: 'btn', onclick: () => { openTopic(id); } }, 'Esploralo come argomento: podcast, libri, lezioni')));
 }
 
 /* ---------------- lettura di una voce di Wikipedia capitolo per capitolo ---------------- */
@@ -372,7 +375,7 @@ async function drawMap(box, legend, b) {
   const Lf = window.L;
   box.replaceChildren();
   const map = Lf.map(box, { zoomControl: true, attributionControl: true, worldCopyJump: true }).setView([42, 12], 3);
-  Lf.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '© OpenStreetMap · © CARTO', maxZoom: 12 }).addTo(map);
+  Lf.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap', maxZoom: 12 }).addTo(map);
   const groups = (b.groups || []).filter(g => g && g.name);
   const col = name => { const i = groups.findIndex(g => g.name === name); return MAP_COLORS[(i < 0 ? groups.length : i) % MAP_COLORS.length]; };
   const bounds = [];

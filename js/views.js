@@ -74,7 +74,8 @@ function sessionPlan(min) {
   const seen = id => S.progress[id] && S.progress[id].done;
   const due = dueCards().length;
   if (due) cand.push({ id: 'ripasso', ico: '🗂', t: `Ripassa ${Math.min(due, 15)} carte`, min: Math.max(2, Math.min(8, Math.ceil(Math.min(due, 15) * 0.4))), run: reviewSheet, pr: 9 });
-  latest.filter(p => p.kind === 'notizia' && p.mode !== 'full' && !seen(p.id)).slice(0, 4).forEach((p, i) => cand.push({ id: p.id, ico: '📰', t: p.title, min: 6, run: () => openPrepared(p), pr: 8 - i }));
+  const want = p => -((5 - ((S.selfRate || {})[themeOf({ kind: 'notizia', title: p.title, tags: [] })] || 3)));
+  latest.filter(p => p.kind === 'notizia' && p.mode !== 'full' && !seen(p.id)).sort((a, b) => want(a) - want(b)).slice(0, 4).forEach((p, i) => cand.push({ id: p.id, ico: '📰', t: p.title, min: 6, run: () => openPrepared(p), pr: 8 - i }));
   latest.filter(p => p.kind === 'notizia' && p.mode === 'full' && !seen(p.id)).slice(0, 2).forEach((p, i) => cand.push({ id: p.id, ico: '🧭', t: 'Percorso: ' + p.title, min: 22, run: () => openPrepared(p), pr: 6 - i }));
   const sc = latest.find(p => p.kind === 'passione' && !seen(p.id)); if (sc) cand.push({ id: sc.id, ico: '✨', t: sc.title, min: 12, run: () => openPrepared(sc), pr: 7 });
   const pa = latest.find(p => p.mode === 'parola' && !seen(p.id)); if (pa) cand.push({ id: pa.id, ico: '✝', t: 'La Parola: ' + (pa.headline || pa.title), min: 12, run: () => openPrepared(pa), pr: 5 });
@@ -105,18 +106,45 @@ function themeOf(L) {
   if (/scien|ricerc|spazio|clima|salute|tecnolog/.test(tg)) return 'Scienza e tecnologia';
   return 'Attualità';
 }
-function skills() {
+const THEMES = ['Politica italiana', 'Esteri e geopolitica', 'Economia', 'Scienza e tecnologia', 'Storia', 'Fede e Scrittura', 'Tecnica e ricerca', 'Cultura e arte'];
+function skills() { // solo ciò che hai confermato di aver letto e capito, più i ripassi
   const pts = {};
-  for (const [id, pr] of Object.entries(S.progress)) { const L = allLessons()[id]; if (!L) continue; const th = themeOf(L); pts[th] = (pts[th] || 0) + (pr.seen || []).length * 2 + (pr.done ? 10 : 0); }
-  for (const c of S.cards) { if (!c.reps) continue; const L = Object.values(S.lessons).find(l => l.title === c.from); if (L) { const th = themeOf(L); pts[th] = (pts[th] || 0) + Math.min(c.reps, 5); } }
+  for (const [id, pr] of Object.entries(S.progress)) { if (!(pr.read || (pr.done && !pr.skimmed))) continue; const L = allLessons()[id]; if (!L) continue; const th = themeOf(L); pts[th] = (pts[th] || 0) + 10 + (pr.seen || []).length * 2; }
+  for (const c of S.cards) { if (!c.reps) continue; const L = Object.values(allLessons()).find(l => l.title === c.from); if (L) { const th = themeOf(L); pts[th] = (pts[th] || 0) + Math.min(c.reps, 5); } }
   return Object.entries(pts).map(([n, p]) => { const lv = Math.floor(Math.sqrt(p / 12)) + 1, lo = (lv - 1) ** 2 * 12, hi = lv ** 2 * 12; return { n, p, lv, frac: (p - lo) / (hi - lo) }; }).sort((a, b) => b.p - a.p);
 }
 const LV_NAME = ['', 'Curioso', 'Informato', 'Consapevole', 'Esperto', 'Maestro'];
+/* punti esperienza della giornata: tutto ciò che fai pesa, letture confermate e missioni di più */
+function xpOf(day) { return Math.round(S.log.filter(e => e.d === day && e.kind !== 'sessione').reduce((a, e) => a + (e.w || 1) * 10, 0)); }
+function streak() { let n = 0; for (let i = 0; i < 400; i++) { if (xpOf(daysAgo(i)) > 0) n++; else if (i > 0) break; } return n; }
+function dayCard() {
+  const goal = S.xpGoal || 60, xp = xpOf(today()), pct = Math.min(1, xp / goal);
+  const days = Array.from({ length: 14 }, (_, i) => daysAgo(13 - i)), vals = days.map(xpOf), mx = Math.max(goal, ...vals);
+  const W = 300, H = 70, bw = W / 14 - 4;
+  const bars = days.map((d, i) => `<rect x="${i * (W / 14) + 2}" y="${H - vals[i] / mx * (H - 10)}" width="${bw}" height="${Math.max(1, vals[i] / mx * (H - 10))}" rx="3" fill="${vals[i] >= goal ? 'var(--terra)' : 'var(--line)'}"/>`).join('') + `<line x1="0" x2="${W}" y1="${H - goal / mx * (H - 10)}" y2="${H - goal / mx * (H - 10)}" stroke="var(--muted)" stroke-dasharray="3 3"/>`;
+  const R = 34, C = 2 * Math.PI * R;
+  return card(h('div', { class: 'row between' }, h('h2', null, 'La tua giornata'), h('span', { class: 'mono' }, '🔥 ' + streak() + ' giorni di fila')),
+    h('div', { class: 'row', style: { flexWrap: 'nowrap', gap: '16px' } },
+      h('div', { html: `<svg width="84" height="84" viewBox="0 0 84 84"><circle cx="42" cy="42" r="${R}" fill="none" stroke="var(--soft)" stroke-width="9"/><circle cx="42" cy="42" r="${R}" fill="none" stroke="var(--terra)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C * pct} ${C}" transform="rotate(-90 42 42)"/><text x="42" y="46" text-anchor="middle" font-family="JetBrains Mono" font-size="15" fill="var(--ink)">${xp}</text></svg>` }),
+      h('div', { class: 'grow' }, P(xp >= goal ? 'Obiettivo di oggi raggiunto!' : `Ancora ${goal - xp} punti per l'obiettivo di oggi (${goal}).`, 'small'), h('div', { html: `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" preserveAspectRatio="none">${bars}</svg>` }), h('span', { class: 'mono' }, 'ultimi 14 giorni'))));
+}
+function selfRateSheet() {
+  S.selfRate = S.selfRate || {};
+  const rows = THEMES.map(th => {
+    const stars = h('div', { class: 'row' });
+    const paint = () => stars.replaceChildren(...[1, 2, 3, 4, 5].map(n => h('button', { class: 'chip', 'aria-pressed': (S.selfRate[th] || 0) >= n ? 'true' : 'false', onclick: () => { S.selfRate[th] = n; save(); paint(); } }, '★')));
+    paint();
+    return h('div', null, h('b', { class: 'small' }, th), stars);
+  });
+  openSheet('Quanto ne sai?', pad(card(P('Dai un voto sincero a quanto conosci ogni tema: le spiegazioni generate partiranno dal tuo livello e il percorso di Oggi ti proporrà prima i temi in cui vuoi crescere.', 'small'), ...rows,
+    P('1 = ne so pochissimo · 5 = lo conosco bene', 'small muted'))), () => render());
+}
+function levelForTheme(th) { const r = (S.selfRate || {})[th]; return r ? Math.max(1, Math.min(5, r)) : S.level; }
 function skillsCard() {
-  const sk = skills().slice(0, 6);
-  if (!sk.length) return null;
-  return card(h('div', { class: 'row between' }, h('h2', null, 'Il tuo sapere'), h('span', { class: 'mono' }, 'cresce con ciò che leggi e ripassi')),
-    sk.map(x => h('div', { class: 'lvl' }, h('span', null, x.n), h('span', { class: 'mono' }, 'liv. ' + x.lv + ' · ' + (LV_NAME[Math.min(x.lv, 5)] || 'Maestro')), h('div', { class: 'track' }, h('div', { class: 'fill', style: { width: Math.round(x.frac * 100) + '%' } })))));
+  const sk = skills().slice(0, 6), sr = S.selfRate || {};
+  return card(h('div', { class: 'row between' }, h('h2', null, 'Il tuo sapere'), h('button', { class: 'btn small', onclick: selfRateSheet }, 'Autovalutati')),
+    sk.length ? sk.map(x => h('div', { class: 'lvl' }, h('span', null, x.n + (sr[x.n] ? ' · ' + '★'.repeat(sr[x.n]) : '')), h('span', { class: 'mono' }, 'liv. ' + x.lv + ' · ' + (LV_NAME[Math.min(x.lv, 5)] || 'Maestro')), h('div', { class: 'track' }, h('div', { class: 'fill', style: { width: Math.round(x.frac * 100) + '%' } }))))
+      : P('Cresce con le lezioni che confermi di aver letto e capito e con i ripassi.', 'small muted'));
 }
 
 /* ======================= OGGI ======================= */
@@ -159,7 +187,8 @@ function viewOggi() {
     header(S.name ? `${hello}, ${S.name}` : hello, new Date().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })),
     !storageOk && flat(P('Attenzione: questo browser non sta salvando i dati. Usa l\'app installata.')),
     sessionCard(),
-    card(h('div', { class: 'row between' }, h('h2', null, 'Missioni'), h('button', { class: 'btn small', onclick: addQuestSheet }, '+ La mia')),
+    card(h('div', { class: 'row between' }, h('h2', null, 'Missioni'), h('div', { class: 'row' }, h('button', { class: 'btn small ghost', onclick: questSettings }, '⚙'), h('button', { class: 'btn small', onclick: addQuestSheet }, '+ La mia'))),
+      S.autoQuests === false ? h('div', { class: 'note contesto' }, h('span', { class: 'mono' }, 'Stai trascurando'), h('div', { class: 'chips' }, neglected().slice(0, 3).map(a => h('button', { class: 'chip', title: 'Aggiungi una missione suggerita', onclick: () => { S.quests.push({ id: uid(), d, src: 'io', type: 'side', area: a, t: pickQuest(a, 'side'), done: false }); save(); render(); } }, '+ ' + AREAS[a].n)))) : null,
       h('span', { class: 'mono' }, 'Main quest'), main.length ? main.map(questEl) : h('div', { class: 'empty' }, 'Nessuna'),
       h('span', { class: 'mono' }, 'Side quest'), side.length ? side.map(questEl) : h('div', { class: 'empty' }, 'Nessuna')),
     h('div', { class: 'row' },
@@ -170,6 +199,7 @@ function viewOggi() {
     S.cont.length ? card(h('div', { class: 'row between' }, h('h2', null, 'Da continuare'), S.cont.length > 4 && h('button', { class: 'btn small ghost', onclick: () => { qTab = 'cont'; go('quaderno'); } }, 'tutto')), S.cont.slice(0, 4).map(contRow)) : null,
     h('button', { class: 'card', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => openTopic(dt.id) },
       h('span', { class: 'mono' }, 'Scoperta del giorno · ' + dt.c), h('h3', null, dt.n), dt.hk && P(dt.hk)),
+    dayCard(),
     skillsCard(),
     card(h('div', { class: 'row between' }, h('h2', null, 'Equilibrio'), h('span', { class: 'mono' }, 'ultimi 14 giorni')),
       Object.keys(AREAS).map(a => h('div', { class: 'bar' }, h('span', null, AREAS[a].n), h('div', { class: 'track' }, h('div', { class: 'fill', style: { width: (b[a] / max * 100) + '%', background: areaColor(a) } })), h('span', { class: 'n' }, b[a]))),
@@ -178,7 +208,7 @@ function viewOggi() {
 }
 
 /* ======================= NOTIZIE ======================= */
-let newsTab = 'Principali', newsCache = (() => { try { return JSON.parse(localStorage.getItem('ulisse.news') || '{}'); } catch (e) { return {}; } })();
+let newsTab = 'Principali', temaSel = 'tutti', newsCache = (() => { try { return JSON.parse(localStorage.getItem('ulisse.news') || '{}'); } catch (e) { return {}; } })();
 function viewNotizie() {
   const tl = NEWS_TAGS.map(t => [t, t]).concat([['temi', 'I miei temi'], ['ascolta', '🎧 Ascolta'], ['percorsi', 'Percorsi']]);
   const body = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } });
@@ -190,9 +220,18 @@ function viewNotizie() {
     body.append(P('Percorsi preparati ogni notte dalla redazione automatica, più quelli che hai creato tu.', 'small muted'),
       ...Object.keys(byDay).sort().reverse().map(d => card(h('span', { class: 'mono' }, 'Stanotte · ' + fmtDay(d)), byDay[d].map(prepRow))),
       ls.length ? h('h3', null, 'Creati da te') : null, ...ls.map(lessonCard), h('button', { class: 'btn', onclick: importSheet }, 'Importa una lezione'));
+  } else if (newsTab === 'temi') {
+    const mine = (S.temi || []).concat(S.niche || []);
+    if (!mine.length) body.append(card(P('Scegli gli argomenti da seguire: ognuno diventa una sezione con le notizie che ne parlano davvero.'), temiPicker()));
+    else {
+      body.append(h('div', { class: 'scrollx' }, mine.map(t => h('button', { class: 'chip', 'aria-pressed': temaSel === t ? 'true' : 'false', onclick: () => { temaSel = t; render(); } }, t)), h('button', { class: 'chip', onclick: () => openSheet('I miei temi', card(temiPicker())) }, '＋ / modifica')));
+      if (!mine.includes(temaSel)) temaSel = mine[0];
+      const box = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } }, h('div', { class: 'spin' }));
+      body.append(box); loadNews(box, 'tema:' + temaSel);
+    }
   } else { body.append(h('div', { class: 'spin' })); loadNews(body); }
   return [header('Notizie', 'il mondo, con il perché'), tabs(tl, newsTab, k => { newsTab = k; }),
-    newsTab === 'temi' && P('Temi: ' + S.niche.join(', ') + '. Li cambi da ⚙.', 'small muted'),
+
     newsTab === 'Principali' && prepLatest().some(p => p.kind === 'notizia') ? h('details', { class: 'card', open: true }, h('summary', { style: { cursor: 'pointer' } }, h('b', null, 'Percorsi di stanotte')), pad(...prepLatest().filter(p => p.kind === 'notizia').map(prepRow))) : null,
     body];
 }
@@ -200,10 +239,17 @@ const newsJobs = {};
 function withTimeout(p, ms) { return Promise.race([p, new Promise((_, ko) => setTimeout(() => ko(new Error('tempo scaduto')), ms))]); }
 async function fetchNewsFor(key) {
   let items = [], ok = 0, tot = 0, srv = null;
-  if (key !== 'temi') srv = await withTimeout(serverNews(), 9000).catch(() => null);
-  if (srv && (srv.sezioni[key] || []).length) { items = srv.sezioni[key].slice(); ok = tot = 1; }
+  srv = await withTimeout(serverNews(), 9000).catch(() => null);
+  if (key.startsWith('tema:')) {
+    const name = key.slice(5);
+    if (srv && srv.temi && srv.temi[name]) { items = srv.temi[name].slice(); ok = tot = 1; }
+    else if (!TEMI_NOMI.includes(name)) { // parola chiave personale: ricerca diretta (può non funzionare su tutti i browser)
+      const xs = await withTimeout(fetchFeed(GN('/search', name + ' when:3d')), 20000).catch(() => []);
+      items = xs.map(i => Object.assign(i, { feed: name })); ok = items.length ? 1 : 0; tot = 1; srv = null;
+    }
+  } else if (srv && (srv.sezioni[key] || []).length) { items = srv.sezioni[key].slice(); ok = tot = 1; }
   else {
-    const feeds = key === 'temi' ? S.niche.map(k => ({ name: k, url: GN('/search', k + ' when:3d') })) : S.feeds.filter(f => f.tag === key);
+    const feeds = key === 'temi' ? [] : S.feeds.filter(f => f.tag === key);
     tot = feeds.length;
     const res = await Promise.allSettled(feeds.map(f => withTimeout(fetchFeed(f.url), 20000).then(xs => xs.map(i => Object.assign(i, { feed: f.name })))));
     ok = res.filter(r => r.status === 'fulfilled').length;
@@ -215,16 +261,29 @@ async function fetchNewsFor(key) {
   items.sort((a, b) => (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0));
   return { t: Date.now(), cl: clusterNews(items).slice(0, 40), ok, tot, srv: !!(srv && ok) };
 }
-async function loadNews(box) {
-  const key = newsTab;
+function temiPicker() {
+  const box = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } });
+  const paint = () => {
+    const kw = h('input', { type: 'text', placeholder: 'Oppure una parola chiave tua, poi invio' });
+    kw.addEventListener('keydown', e => { if (e.key === 'Enter' && kw.value.trim()) { S.niche = (S.niche || []).concat(kw.value.trim()); save(); paint(); } });
+    box.replaceChildren(h('span', { class: 'mono' }, 'Argomenti curati (ricerca ragionata, niente omonimi)'),
+      h('div', { class: 'chips' }, TEMI_NOMI.map(t => h('button', { class: 'chip', 'aria-pressed': (S.temi || []).includes(t) ? 'true' : 'false', onclick: () => { S.temi = (S.temi || []).includes(t) ? S.temi.filter(x => x !== t) : (S.temi || []).concat(t); save(); paint(); } }, t))),
+      h('span', { class: 'mono' }, 'Parole chiave tue (ricerca semplice)'),
+      h('div', { class: 'chips' }, (S.niche || []).map(t => h('button', { class: 'chip', onclick: () => { S.niche = S.niche.filter(x => x !== t); save(); paint(); } }, t + ' ✕'))), kw,
+      h('button', { class: 'btn primary', onclick: () => { closeAllSheets(); newsCache = {}; render(); } }, 'Fatto'));
+  };
+  paint(); return box;
+}
+async function loadNews(box, forceKey) {
+  const key = forceKey || newsTab;
   try {
     if (!newsCache[key] || Date.now() - newsCache[key].t > 15 * 60e3) {
       newsJobs[key] = newsJobs[key] || fetchNewsFor(key).finally(() => { delete newsJobs[key]; });
       if (!newsCache[key]) newsCache[key] = await newsJobs[key];
-      else newsJobs[key].then(c => { newsCache[key] = c; try { localStorage.setItem('ulisse.news', JSON.stringify(newsCache)); } catch (e) { } if (newsTab === key && box.isConnected && !document.querySelector('.sheet-bg')) render(); }).catch(() => { });
+      else newsJobs[key].then(c => { newsCache[key] = c; try { localStorage.setItem('ulisse.news', JSON.stringify(newsCache)); } catch (e) { } if (box.isConnected && !document.querySelector('.sheet-bg')) render(); }).catch(() => { });
       try { localStorage.setItem('ulisse.news', JSON.stringify(newsCache)); } catch (e) { }
     }
-    if (newsTab !== key || !box.isConnected) return;
+    if ((!forceKey && newsTab !== key) || !box.isConnected) return;
     const c = newsCache[key];
     box.replaceChildren(h('div', { class: 'row between' }, h('span', { class: 'mono' }, `${c.cl.length} storie · ${c.srv ? 'raccolte dalla redazione' : c.ok + '/' + c.tot + ' fonti raggiunte'} · ${fmtDate(c.t)}`),
       h('button', { class: 'btn small ghost', onclick: () => { delete newsCache[key]; render(); } }, '↻')), ...c.cl.map(newsCard));
@@ -320,36 +379,51 @@ function viewScopri() {
   search.addEventListener('keydown', e => {
     if (e.key !== 'Enter' || !search.value.trim()) return;
     const qv = search.value.trim();
-    results.replaceChildren(h('button', { class: 'card', style: { cursor: 'pointer', textAlign: 'left', borderColor: 'var(--ink)' }, onclick: () => openTopic(catalogAdd(qv, 'Scoperti', '')) }, h('b', null, 'Esplora «' + qv + '»'), P('Apri l\'argomento con lezione, podcast, libri e rami.', 'small muted')), h('div', { class: 'spin' }));
-    wikiSearch(qv, 5).then(rs => { results.lastChild.remove(); results.append(...rs.map(r => h('button', { class: 'card flat', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => openTopic(catalogAdd(r.title, 'Scoperti', r.snippet.slice(0, 140))) }, h('b', null, r.title), h('span', { class: 'small muted' }, r.snippet + '…')))); }).catch(() => results.lastChild.remove());
+    results.replaceChildren(h('button', { class: 'card', style: { cursor: 'pointer', textAlign: 'left', borderColor: 'var(--terra)' }, onclick: () => openTopic(catalogAdd(qv, 'Scoperti', '')) }, h('b', null, 'Esplora «' + qv + '»'), P('Lezione, voce, podcast e libri su questo argomento.', 'small muted')));
   });
+  const ready = PREP.items.filter(p => p.kind === 'passione').sort((a, b) => b.date.localeCompare(a.date));
+  const readyFor = id => ready.find(p => p.topic === id);
+  const dtReady = readyFor(dt.id);
+  const otd = h('div', null, h('div', { class: 'spin' }));
+  onThisDay().then(ev => {
+    const r = seeded('otd' + today()); const pick = ev.slice().sort(() => r() - .5).slice(0, 5).sort((a, b) => a.year - b.year);
+    otd.replaceChildren(...pick.map(e => h('button', { class: 'card flat', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => openTopic(catalogAdd(e.page, 'Storia', e.text.slice(0, 140))) },
+      h('div', { class: 'row', style: { flexWrap: 'nowrap', alignItems: 'flex-start' } }, e.thumb ? h('img', { class: 'thumb', src: e.thumb, alt: '', style: { width: '56px', height: '56px' }, onerror: ev2 => ev2.target.remove() }) : null,
+        h('div', null, h('span', { class: 'mono' }, e.year), h('div', { class: 'small' }, e.text))))));
+  }).catch(() => otd.replaceChildren(P('Non disponibile ora.', 'small muted')));
+  const tfa = h('div');
+  featuredToday().then(f => { if (f) tfa.replaceChildren(h('button', { class: 'card', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => openTopic(catalogAdd(f.title, 'Scoperti', '')) },
+    h('span', { class: 'mono' }, 'La voce del giorno'), h('div', { class: 'row', style: { flexWrap: 'nowrap', alignItems: 'flex-start' } }, f.thumb ? h('img', { class: 'thumb', src: f.thumb, alt: '' }) : null, h('div', null, h('h3', null, f.title), P((f.extract || '').split(/(?<=\.)\s/).slice(0, 2).join(' '), 'small muted'))))); }).catch(() => { });
   const fresh = Object.values(S.catalog).sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 10);
-  return [header('Scopri', 'allarga lo sguardo'), t, lv,
-    h('button', { class: 'card', style: { cursor: 'pointer', textAlign: 'left', borderColor: 'var(--ink)' }, onclick: () => openTopic(dt.id) },
-      h('span', { class: 'mono' }, 'Proposta del giorno · ' + dt.c), h('h2', null, dt.n), dt.hk && P(dt.hk, '')),
-    (() => { const n = prepLatest().find(p => p.kind === 'passione'); return n ? h('div', { class: 'card' }, h('span', { class: 'mono' }, 'Preparata stanotte'), prepRow(n)) : null; })(),
+  return [header('Scopri', 'allarga lo sguardo'), t,
+    h('div', { class: 'card hero' }, h('span', { class: 'mono' }, 'Proposta del giorno · ' + dt.c), h('h2', null, dt.n), dt.hk && P(dt.hk, ''),
+      h('div', { class: 'row' }, dtReady ? h('button', { class: 'btn primary', onclick: () => openPrepared(dtReady) }, '▶ Lezione pronta · ' + dtReady.chapters + ' capitoli') : null, h('button', { class: 'btn', onclick: () => openTopic(dt.id) }, 'Esplora'))),
+    ready.length ? [h('h2', null, 'Pronte da scoprire'), h('div', { class: 'scrollx', style: { gap: '10px' } }, ready.slice(0, 12).map(p => h('button', { class: 'card', style: { cursor: 'pointer', textAlign: 'left', minWidth: '230px', maxWidth: '260px' }, onclick: () => openPrepared(p) },
+      h('span', { class: 'mono' }, (topicOf(p.topic) || {}).c || 'Scoperta'), h('b', null, p.title), p.summary && h('span', { class: 'small muted' }, p.summary), h('span', { class: 'pill-ready' }, '~' + (p.chapters * 3) + ' min'))))] : null,
+    tfa,
+    card(h('h2', null, 'Accadde oggi'), P('Tocca un evento per scoprirne la storia.', 'small muted'), otd),
     search, results,
-    fresh.length ? flat(h('span', { class: 'mono' }, 'Rami scoperti di recente'), h('div', { class: 'chips' }, fresh.map(x => h('button', { class: 'chip', onclick: () => openTopic(x.id) }, x.n)))) : null,
-    flat(h('span', { class: 'mono' }, 'Tre idee a caso'), h('div', { class: 'chips' }, (() => { const r = seeded('tre' + today() + Object.keys(S.explored).length); const p = allTopics().filter(x => !S.explored[x.id]); return [0, 1, 2].map(() => p.splice(Math.floor(r() * p.length), 1)[0]).filter(Boolean); })().map(x => h('button', { class: 'chip', onclick: () => openTopic(x.id) }, x.n + ' →'))))];
+    fresh.length ? flat(h('span', { class: 'mono' }, 'Rami che hai scoperto'), h('div', { class: 'chips' }, fresh.map(x => h('button', { class: 'chip', onclick: () => openTopic(x.id) }, x.n)))) : null,
+    h('details', { class: 'card flat' }, h('summary', { style: { cursor: 'pointer' } }, h('b', null, 'Livello e modo di esplorare')), lv)];
 }
 function openTopic(id) {
   const t = topicOf(id); if (!t) return;
   S.explored[id] = (S.explored[id] || 0) + 1; bumpInterest([id], 1); addLog('scoperta', 'esplora', t.n, 0.5);
   contAdd({ type: 'topic', id, title: t.n, area: 'scoperta' });
   const series = (S.series[id] || []).map(x => S.lessons[x]).filter(Boolean);
-  const nightly = PREP.items.filter(p => p.topic === id);
+  const nightly = PREP.items.filter(p => p.topic === id || (p.kind === 'passione' && p.title && p.title.toLowerCase().includes(String(t.n).toLowerCase())));
   const favBtn = h('button', { class: 'btn small', 'aria-pressed': S.favs.includes(id) ? 'true' : 'false', onclick: () => {
     if (S.favs.includes(id)) S.favs = S.favs.filter(x => x !== id); else { S.favs.push(id); bumpInterest([id], 3); toast('Aggiunto alle passioni'); }
     favBtn.setAttribute('aria-pressed', S.favs.includes(id) ? 'true' : 'false'); save();
   } }, '★ Passione');
   const sum = h('div', null, h('div', { class: 'spin' }));
-  wikiSummary(t.w).then(s => sum.replaceChildren(h('div', { class: 'row', style: { alignItems: 'flex-start', flexWrap: 'nowrap' } },
+  wikiResolve(t.w || t.n).then(s => sum.replaceChildren(h('div', { class: 'row', style: { alignItems: 'flex-start', flexWrap: 'nowrap' } },
     s.thumbnail && h('img', { class: 'thumb', src: s.thumbnail.source, alt: '', onerror: e => e.target.remove() }),
     h('div', { class: 'grow' }, P(s.extract || '', 'small'))), wikiReader(s.title || t.w))).catch(() => sum.replaceChildren(P('Nessuna voce enciclopedica trovata.', 'small muted')));
   // rami: catalogo, figli scoperti, voci simili
   const kids = Object.values(S.catalog).filter(c => c.from === id);
-  const ramiBox = h('div', { class: 'chips' }, t.r.map(r => TOP[r] || S.catalog[r]).filter(Boolean).concat(kids).map(x => h('button', { class: 'chip', onclick: () => { close(); openTopic(x.id); } }, x.n + ' →')));
-  wikiRelated(t.w, 6).then(rel => ramiBox.append(...rel.filter(n => n.toLowerCase() !== t.n.toLowerCase()).map(n => h('button', { class: 'chip', style: { borderStyle: 'dashed' }, onclick: () => { const nid = catalogAdd(n, t.c, '', id); close(); openTopic(nid); } }, n + ' →')))).catch(() => { });
+  const ramiBox = h('div', { class: 'chips' }, t.r.map(r => TOP[r] || S.catalog[r]).filter(Boolean).concat(kids).map(x => h('button', { class: 'chip', onclick: () => { openTopic(x.id); } }, x.n + ' →')));
+  wikiRelated(t.w, 6).then(rel => ramiBox.append(...rel.filter(n => n.toLowerCase() !== t.n.toLowerCase()).map(n => h('button', { class: 'chip', style: { borderStyle: 'dashed' }, onclick: () => { const nid = catalogAdd(n, t.c, '', id); openTopic(nid); } }, n + ' →')))).catch(() => { });
   const learn = card(h('span', { class: 'mono' }, S.mode === 'verticale' ? 'Impara · in verticale' : 'Impara'), nightly.map(prepRow),
     series.length ? [series.map(l => h('button', { class: 'card flat', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => openLesson(l.id) }, h('b', null, l.title), h('span', { class: 'mono' }, (S.progress[l.id]?.done ? '✓ fatta · ' : '') + l.chapters.length + ' capitoli'))),
       h('button', { class: 'btn primary', onclick: () => genTopicLesson(t) }, '↓ Puntata successiva' + (series[series.length - 1].next ? ': ' + series[series.length - 1].next : ''))]
@@ -363,9 +437,9 @@ function openTopic(id) {
       h('button', { class: 'btn small ghost', onclick: () => { contDone('topic', id); toast('Tolto da «Da continuare»'); } }, 'Fatto per ora')),
     learn,
     card(h('span', { class: 'mono' }, 'Dall\'enciclopedia'), sum),
-    card(h('span', { class: 'mono' }, '🎧 Ascolta'), episodesBox(() => episodeSearch(t.n, 4), 'scoperta', 'Nessun episodio in italiano su questo tema.')),
+    card(h('span', { class: 'mono' }, '🎧 Ascolta'), episodesBox(() => episodeSearch(t.n, 4, true), 'scoperta', 'Nessun episodio in italiano davvero su questo tema.')),
     card(h('span', { class: 'mono' }, '📚 Leggi'), (() => { const b = h('div', null, h('div', { class: 'spin' })); bookSearch(t.n, 4).then(bs => b.replaceChildren(...(bs.length ? bs.map(x => h('div', { style: { padding: '6px 0', borderTop: '1px solid var(--soft)' } }, h('a', { href: x.link, target: '_blank', rel: 'noopener' }, x.title), h('div', { class: 'mono' }, [x.authors, x.year].filter(Boolean).join(' · ')))) : [P('Nessun libro trovato.', 'small muted')]))).catch(() => b.replaceChildren(P('Ricerca libri non disponibile.', 'small muted'))); return b; })()),
-    card(h('span', { class: 'mono' }, '▶ Guarda'), h('div', { class: 'row' }, linkBtn('https://www.youtube.com/results?search_query=' + encodeURIComponent(t.n + ' spiegato'), 'YouTube'), linkBtn('https://www.raiplay.it/ricerca.html?q=' + encodeURIComponent(t.n), 'RaiPlay'), linkBtn('https://www.raiplaysound.it/ricerca?q=' + encodeURIComponent(t.n), 'RaiPlay Sound'))),
+    card(h('span', { class: 'mono' }, '▶ Guarda e consulta'), h('div', { class: 'row' }, linkBtn('https://www.youtube.com/results?search_query=' + encodeURIComponent(t.n + ' spiegato documentario'), 'Video su YouTube'), linkBtn('https://www.treccani.it/enciclopedia/ricerca/' + encodeURIComponent(t.n) + '/', 'Enciclopedia Treccani'))),
     card(h('span', { class: 'mono' }, 'Rami · tratteggiati quelli nuovi'), ramiBox)
   ), () => render());
 }
@@ -380,7 +454,7 @@ function viewTecnico() {
   const q = techQ;
   searchPapers(q).then(ws => { if (techQ === q && list.isConnected) list.replaceChildren(...(ws.length ? ws.map(paperCard) : [h('div', { class: 'empty' }, 'Nessun risultato.')])); }).catch(() => list.replaceChildren(netError('OpenAlex')));
   return [header('Tecnico', 'paper resi digeribili'),
-    h('div', { class: 'scrollx' }, S.techKw.map(k => h('button', { class: 'chip', 'aria-pressed': k === techQ ? 'true' : 'false', onclick: () => { techQ = k; render(); } }, k))),
+    h('div', { class: 'scrollx' }, S.techKw.map(k => h('button', { class: 'chip', 'aria-pressed': k === techQ ? 'true' : 'false', onclick: () => { techQ = k; render(); } }, k)), h('button', { class: 'chip', onclick: techTopicsSheet }, '＋ / modifica')),
     inp, P('Fonte: OpenAlex, catalogo aperto della ricerca. Ultimi due anni.', 'small muted'),
     Object.values(S.lessons).filter(l => l.kind === 'tecnico').slice(-3).reverse().map(lessonCard), list];
 }
@@ -427,6 +501,37 @@ function hourCard(o, current) {
       h('button', { class: 'btn small', onclick: showAudio }, '🎧 Ascolta e prega'), h('button', { class: 'btn small ghost', onclick: () => { addLog('fede', 'liturgia', o.n, 2); toast('Segnata'); render(); } }, '✓ Pregata')),
     audio);
 }
+function gospelCard() {
+  const box = h('div', null, h('div', { class: 'spin' }));
+  serverNews().then(srv => {
+    const g = (srv.vangelo || [])[0];
+    if (!g) { box.replaceChildren(P('Il commento di oggi non è ancora disponibile.', 'small muted'), linkBtn('https://getupandwalk.gesuiti.it/', 'Apri Get Up and Walk')); return; }
+    box.replaceChildren(
+      h('div', { class: 'row' }, h('span', { class: 'pill-ready' }, g.oggi ? '✓ di oggi' : 'del ' + fmtDay(g.date)), h('span', { class: 'mono' }, g.ref)),
+      h('h3', null, g.title),
+      h('div', { class: 'row' }, h('button', { class: 'btn primary', onclick: () => gospelPrayer(g) }, 'Prega con il Vangelo'), linkBtn(g.link, 'Apri l\'originale', 'ghost')));
+  }).catch(() => box.replaceChildren(P('Non raggiungibile ora.', 'small muted'), linkBtn('https://getupandwalk.gesuiti.it/', 'Apri Get Up and Walk')));
+  return h('div', { class: 'card hero' }, h('span', { class: 'mono' }, 'Il Vangelo del giorno · Get Up and Walk, gesuiti'), box);
+}
+function gospelPrayer(g) {
+  // la pagina di Get Up and Walk è già una preghiera guidata: la si percorre un passo alla volta
+  const steps = []; let cur = [];
+  for (const p of g.paras) { cur.push(p); if (cur.join(' ').length > 420 || /^(Come un amico|Recito|Mi preparo|Chiedo|Leggo|Immagino|Mi metto)/i.test(p)) { steps.push(cur); cur = []; } }
+  if (cur.length) steps.push(cur);
+  let i = 0;
+  const host = pad();
+  openSheet(g.ref, host);
+  addLog('fede', 'vangelo', g.ref, 2);
+  const show = () => {
+    const done = i >= steps.length;
+    host.replaceChildren(h('div', { class: 'read-progress' }, h('div', { style: { width: Math.round(Math.min(i + 1, steps.length) / steps.length * 100) + '%' } })),
+      done ? card(h('h3', null, 'Amen.'), P('Se vuoi, lascia una riga nel diario su ciò che ti ha toccato.'), h('button', { class: 'btn', onclick: journalSheet }, 'Scrivi nel diario'), linkBtn(g.link, 'Fonte: Get Up and Walk', 'ghost'))
+        : card(h('span', { class: 'mono' }, `passo ${i + 1} di ${steps.length}`), h('div', { class: 'prose' }, steps[i].map(t => h('p', null, t)))),
+      !done && h('div', { class: 'row' }, h('button', { class: 'btn', disabled: i === 0, onclick: () => { i--; stopSpeak(); show(); } }, '‹'), h('button', { class: 'btn', onclick: () => speak(steps[i].join(' ')) }, '🔊'), h('button', { class: 'btn primary grow', onclick: () => { i++; stopSpeak(); show(); } }, i === steps.length - 1 ? 'Concludi' : 'Avanti ›')));
+    host.parentElement && (host.parentElement.scrollTop = 0);
+  };
+  show();
+}
 function viewSpecchio() {
   const cur = currentHour();
   const ref = h('input', { type: 'text', placeholder: 'Un brano a scelta, es. «Marco 4» o «Salmo 139»' });
@@ -436,13 +541,14 @@ function viewSpecchio() {
   const fede = Object.values(S.lessons).filter(l => l.kind === 'fede').sort((a, b) => (b.gen?.at || 0) - (a.gen?.at || 0));
   const jr = S.journal.slice(-4).reverse();
   return [header('Specchio', 'fermarsi, pregare, conoscersi'),
+    gospelCard(),
     hourCard(cur, true),
     h('details', { class: 'card flat' }, h('summary', { style: { cursor: 'pointer' } }, h('b', null, 'Le altre Ore della giornata')),
       pad(...HOURS.filter(o => o !== cur).map(o => hourCard(o, false)))),
     (() => { const n = prepLatest().find(p => p.mode === 'parola'); return n ? card(h('span', { class: 'mono' }, 'La Parola del giorno · preparata stanotte'), prepRow(n)) : null; })(),
     card(h('h2', null, 'La Parola'), P('Scegli un brano: l\'app ti spiega contesto storico, parole chiave, come lo ha letto la Chiesa e cosa può dire a te.'),
       h('div', { class: 'chips' }, BIBLE.map(([r, t]) => h('button', { class: 'chip', title: t, onclick: () => genFaithLesson('bible', r, t) }, r + ' · ' + t))), ref,
-      h('div', { class: 'row' }, linkBtn('https://www.vaticannews.va/it/vangelo-del-giorno-e-parola-del-giorno.html', 'Vangelo del giorno'), linkBtn('https://www.bibbiaedu.it/', 'Bibbia CEI', 'ghost'))),
+      h('div', { class: 'row' }, linkBtn('https://www.bibbiaedu.it/', 'Bibbia CEI', 'ghost'))),
     card(h('h2', null, 'Il perché della fede'), P('Domande serie, risposte con Scrittura, Catechismo, santi e anche le obiezioni.'),
       h('div', { class: 'chips' }, FAITH_Q.map(q => h('button', { class: 'chip', onclick: () => genFaithLesson('faith', q) }, q))), fq,
       linkBtn('https://www.vatican.va/archive/catechism_it/index_it.htm', 'Catechismo della Chiesa cattolica', 'ghost')),
@@ -454,35 +560,83 @@ function viewSpecchio() {
 }
 
 /* ======================= QUADERNO ======================= */
-let qTab = 'cont';
+let qTab = 'cont', qSearch = '';
+function noteSheet(n) {
+  n = n || {};
+  const isNew = !n.id;
+  const title = h('input', { type: 'text', value: n.title || '', placeholder: 'Titolo' });
+  const text = h('textarea', { placeholder: 'Scrivi la tua nota… (supporta **grassetto** ed elenchi con - )', style: { minHeight: '220px' } }); text.value = n.text || '';
+  const tags = h('input', { type: 'text', value: (n.tags || []).join(', '), placeholder: 'Etichette, separate da virgola' });
+  const close = openSheet(isNew ? 'Nuova nota' : 'Nota', pad(card(title, text, tags, n.from ? h('span', { class: 'mono' }, 'da: ' + n.from) : null,
+    h('div', { class: 'row' }, h('button', { class: 'btn primary grow', onclick: () => {
+      if (!title.value.trim() && !text.value.trim()) return;
+      const note = Object.assign(n, { id: n.id || uid(), title: title.value.trim() || 'Senza titolo', text: text.value, tags: tags.value.split(',').map(x => x.trim()).filter(Boolean), at: Date.now(), created: n.created || Date.now() });
+      S.notes = S.notes || []; if (isNew) S.notes.unshift(note); save(); toast('Nota salvata'); close();
+    } }, 'Salva'), !isNew && h('button', { class: 'btn', onclick: () => { S.notes = S.notes.filter(x => x !== n); save(); close(); } }, 'Elimina')))), () => render());
+}
+function notesMarkdown(list) {
+  return '# Note di Ulisse\n\n' + list.map(n => `## ${n.title}\n\n_${new Date(n.at).toLocaleDateString('it-IT')}${n.from ? ' · da «' + n.from + '»' : ''}${(n.tags || []).length ? ' · ' + n.tags.map(t => '#' + t.replace(/\s+/g, '-')).join(' ') : ''}_\n\n${n.text}\n`).join('\n');
+}
+function download(name, text, type) {
+  try { const a = h('a', { href: URL.createObjectURL(new Blob([text], { type })), download: name }); document.body.append(a); a.click(); a.remove(); } catch (e) { copyText(text); }
+}
+function exportSheet() {
+  const notes = S.notes || [];
+  const cardsCsv = 'domanda;risposta;origine;prossimo ripasso\n' + S.cards.map(c => [c.front, c.back, c.from, c.due].map(x => '"' + String(x || '').replace(/"/g, '""') + '"').join(';')).join('\n');
+  openSheet('Esporta', pad(card(
+    h('h3', null, 'Note (' + notes.length + ')'), P('In Markdown: si apre con Obsidian, Notion, Google Docs, Word e qualsiasi editor di testo.', 'small muted'),
+    h('div', { class: 'row' }, h('button', { class: 'btn primary', onclick: () => download('ulisse-note-' + today() + '.md', notesMarkdown(notes), 'text/markdown') }, 'Scarica .md'), h('button', { class: 'btn', onclick: () => copyText(notesMarkdown(notes)) }, 'Copia testo'))),
+    card(h('h3', null, 'Carte di ripasso (' + S.cards.length + ')'), P('In CSV: si apre con Excel o Fogli Google, o si importa in Anki.', 'small muted'),
+      h('div', { class: 'row' }, h('button', { class: 'btn', onclick: () => download('ulisse-carte-' + today() + '.csv', cardsCsv, 'text/csv') }, 'Scarica .csv'))),
+    card(h('h3', null, 'Diario (' + S.journal.length + ')'), h('button', { class: 'btn', onclick: () => download('ulisse-diario-' + today() + '.md', '# Diario\n\n' + S.journal.map(j => `## ${j.d}${j.prompt ? ' · ' + j.prompt : ''}\n\n${j.text}\n`).join('\n'), 'text/markdown') }, 'Scarica .md'))));
+}
 function viewQuaderno() {
   const due = dueCards().length;
-  const t = tabs([['cont', 'Da continuare'], ['carte', 'Carte'], ['lezioni', 'Lezioni'], ['storico', 'Storico']], qTab, k => { qTab = k; });
-  let body;
-  if (qTab === 'cont') body = S.cont.length ? [card(S.cont.map(contRow))] : [h('div', { class: 'empty' }, 'Niente in sospeso. Lezioni, argomenti ed episodi lasciati a metà compaiono qui.')];
-  else if (qTab === 'carte') {
-    const flt = h('input', { type: 'search', placeholder: 'Cerca tra le carte' });
-    const box = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px' } });
-    const paint = () => {
-      const q = flt.value.toLowerCase();
-      const cs = S.cards.filter(c => !q || (c.front + c.back + c.from).toLowerCase().includes(q)).slice().reverse().slice(0, 150);
-      box.replaceChildren(...(cs.length ? cs.map(c => h('details', { class: 'card flat' }, h('summary', { style: { cursor: 'pointer' } }, h('b', null, c.front)),
+  const notes = S.notes || [];
+  const search = h('input', { type: 'search', placeholder: 'Cerca in note, carte, lezioni e diario', value: qSearch });
+  const t = tabs([['cont', 'Da continuare'], ['note', 'Note · ' + notes.length], ['carte', 'Carte · ' + S.cards.length], ['lezioni', 'Lezioni'], ['storico', 'Storico']], qTab, k => { qTab = k; });
+  const results = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px' } });
+  const doSearch = () => {
+    qSearch = search.value; const q = qSearch.toLowerCase().trim();
+    if (!q) { results.replaceChildren(); body.hidden = false; return; }
+    body.hidden = true;
+    const hit = s => String(s || '').toLowerCase().includes(q);
+    const out = [];
+    notes.filter(n => hit(n.title) || hit(n.text) || (n.tags || []).some(hit)).forEach(n => out.push(h('button', { class: 'card flat', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => noteSheet(n) }, h('span', { class: 'mono' }, '📝 nota'), h('b', null, n.title), h('span', { class: 'small muted' }, n.text.slice(0, 140)))));
+    S.cards.filter(c => hit(c.front) || hit(c.back)).slice(0, 30).forEach(c => out.push(h('details', { class: 'card flat' }, h('summary', null, h('span', { class: 'mono' }, '🗂 carta · '), h('b', null, c.front)), P(c.back))));
+    Object.values(allLessons()).filter(l => l.chapters && (hit(l.title) || hit(l.summary))).slice(0, 20).forEach(l => out.push(lessonCard(l)));
+    S.journal.filter(j => hit(j.text) || hit(j.prompt)).forEach(j => out.push(flat(h('span', { class: 'mono' }, '✎ diario · ' + j.d), P(j.text))));
+    results.replaceChildren(...(out.length ? out : [h('div', { class: 'empty' }, 'Nessun risultato.')]));
+  };
+  search.addEventListener('input', doSearch);
+  let bodyKids;
+  if (qTab === 'cont') bodyKids = S.cont.length ? [card(S.cont.map(contRow))] : [h('div', { class: 'empty' }, 'Niente in sospeso. Lezioni e argomenti lasciati a metà compaiono qui.')];
+  else if (qTab === 'note') {
+    const tagsAll = [...new Set(notes.flatMap(n => n.tags || []))];
+    bodyKids = [h('div', { class: 'row' }, h('button', { class: 'btn primary grow', onclick: () => noteSheet() }, '+ Nuova nota'), h('button', { class: 'btn', onclick: exportSheet }, 'Esporta')),
+      tagsAll.length ? h('div', { class: 'chips' }, tagsAll.map(tg => h('button', { class: 'chip', onclick: () => { search.value = tg; doSearch(); } }, '#' + tg))) : null,
+      notes.length ? notes.map(n => h('button', { class: 'card', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => noteSheet(n) }, h('span', { class: 'mono' }, new Date(n.at).toLocaleDateString('it-IT') + (n.from ? ' · ' + n.from : '')), h('b', null, n.title), n.text && h('div', { class: 'small muted' }, n.text.slice(0, 200)), (n.tags || []).length ? h('div', { class: 'chips' }, n.tags.map(tg => h('span', { class: 'tag muted' }, '#' + tg))) : null))
+        : h('div', { class: 'empty' }, 'Nessuna nota. Puoi scriverne una qui o con «📝 Nota» dentro ogni lezione.')];
+  } else if (qTab === 'carte') {
+    const cs = S.cards.slice().reverse().slice(0, 200);
+    bodyKids = [h('div', { class: 'row' }, h('button', { class: 'btn grow' + (due ? ' primary' : ''), onclick: reviewSheet }, due ? `Ripassa ${due} carte` : 'Niente da ripassare oggi'), h('button', { class: 'btn', onclick: newCardSheet }, '+ Carta'), h('button', { class: 'btn', onclick: exportSheet }, 'Esporta')),
+      cs.length ? cs.map(c => h('details', { class: 'card flat' }, h('summary', { style: { cursor: 'pointer' } }, h('b', null, c.front)),
         h('p', { style: { margin: '6px 0' } }, c.back), h('div', { class: 'row between' }, h('span', { class: 'mono' }, (c.from || '') + ' · ripasso ' + c.due),
-          h('button', { class: 'btn small ghost', onclick: () => { S.cards = S.cards.filter(x => x !== c); save(); paint(); } }, 'Elimina'))))
-        : [h('div', { class: 'empty' }, 'Nessuna carta. Lezioni, glossari e paper ti permettono di salvarne.')]));
-    };
-    flt.addEventListener('input', paint); paint();
-    body = [h('div', { class: 'row' }, h('button', { class: 'btn grow' + (due ? ' primary' : ''), onclick: reviewSheet }, due ? `Ripassa ${due} carte` : 'Niente da ripassare oggi'), h('button', { class: 'btn', onclick: newCardSheet }, '+ Carta')), flt, box];
+          h('button', { class: 'btn small ghost', onclick: () => { S.cards = S.cards.filter(x => x !== c); save(); render(); } }, 'Elimina')))) : h('div', { class: 'empty' }, 'Nessuna carta.')];
   } else if (qTab === 'lezioni') {
     const ls = Object.values(allLessons()).filter(l => l.chapters).sort((a, b) => (b.gen?.at || 0) - (a.gen?.at || 0));
-    body = [h('div', { class: 'row' }, h('button', { class: 'btn grow', onclick: importSheet }, 'Importa una lezione')),
-      ls.map(L => h('div', null, lessonCard(L), S.lessons[L.id] && h('button', { class: 'btn small ghost', onclick: () => { delete S.lessons[L.id]; contDone('lesson', L.id); save(); render(); } }, 'Elimina')))];
+    const groups = {}; ls.forEach(l => (groups[themeOf(l)] = groups[themeOf(l)] || []).push(l));
+    bodyKids = [h('button', { class: 'btn', onclick: importSheet }, 'Importa una lezione'),
+      Object.entries(groups).map(([g, list]) => h('details', { class: 'card flat', open: true }, h('summary', { style: { cursor: 'pointer' } }, h('b', null, g + ' · ' + list.length)),
+        pad(...list.map(L => h('div', null, lessonCard(L), S.lessons[L.id] && h('button', { class: 'btn small ghost', onclick: () => { delete S.lessons[L.id]; contDone('lesson', L.id); save(); render(); } }, 'Elimina'))))))];
   } else {
-    const ev = S.log.slice(-80).reverse();
-    body = [ev.length ? ev.map(e => h('div', { class: 'row', style: { borderTop: '1px solid var(--soft)', paddingTop: '6px' } }, h('span', { class: 'dotc', style: { background: areaColor(e.area) } }), h('span', { class: 'mono' }, e.d), h('span', { class: 'small grow' }, e.kind + ' · ' + e.title)))
+    const ev = S.log.filter(e => e.kind !== 'sessione').slice(-100).reverse();
+    bodyKids = [ev.length ? ev.map(e => h('div', { class: 'row', style: { borderTop: '1px solid var(--soft)', paddingTop: '6px' } }, h('span', { class: 'dotc', style: { background: areaColor(e.area) } }), h('span', { class: 'mono' }, e.d), h('span', { class: 'small grow' }, e.kind + ' · ' + e.title)))
       : h('div', { class: 'empty' }, 'Ancora nulla.')];
   }
-  return [header('Quaderno', `${S.cards.length} carte · ${Object.keys(allLessons()).length} lezioni`), t, ...body];
+  const body = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } }, ...bodyKids.flat(Infinity).filter(Boolean));
+  if (qSearch) setTimeout(doSearch, 0);
+  return [header('Quaderno', `${notes.length} note · ${S.cards.length} carte · ${Object.values(allLessons()).filter(l => l.chapters).length} lezioni`), search, results, t, body];
 }
 
 /* ======================= IMPOSTAZIONI ======================= */
@@ -528,6 +682,9 @@ function settingsSheet() {
     card(h('h3', null, 'Redazione notturna'),
       P('Ogni notte un modello aperto, su un computer gratuito di GitHub, prepara i percorsi sulle notizie principali, la scoperta e la Parola del giorno. Li trovi la mattina, uguali per tutti quelli che usano l\'app.'),
       P(night.length ? `Ultima edizione: ${fmtDay(night[0].date)} · ${night.length} contenuti · modello ${PREP.modello || ''}` : 'Nessuna edizione ancora disponibile.', 'small muted')),
+    card(h('h3', null, 'Quale motore usare al momento'),
+      h('div', { class: 'chips' }, [['veloce', '⚡ Veloce (Groq)'], ['telefono', '📱 Sul telefono (lento, offline)']].map(([k, l]) => h('button', { class: 'chip', 'aria-pressed': (S.ai.mode || 'veloce') === k ? 'true' : 'false', onclick: ev => { S.ai.mode = k; save(); ev.currentTarget.parentElement.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === ev.currentTarget ? 'true' : 'false')); } }, l))),
+      P('Veloce: 10-20 secondi, scrive meglio, serve la chiave Groq. Sul telefono: nessun account e funziona offline, ma un capitolo richiede minuti e il modello è piccolo. I contenuti preparati in anticipo sono gli stessi in entrambi i casi.', 'small muted')),
     card(h('h3', null, 'Motore veloce · Groq (consigliato)'),
       P('Per le notizie non ancora pronte: spiegazione completa in 10-20 secondi. Gratis con un account Groq (niente carta di credito); se un modello raggiunge il limite del minuto l\'app passa da sola a un altro, e in ultimo al modello sul telefono. Groq non usa i tuoi dati per addestrare i modelli.', 'small'),
       h('label', { class: 'lab' }, 'Chiave Groq · ', h('a', { href: 'https://console.groq.com/keys', target: '_blank', rel: 'noopener' }, 'creala qui gratis')), groqKey,
@@ -537,6 +694,12 @@ function settingsSheet() {
         catch (e) { groqStatus.textContent = '✗ ' + (e.message || e); S.ai.groqKey = old; }
       } }, 'Prova la chiave')), groqStatus),
     engineCard(),
+    card(h('h3', null, 'Lettura'), h('label', { class: 'lab' }, 'Dimensione del testo'),
+      h('div', { class: 'chips' }, [[0.92, 'Piccolo'], [1, 'Normale'], [1.1, 'Grande'], [1.22, 'Molto grande']].map(([v, l]) => h('button', { class: 'chip', 'aria-pressed': (S.fontScale || 1) === v ? 'true' : 'false', onclick: ev => { S.fontScale = v; save(); applyLook(); ev.currentTarget.parentElement.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === ev.currentTarget ? 'true' : 'false')); } }, l))),
+      h('label', { class: 'lab' }, 'Aspetto'),
+      h('div', { class: 'chips' }, [['auto', 'Come il telefono'], ['light', 'Chiaro'], ['dark', 'Scuro']].map(([v, l]) => h('button', { class: 'chip', 'aria-pressed': (S.theme || 'auto') === v ? 'true' : 'false', onclick: ev => { S.theme = v; save(); applyLook(); ev.currentTarget.parentElement.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === ev.currentTarget ? 'true' : 'false')); } }, l))),
+      h('label', { class: 'lab' }, 'Obiettivo giornaliero di punti'),
+      h('div', { class: 'chips' }, [30, 60, 100, 150].map(v => h('button', { class: 'chip', 'aria-pressed': (S.xpGoal || 60) === v ? 'true' : 'false', onclick: ev => { S.xpGoal = v; save(); ev.currentTarget.parentElement.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === ev.currentTarget ? 'true' : 'false')); } }, v)))),
     card(h('label', { class: 'lab' }, 'Nome'), name,
       h('label', { class: 'lab' }, 'Fonti delle notizie (una per riga: sezione | nome | indirizzo RSS). Sezioni: ' + NEWS_TAGS.join(', ')), feeds,
       h('label', { class: 'lab' }, 'I miei temi (separati da virgola)'), niche,
@@ -558,9 +721,10 @@ function settingsSheet() {
       h('div', { class: 'row' }, h('button', { class: 'btn', onclick: () => copyText(JSON.stringify(S)) }, 'Copia backup'),
         h('button', { class: 'btn', onclick: () => { try { const a = h('a', { href: URL.createObjectURL(new Blob([JSON.stringify(S)], { type: 'application/json' })), download: 'ulisse-backup-' + today() + '.json' }); document.body.append(a); a.click(); a.remove(); } catch (e) { toast('Download non disponibile qui'); } } }, 'Scarica file')),
       imp, h('button', { class: 'btn', onclick: () => { try { const d = JSON.parse(imp.value); if (!d.v) throw 0; localStorage.setItem(KEY, JSON.stringify(d)); S = load();
+applyLook();
 for (const [id, L] of Object.entries(S.lessons)) if (L.gen && L.gen.notte) { S.prepMeta = S.prepMeta || {}; S.prepMeta[id] = { title: L.title, kind: L.kind, area: L.area, tags: L.tags || [], gen: { topic: L.gen.topic } }; delete S.lessons[id]; }
 save(); close(); render(); toast('Backup ripristinato'); } catch (e) { toast('Backup non valido'); } } }, 'Ripristina')),
-    flat(h('span', { class: 'mono' }, 'Ulisse v1.0'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Ollama (notte) e WebLLM (telefono). Codice: github.com/Torre28/Ulisse', 'small muted'))));
+    flat(h('span', { class: 'mono' }, 'Ulisse v1.1'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Ollama (notte) e WebLLM (telefono). Codice: github.com/Torre28/Ulisse', 'small muted'))));
 }
 
 /* primo avvio: per chi riceve l'app da un amico */
@@ -599,7 +763,7 @@ function render() {
 }
 function go(k) {
   if (!VIEWS[k]) k = 'oggi';
-  document.querySelectorAll('.sheet-bg').forEach(e => e.remove()); stopSpeak();
+  closeAllSheets();
   route = k; try { if (location.hash !== '#' + k) history.replaceState(null, '', '#' + k); } catch (e) { }
   render(); window.scrollTo(0, 0);
 }
@@ -613,14 +777,24 @@ function pickQuest(area, type, avoid) {
 function ensureTodayQuests(force) {
   const d = today();
   if (force) S.quests = S.quests.filter(q => !(q.d === d && q.src === 'app' && !q.done));
-  if (S.quests.some(q => q.d === d && q.src === 'app')) return;
-  const b = balance(14), r = seeded(d);
-  const order = Object.keys(AREAS).sort((x, y) => (b[x] - b[y]) || (r() - .5));
-  // main: area più trascurata; side: seconda più trascurata
-  S.quests.push({ id: uid(), d, src: 'app', type: 'main', area: order[0], t: pickQuest(order[0], 'main'), done: false, why: whyText(order[0], b) });
-  S.quests.push({ id: uid(), d, src: 'app', type: 'side', area: order[1], t: pickQuest(order[1], 'side'), done: false, why: whyText(order[1], b) });
+  if (S.autoQuests === false) return;
+  const mine = S.quests.filter(q => q.d === d && q.src === 'app');
+  const want = { main: S.nMain || 2, side: S.nSide || 3 };
+  const order = neglected();
+  // le aree più trascurate ricevono le missioni principali, le successive quelle secondarie
+  let k = 0;
+  for (const type of ['main', 'side']) {
+    let have = mine.filter(q => q.type === type).length;
+    while (have < want[type] && k < order.length * 2) {
+      const a = order[k % order.length]; k++;
+      if (mine.some(q => q.area === a && q.type === type)) continue;
+      const q = { id: uid(), d, src: 'app', type, area: a, t: pickQuest(a, type), done: false, why: whyText(a, balance(14)) };
+      S.quests.push(q); mine.push(q); have++;
+    }
+  }
   save();
 }
+function neglected() { const b = balance(14), r = seeded(today()); return Object.keys(AREAS).sort((x, y) => (b[x] - b[y]) || (r() - .5)); }
 function whyText(a, b) { const n = b[a]; return n === 0 ? `Nelle ultime due settimane non hai fatto nulla in «${AREAS[a].n}».` : `«${AREAS[a].n}» è tra le aree meno curate nelle ultime due settimane (${n}).`; }
 
 
@@ -706,4 +880,32 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   navigator.serviceWorker.register('sw.js').then(reg => {
     reg.addEventListener('updatefound', () => { const nw = reg.installing; nw && nw.addEventListener('statechange', () => { if (nw.state === 'installed' && navigator.serviceWorker.controller) toast('Nuova versione di Ulisse: chiudi e riapri l\'app', 5000); }); });
   }).catch(() => { });
+}
+
+function questSettings() {
+  const close = openSheet('Missioni', pad(card(
+    h('label', { class: 'row' }, h('input', { type: 'checkbox', checked: S.autoQuests !== false ? true : null, onchange: e => { S.autoQuests = e.target.checked; if (!S.autoQuests) S.quests = S.quests.filter(q => !(q.src === 'app' && q.d === today() && !q.done)); save(); } }), 'Missioni proposte dall\'app (puntano alle aree che trascuri)'),
+    h('label', { class: 'lab' }, 'Quante main quest al giorno'), h('div', { class: 'chips' }, [1, 2, 3].map(n => h('button', { class: 'chip', 'aria-pressed': (S.nMain || 2) === n ? 'true' : 'false', onclick: ev => { S.nMain = n; save(); ev.currentTarget.parentElement.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === ev.currentTarget ? 'true' : 'false')); } }, n))),
+    h('label', { class: 'lab' }, 'Quante side quest al giorno'), h('div', { class: 'chips' }, [2, 3, 4, 5].map(n => h('button', { class: 'chip', 'aria-pressed': (S.nSide || 3) === n ? 'true' : 'false', onclick: ev => { S.nSide = n; save(); ev.currentTarget.parentElement.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === ev.currentTarget ? 'true' : 'false')); } }, n))),
+    P('Se le spegni restano solo le tue, ma l\'app continua a dirti quali aree stai trascurando.', 'small muted'),
+    h('button', { class: 'btn primary', onclick: () => { close(); ensureTodayQuests(); render(); } }, 'Fatto'))));
+}
+
+function techTopicsSheet() {
+  const box = pad();
+  const paint = () => {
+    const inp = h('input', { type: 'text', placeholder: 'Nuovo argomento (meglio in inglese), poi invio' });
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter' && inp.value.trim()) { S.techKw.push(inp.value.trim()); save(); paint(); } });
+    box.replaceChildren(card(P('Gli argomenti su cui vuoi restare aggiornato: per ognuno l\'app cerca i paper degli ultimi due anni.', 'small'),
+      h('div', { class: 'chips' }, S.techKw.map(k => h('button', { class: 'chip', onclick: () => { S.techKw = S.techKw.filter(x => x !== k); save(); paint(); } }, k + ' ✕'))), inp,
+      h('button', { class: 'btn primary', onclick: () => { closeAllSheets(); techQ = S.techKw[0] || null; render(); } }, 'Fatto')));
+  };
+  paint(); openSheet('Argomenti tecnici', box);
+}
+
+/* dimensione del testo e tema chiaro/scuro scelti dall'utente */
+function applyLook() {
+  document.documentElement.style.fontSize = ((S && S.fontScale) || 1) * 100 + '%';
+  document.body.style.fontSize = ((S && S.fontScale) || 1) * 17 + 'px';
+  document.documentElement.dataset.theme = (S && S.theme) || 'auto';
 }

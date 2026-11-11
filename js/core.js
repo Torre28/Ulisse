@@ -63,14 +63,31 @@ async function copyText(txt) {
     return false;
   }
 }
+/* fogli impilati: aprire un approfondimento da una lezione non la chiude, «‹» torna indietro.
+   Anche il gesto «indietro» di Android chiude solo il foglio in cima. */
+const SHEETS = [];
+function closeTop() {
+  const top = SHEETS.pop(); if (!top) return false;
+  top.bg.remove(); stopSpeak(); top.onClose && top.onClose();
+  const prev = SHEETS[SHEETS.length - 1]; if (prev) prev.bg.style.display = '';
+  return true;
+}
+function closeAllSheets() { while (SHEETS.length) { const t = SHEETS.pop(); t.bg.remove(); } stopSpeak(); }
+window.addEventListener('popstate', () => { if (SHEETS.length) closeTop(); });
 function openSheet(title, content, onClose) {
   const bg = h('div', { class: 'sheet-bg' });
-  const close = () => { if (!bg.isConnected) return; bg.remove(); stopSpeak(); onClose && onClose(); };
+  const entry = { bg, onClose };
+  const close = () => { const i = SHEETS.indexOf(entry); if (i < 0) return; if (i === SHEETS.length - 1) closeTop(); else { SHEETS.splice(i, 1); bg.remove(); onClose && onClose(); } };
+  const back = SHEETS.length ? h('button', { class: 'iconbtn', 'aria-label': 'Indietro', onclick: close }, '‹') : null;
   const sh = h('div', { class: 'sheet', role: 'dialog', 'aria-label': title },
-    h('div', { class: 'sheet-head' }, h('h2', null, title), h('button', { class: 'iconbtn', 'aria-label': 'Chiudi', onclick: close }, '✕')),
+    h('div', { class: 'sheet-head' }, h('div', { class: 'row', style: { flexWrap: 'nowrap', minWidth: 0 } }, back, h('h2', null, title)),
+      h('button', { class: 'iconbtn', 'aria-label': back ? 'Chiudi tutto' : 'Chiudi', onclick: () => { if (back) { closeAllSheets(); typeof render === 'function' && render(); } else close(); } }, '✕')),
     content);
   bg.append(sh);
   bg.addEventListener('click', e => { if (e.target === bg) close(); });
+  const prev = SHEETS[SHEETS.length - 1]; if (prev) prev.bg.style.display = 'none';
+  SHEETS.push(entry);
+  try { history.pushState({ sheet: SHEETS.length }, ''); } catch (e) { }
   document.body.append(bg);
   return close;
 }
@@ -125,7 +142,7 @@ function defaults() {
     v: 3, name: '', onboarded: false, level: 2, mode: 'orizzontale',
     ai: { provider: 'locale', key: '', model: '', localModel: '' },
     feeds: DEFAULT_FEEDS.map(f => Object.assign({}, f)),
-    niche: ['semiconduttori', 'spazio', 'Firenze'],
+    niche: [], temi: ['Spazio e astronomia', 'Elettronica e semiconduttori', 'Firenze'],
     techKw: ['MMIC 60 GHz', 'reconfigurable intelligent surface active', 'negative resistance amplifier'],
     podcasts: DEFAULT_PODCASTS.map(p => Object.assign({}, p)),
     interests: {}, explored: {}, favs: [], catalog: {}, series: {}, cont: [],
@@ -141,6 +158,7 @@ function load() {
       const S2 = Object.assign(base, d);
       S2.ai = Object.assign(defaults().ai, d.ai || {});
       if (!d.v || d.v < 2) { S2.feeds = DEFAULT_FEEDS.map(f => Object.assign({}, f)); }
+      if (!d.temi) { S2.temi = defaults().temi; if (JSON.stringify(d.niche) === JSON.stringify(['semiconduttori', 'spazio', 'Firenze'])) S2.niche = []; }
       if (!d.v || d.v < 3) { if (S2.ai.provider !== 'gemini' || !S2.ai.key) S2.ai.provider = 'locale'; if (d.name || (d.log || []).length) S2.onboarded = true; S2.v = 3; }
       return S2;
     }

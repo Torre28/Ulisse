@@ -132,7 +132,7 @@ async function groqCall(system, user, maxTok) {
   }
   throw Object.assign(last || new Error('Groq non disponibile'), { groq: true });
 }
-const hasGroq = () => !!S.ai.groqKey;
+const hasGroq = () => !!S.ai.groqKey && S.ai.mode !== 'telefono';
 
 /* ---------------- interfaccia comune ---------------- */
 // ordine: Groq (veloce) → Gemini (se scelto) → modello sul telefono
@@ -202,7 +202,9 @@ async function buildLesson(planKey, metaKey, context, log, onChapter) {
 /* ---------------- contesti per ogni tipo di lezione ---------------- */
 function newsContext(cluster, prior, wiki) {
   const it = cluster.main, lite = useLocal() || hasGroq(); // contesto compatto: Groq gratuito accetta ~8000 token al minuto
-  const L = [`Livello del lettore: ${LEVEL_TXT()}. Oggi è il ${new Date().toLocaleDateString('it-IT')}.`, `NOTIZIA: «${it.title}»`, '', '### Come ne parlano le testate (oggi)'];
+  const th = typeof themeOf === 'function' ? themeOf({ kind: 'notizia', title: it.title, tags: [] }) : null;
+  const lvTxt = th && typeof levelForTheme === 'function' && PIANI ? PIANI.livelli[levelForTheme(th)] : LEVEL_TXT();
+  const L = [`Livello del lettore su questo tema (${th || 'attualità'}): ${lvTxt}. Oggi è il ${new Date().toLocaleDateString('it-IT')}.`, `NOTIZIA: «${it.title}»`, '', '### Come ne parlano le testate (oggi)'];
   cluster.items.slice(0, lite ? 4 : 8).forEach(i => L.push(`- [${i.src || i.feed || ''}] ${i.title}${i.desc ? ' — ' + i.desc.slice(0, lite ? 160 : 360) : ''} (${fmtDay(i.date)}) ${i.link || ''}`));
   if (prior.length) { L.push('', '### Notizie delle ultime settimane sullo stesso tema (dalla più vecchia)'); prior.slice(lite ? -8 : -18).forEach(i => L.push(`- ${fmtDay(i.date)} [${i.src || ''}] ${i.title}`)); }
   if (wiki.length) { L.push('', '### Voci di Wikipedia collegate'); wiki.forEach(w => L.push(`- ${w.title}: ${w.extract.slice(0, lite ? 450 : 900)} (${w.url || ''})`)); }
@@ -240,7 +242,7 @@ function needAI() {
       h('li', null, 'Sul PC: usa Chrome o Edge aggiornati, attiva «Usa accelerazione grafica» nelle impostazioni del browser e riavvialo. Su Linux può servire attivare WebGPU da chrome://flags. Controlla su chrome://gpu se compare «WebGPU: Hardware accelerated».'),
       h('li', null, 'Sul Pixel 7 con Chrome aggiornato dovrebbe funzionare; su iPhone serve iOS 26.')),
     P('Nel frattempo trovi i contenuti preparati stanotte in Oggi, Notizie, Scopri e Specchio. In ⚙ puoi anche inserire una chiave Gemini facoltativa.', 'small muted'),
-    h('button', { class: 'btn primary', onclick: () => { document.querySelectorAll('.sheet-bg').forEach(e => e.remove()); settingsSheet(); } }, 'Apri le impostazioni'))));
+    h('button', { class: 'btn primary', onclick: () => { closeAllSheets(); settingsSheet(); } }, 'Apri le impostazioni'))));
   return false;
 }
 function saveGenerated(L, meta) {

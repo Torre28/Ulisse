@@ -91,6 +91,16 @@ async function wikiSectionText(t, idx) {
   doc.querySelectorAll('sup, .reference, .mw-editsection, table, style, .thumb, figure, .noprint').forEach(e => e.remove());
   return [...doc.querySelectorAll('p, li')].map(e => e.textContent.replace(/\s+/g, ' ').trim()).filter(x => x.length > 40).slice(0, 20);
 }
+async function onThisDay() {
+  const d = new Date(), mm = String(d.getMonth() + 1).padStart(2, '0'), dd = String(d.getDate()).padStart(2, '0');
+  const j = await getJSON(`${WP}/api/rest_v1/feed/onthisday/events/${mm}/${dd}`, 9000);
+  return (j.events || []).filter(e => e.text && e.pages && e.pages.length).map(e => ({ year: e.year, text: e.text, page: e.pages[0].titles?.normalized || e.pages[0].title, thumb: e.pages[0].thumbnail?.source }));
+}
+async function featuredToday() {
+  const d = new Date();
+  const j = await getJSON(`https://api.wikimedia.org/feed/v1/wikipedia/it/featured/${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`, 9000);
+  return j.tfa ? { title: j.tfa.titles?.normalized || j.tfa.title, extract: j.tfa.extract, thumb: j.tfa.thumbnail?.source } : null;
+}
 async function wikiContext(text, n = 3) { // estratti brevi da dare al modello come base
   const rs = await wikiSearch(keywords(text, 5).join(' '), n).catch(() => []);
   const out = [];
@@ -134,15 +144,29 @@ async function podcastSearch(term, n = 8) {
 const IT_W = new Set('il gli della delle dello degli nel nella sono è perché anche questo questa alla alle con non più come una per'.split(' '));
 const XX_W = new Set('el los las y del está qué cómo también este esta para pero the and of to is in with que por une les des est dans der die und'.split(' '));
 function looksItalian(t) { let a = 0, b = 0; for (const w of String(t || '').toLowerCase().split(/[^a-zàèéìòù]+/)) { if (IT_W.has(w)) a++; if (XX_W.has(w)) b++; } return a > 0 && a >= b * 1.5; }
-async function episodeSearch(term, n = 6) { // episodi su un tema, solo in italiano
+async function episodeSearch(term, n = 6, strict) { // episodi su un tema, solo in italiano (e, se strict, che ne parlano davvero)
   const j = await getJSON(`${IT}/search?media=podcast&entity=podcastEpisode&country=IT&lang=it_it&limit=40&term=${encodeURIComponent(term)}`);
-  return (j.results || []).filter(r => looksItalian((r.trackName || '') + ' ' + (r.description || r.shortDescription || '') + ' ' + (r.collectionName || ''))).slice(0, n).map(r => ({ title: r.trackName, show: r.collectionName, url: r.episodeUrl, date: r.releaseDate, art: r.artworkUrl160 || r.artworkUrl60, dur: r.trackTimeMillis ? Math.round(r.trackTimeMillis / 60000) : null })).filter(e => e.url);
+  const kw = keywords(term, 4).map(w => w.toLowerCase().slice(0, Math.max(4, w.length - 2)));
+  const about = r => !strict || !kw.length || kw.every(k => ((r.trackName || '') + ' ' + (r.description || r.shortDescription || '')).toLowerCase().includes(k));
+  return (j.results || []).filter(about).filter(r => looksItalian((r.trackName || '') + ' ' + (r.description || r.shortDescription || '') + ' ' + (r.collectionName || ''))).slice(0, n).map(r => ({ title: r.trackName, show: r.collectionName, url: r.episodeUrl, date: r.releaseDate, art: r.artworkUrl160 || r.artworkUrl60, dur: r.trackTimeMillis ? Math.round(r.trackTimeMillis / 60000) : null })).filter(e => e.url);
 }
 
 /* ---------------- Google Books (ricerca libera, senza chiave) ---------------- */
 async function bookSearch(term, n = 5) {
-  const j = await getJSON(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(term)}&langRestrict=it&maxResults=${n}&printType=books`);
-  return (j.items || []).map(b => ({ title: b.volumeInfo.title, authors: (b.volumeInfo.authors || []).join(', '), year: (b.volumeInfo.publishedDate || '').slice(0, 4), link: b.volumeInfo.infoLink, desc: (b.volumeInfo.description || '').slice(0, 220) }));
+  try {
+    const j = await getJSON(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent('intitle:' + term)}&langRestrict=it&maxResults=${n}&printType=books&orderBy=relevance`, 8000);
+    const out = (j.items || []).map(b => ({ title: b.volumeInfo.title + (b.volumeInfo.subtitle ? '. ' + b.volumeInfo.subtitle : ''), authors: (b.volumeInfo.authors || []).join(', '), year: (b.volumeInfo.publishedDate || '').slice(0, 4), link: b.volumeInfo.infoLink, desc: (b.volumeInfo.description || '').slice(0, 220) }));
+    if (out.length) return out;
+  } catch (e) { }
+  // riserva: Open Library (gratuito, senza chiave)
+  const j = await getJSON(`https://openlibrary.org/search.json?q=${encodeURIComponent(term)}&language=ita&limit=${n}&fields=title,author_name,first_publish_year,key`, 8000);
+  return (j.docs || []).map(d => ({ title: d.title, authors: (d.author_name || []).slice(0, 2).join(', '), year: d.first_publish_year || '', link: 'https://openlibrary.org' + d.key }));
+}
+/* trova la voce giusta anche se il nome non coincide esattamente con il titolo */
+async function wikiResolve(name) {
+  try { const s = await wikiSummary(name); if (s.extract && s.type !== 'disambiguation') return s; } catch (e) { }
+  const rs = await wikiSearch(name, 1); if (!rs[0]) throw new Error('nessuna voce');
+  return wikiSummary(rs[0].title);
 }
 
 

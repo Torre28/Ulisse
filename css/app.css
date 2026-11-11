@@ -220,3 +220,6 @@ nav.bottom button[aria-current="page"]{color:var(--terra)}
 .lesson-head .tag{font-size:10px}
 .hero .chip{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.4)}
 .hero .chip[aria-pressed="true"]{background:#fff;color:var(--terra);border-color:#fff}
+
+html[data-theme="dark"]{--bg:#141010;--panel:#1b1615;--paper:#211b19;--ink:#f1e9df;--muted:#ab9d93;--line:#3a302c;--soft:#2a2220;--accent:#f1e9df;--on-accent:#141010;--terra:#e08458;--terra-soft:#3a251c;--hl:#3d2f1c;--shadow:none;--ok:#49c08a;--bad:#ff7a66;color-scheme:dark}
+html[data-theme="light"]{--bg:#f3eee6;--panel:#faf6f0;--paper:#fffdf9;--ink:#1e1614;--muted:#6b5e57;--line:#e1d6c8;--soft:#ece4d8;--accent:#1e1614;--on-accent:#fffdf9;--terra:#c46234;--terra-soft:#f6e3d6;--hl:#fbe9c9;--ok:#1f7a4d;--bad:#b0392a;color-scheme:light}
