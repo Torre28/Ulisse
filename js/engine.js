@@ -1,0 +1,265 @@
+"use strict";
+/* ======================================================================
+   ULISSE · motore delle lezioni interattive, quaderno e ripasso
+   ====================================================================== */
+
+/* ---------------- motore lezioni ---------------- */
+/* espressioni sicure per gli slider: numeri, variabili, + - * / % ( ) ?: confronti && || e min max round ceil floor abs sqrt pow */
+function evalExpr(src, env) {
+  const toks = String(src).match(/\d+(?:[.,]\d+)?|[A-Za-z_]\w*|<=|>=|==|!=|&&|\|\||[-+*/%()?:<>!,]/g) || [];
+  let i = 0; const peek = () => toks[i], next = () => toks[i++];
+  const F = { min: Math.min, max: Math.max, round: Math.round, ceil: Math.ceil, floor: Math.floor, abs: Math.abs, sqrt: Math.sqrt, pow: Math.pow };
+  const tern = () => { const c = or(); if (peek() === '?') { next(); const a = tern(); if (next() !== ':') throw 0; const b = tern(); return c ? a : b; } return c; };
+  const or = () => { let v = and(); while (peek() === '||') { next(); const w = and(); v = v || w; } return v; };
+  const and = () => { let v = cmp(); while (peek() === '&&') { next(); const w = cmp(); v = v && w; } return v; };
+  const cmp = () => { let v = add(); while (['<', '>', '<=', '>=', '==', '!='].includes(peek())) { const o = next(), w = add(); v = o === '<' ? v < w : o === '>' ? v > w : o === '<=' ? v <= w : o === '>=' ? v >= w : o === '==' ? v == w : v != w; } return v; };
+  const add = () => { let v = mul(); while (peek() === '+' || peek() === '-') { const o = next(), w = mul(); v = o === '+' ? v + w : v - w; } return v; };
+  const mul = () => { let v = un(); while (['*', '/', '%'].includes(peek())) { const o = next(), w = un(); v = o === '*' ? v * w : o === '/' ? v / w : v % w; } return v; };
+  const un = () => { if (peek() === '-') { next(); return -un(); } if (peek() === '!') { next(); return !un(); } return prim(); };
+  const prim = () => {
+    const t = next(); if (t === undefined) throw 0;
+    if (t === '(') { const v = tern(); if (next() !== ')') throw 0; return v; }
+    if (/^\d/.test(t)) return parseFloat(t.replace(',', '.'));
+    if (F[t] && peek() === '(') { next(); const args = []; if (peek() !== ')') { args.push(tern()); while (peek() === ',') { next(); args.push(tern()); } } if (next() !== ')') throw 0; return F[t](...args); }
+    if (t in env) return env[t];
+    throw 0;
+  };
+  try { const v = tern(); if (i !== toks.length) return NaN; return v; } catch (e) { return NaN; }
+}
+const fmtNum = v => typeof v === 'boolean' ? (v ? 'sì' : 'no') : (Number.isFinite(v) ? (Math.round(v * 100) / 100).toLocaleString('it-IT') : '—');
+
+const BLOCKS = {
+  text: b => h('div', { class: 'prose', html: md(b.md) }),
+  steps(b) {
+    let cur = 0, timer = null, playing = false;
+    const items = b.items || [];
+    const box = h('div', { class: 'steps' });
+    const els = items.map((it, i) => h('button', { class: 'step', onclick: () => { stop(); go(i); } },
+      h('span', { class: 'num' }, i + 1), h('b', null, it.title), h('span', { class: 'tx' }, it.text)));
+    box.append(...els);
+    const playBtn = h('button', { class: 'btn small primary', onclick: () => playing ? stop() : play() }, '▶ Riproduci');
+    const voiceBtn = h('button', { class: 'btn small', 'aria-pressed': 'false', onclick: () => { voiceBtn.setAttribute('aria-pressed', voiceBtn.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); } }, 'Voce');
+    function go(i) { cur = i; els.forEach((e, k) => { e.classList.toggle('on', k === i); if (k <= i) e.classList.add('seen'); }); }
+    function stop() { playing = false; clearTimeout(timer); stopSpeak(); playBtn.textContent = '▶ Riproduci'; }
+    function advance() {
+      if (!playing) return;
+      if (cur >= items.length - 1) { stop(); return; }
+      go(cur + 1); schedule();
+    }
+    function schedule() {
+      const it = items[cur], txt = it.title + '. ' + it.text;
+      if (voiceBtn.getAttribute('aria-pressed') === 'true') speak(txt, () => { timer = setTimeout(advance, 600); });
+      else timer = setTimeout(advance, Math.max(3500, txt.length * 55));
+    }
+    function play() { playing = true; playBtn.textContent = '❚❚ Pausa'; if (cur >= items.length - 1) cur = -1; go(Math.max(0, cur === -1 ? 0 : cur)); schedule(); }
+    go(0);
+    return h('div', { class: 'card flat' }, b.title && h('h3', null, b.title), h('div', { class: 'row' }, playBtn, voiceBtn, h('span', { class: 'mono' }, 'tocca un passo per aprirlo')), box);
+  },
+  timeline(b) {
+    const els = (b.events || []).map(ev => {
+      const el = h('button', { class: 'tl-ev', onclick: () => el.classList.toggle('on') }, h('span', { class: 'y' }, ev.year), h('b', null, ev.title), h('div', { class: 'tx' }, ev.text));
+      return el;
+    });
+    return h('div', { class: 'card flat' }, b.title && h('h3', null, b.title), h('div', { class: 'tl' }, els));
+  },
+  compare(b) {
+    const col = (c, cls) => c && h('div', { class: 'col ' + (cls || '') }, h('h3', null, c.title), h('ul', null, (c.points || []).map(p => h('li', null, p))));
+    return h('div', { class: 'card flat' }, b.title && h('h3', null, b.title),
+      h('div', { class: 'cmp' }, col(b.left), col(b.right), b.common && b.common.length && col({ title: 'In comune', points: b.common }, 'common')));
+  },
+  quiz(b) {
+    const fb = h('div', { class: 'prose small' });
+    let answered = false;
+    const opts = (b.options || []).map((o, i) => h('button', { class: 'opt', onclick: () => {
+      if (answered) return; answered = true;
+      opts.forEach((e, k) => { if (k === b.correct) e.classList.add('ok'); else if (k === i) e.classList.add('no'); });
+      fb.innerHTML = md((i === b.correct ? '**Giusto.** ' : '**Non proprio.** ') + (b.explain || ''));
+    } }, o));
+    return h('div', { class: 'card flat' }, h('span', { class: 'mono' }, 'Domanda'), h('h3', null, b.q), opts, fb);
+  },
+  slider(b) {
+    const env = Object.assign({}, b.vars || {});
+    const out = h('div', { class: 'outs' });
+    const val = h('b');
+    const inp = h('input', { type: 'range', min: b.min ?? 0, max: b.max ?? 10, step: b.step ?? 1, value: b.value ?? b.min ?? 0, 'aria-label': b.label });
+    const upd = () => {
+      env.x = parseFloat(inp.value); val.textContent = fmtNum(env.x) + (b.unit ? ' ' + b.unit : '');
+      out.replaceChildren(...(b.outputs || []).map(o => h('div', { class: 'out' }, h('span', null, o.label), h('b', null, fmtNum(evalExpr(o.expr, env))), o.unit ? ' ' + o.unit : '')));
+    };
+    inp.addEventListener('input', upd); upd();
+    return h('div', { class: 'card flat' }, b.title && h('h3', null, b.title), h('div', { class: 'row between' }, h('span', { class: 'mono' }, b.label), val), inp, out, b.note && h('p', { class: 'small muted', style: { margin: 0 } }, b.note));
+  },
+  seats(b) {
+    const chambers = b.chambers || [];
+    let ci = 0;
+    const cv = h('canvas', { class: 'seats', height: 220 });
+    const chips = h('div', { class: 'chips' });
+    const inp = h('input', { type: 'range', min: 0, step: 1, 'aria-label': 'Voti a favore' });
+    const ro = h('div', { class: 'outs' });
+    function draw() {
+      const ch = chambers[ci], N = ch.seats, yes = +inp.value, maj = Math.floor(N / 2) + 1;
+      const dpr = window.devicePixelRatio || 1, W = cv.clientWidth || 320, H = Math.round(W * 0.55);
+      cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + 'px';
+      const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+      const cs = getComputedStyle(document.documentElement);
+      const cYes = cs.getPropertyValue('--ok').trim(), cNo = cs.getPropertyValue('--line').trim(), cInk = cs.getPropertyValue('--ink').trim();
+      const rows = Math.max(4, Math.round(Math.sqrt(N / 2.2))), r0 = 0.38, R = Math.min(W / 2 - 8, H - 14), cx = W / 2, cy = H - 6;
+      const radii = Array.from({ length: rows }, (_, i) => r0 + (1 - r0) * i / (rows - 1));
+      const tot = radii.reduce((a, r) => a + r, 0);
+      let counts = radii.map(r => Math.round(N * r / tot)); counts[rows - 1] += N - counts.reduce((a, c) => a + c, 0);
+      const pts = [];
+      radii.forEach((r, i) => { for (let k = 0; k < counts[i]; k++) { const a = Math.PI - Math.PI * (counts[i] === 1 ? .5 : k / (counts[i] - 1)); pts.push({ a, r }); } });
+      pts.sort((p, q) => q.a - p.a);
+      const dotR = Math.max(1.6, Math.min(6, R * (1 - r0) / rows * 0.36));
+      pts.forEach((p, k) => { ctx.beginPath(); ctx.arc(cx + Math.cos(p.a) * p.r * R, cy - Math.sin(p.a) * p.r * R, dotR, 0, Math.PI * 2); ctx.fillStyle = k < yes ? cYes : cNo; ctx.fill(); });
+      // linea della maggioranza
+      const am = Math.PI - Math.PI * (maj - .5) / N;
+      ctx.strokeStyle = cInk; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(am) * (R + 6), cy - Math.sin(am) * (R + 6)); ctx.stroke(); ctx.setLineDash([]);
+      ro.replaceChildren(
+        h('div', { class: 'out' }, h('span', null, 'seggi'), h('b', null, N)),
+        h('div', { class: 'out' }, h('span', null, 'maggioranza assoluta'), h('b', null, maj)),
+        h('div', { class: 'out' }, h('span', null, 'a favore'), h('b', null, yes)),
+        h('div', { class: 'out', style: { color: yes >= maj ? 'var(--ok)' : 'var(--bad)' } }, h('b', null, yes >= maj ? '✓ maggioranza raggiunta' : '✗ manca la maggioranza')));
+    }
+    function setCh(i) {
+      ci = i; const ch = chambers[i]; inp.max = ch.seats; inp.value = Math.round(ch.seats * 0.55);
+      chips.replaceChildren(...chambers.map((c, k) => h('button', { class: 'chip', 'aria-pressed': k === i ? 'true' : 'false', onclick: () => setCh(k) }, c.name)));
+      draw();
+    }
+    inp.addEventListener('input', draw);
+    setTimeout(() => chambers.length && setCh(0), 0);
+    window.addEventListener('resize', () => chambers.length && draw());
+    return h('div', { class: 'card flat' }, b.title && h('h3', null, b.title), chips, cv, h('span', { class: 'mono' }, 'Trascina: quanti voti a favore?'), inp, ro, b.note && h('p', { class: 'small muted', style: { margin: 0 } }, b.note));
+  },
+  reflect(b, ctx) {
+    const ta = h('textarea', { placeholder: 'Scrivi quello che pensi, anche due righe…' });
+    return h('div', { class: 'card flat' }, h('span', { class: 'mono' }, 'Ragiona tu'), h('h3', null, b.prompt), ta,
+      h('div', { class: 'row' }, h('button', { class: 'btn small primary', onclick: () => {
+        if (!ta.value.trim()) return;
+        S.journal.push({ id: uid(), d: today(), prompt: b.prompt, text: ta.value.trim(), from: ctx && ctx.title }); save();
+        addLog(ctx && ctx.area || 'scoperta', 'riflessione', b.prompt); toast('Salvato nel diario (Specchio)'); ta.value = '';
+      } }, 'Salva nel diario')));
+  },
+  note: b => h('div', { class: 'note ' + (b.kind || '') }, h('span', { class: 'mono' }, { fatto: 'Fatto', contesto: 'Contesto', ipotesi: 'Ipotesi', attenzione: 'Attenzione' }[b.kind] || 'Nota'), h('div', { class: 'prose small', html: md(b.md) })),
+  glossary(b, ctx) {
+    return h('div', { class: 'card flat' }, h('h3', null, b.title || 'Parole per capire'), h('span', { class: 'mono' }, 'tocca una parola'),
+      (b.items || []).map(it => { const el = h('button', { class: 'gloss', onclick: () => el.classList.toggle('on') }, h('b', null, it.term), h('div', { class: 'd' }, it.def,
+        h('div', null, h('span', { class: 'btn small ghost', style: { marginTop: '6px' }, onclick: e => { e.stopPropagation(); addCard(it.term, it.def, ctx && ctx.area, ctx && ctx.title); toast('Nel Quaderno'); } }, '+ Quaderno')))); return el; }));
+  },
+  links: b => h('div', { class: 'card flat' }, h('h3', null, b.title || 'Per andare oltre'),
+    (b.items || []).filter(l => /^https?:\/\//.test(l.url || '')).map(l => h('div', null, h('a', { href: l.url, target: '_blank', rel: 'noopener' }, l.title), l.note && h('div', { class: 'small muted' }, l.note))))
+};
+
+function renderBlocks(blocks, ctx) {
+  return (blocks || []).map(b => { try { return (BLOCKS[b.type] || BLOCKS.text)(b, ctx); } catch (e) { return h('div', { class: 'empty' }, 'Blocco non leggibile: ' + b.type); } });
+}
+
+
+function allLessons() { return Object.assign({}, BUILTIN_LESSONS, S.lessons); }
+function openLesson(id, chapter) {
+  const L = allLessons()[id]; if (!L) { toast('Lezione non trovata'); return; }
+  S.lastLesson = id;
+  const prog = S.progress[id] || (S.progress[id] = { seen: [], done: false, at: 0 });
+  if (chapter === undefined) chapter = prog.at || 0;
+  if (!prog.done) contAdd({ type: 'lesson', id, title: L.title, area: L.area });
+  save();
+  const host = pad();
+  const close = openSheet(L.title, host, () => render());
+  const chs = L.chapters || [];
+  function show(ci) {
+    ci = Math.max(0, Math.min(chs.length - 1, ci));
+    if (!prog.seen.includes(ci)) prog.seen.push(ci); prog.at = ci; save();
+    const ch = chs[ci];
+    const isLast = ci === chs.length - 1;
+    const topic = L.gen && L.gen.topic && topicOf(L.gen.topic);
+    host.replaceChildren(
+      h('div', { class: 'lesson-head' },
+        h('div', { class: 'row' }, areaTag(L.area), L.kind && h('span', { class: 'tag muted' }, L.kind), L.gen && h('span', { class: 'tag muted' }, 'generata'), h('span', { class: 'mono' }, `${prog.seen.length}/${chs.length} capitoli`)),
+        L.summary && h('p', { class: 'small muted', style: { margin: 0 } }, L.summary)),
+      h('div', { class: 'chapters' }, chs.map((c, k) => h('button', { class: 'chip', 'aria-pressed': k === ci ? 'true' : 'false', onclick: () => show(k) }, (k + 1) + ' · ' + (c.label || 'Parte'), h('small', null, c.depth === 'profondo' ? '◆' : '◇')))),
+      h('div', null, h('span', { class: 'mono' }, (ch.label || '') + (ch.depth ? ' · ' + ch.depth : '')), h('h2', { style: { marginTop: '4px' } }, ch.title)),
+      h('div', { class: 'row' }, h('button', { class: 'btn small', onclick: () => speak(ch.title + '. ' + (ch.blocks || []).filter(b => b.type === 'text' || b.type === 'note').map(b => b.md).join(' ')) }, '🔊 Ascolta'), h('button', { class: 'btn small ghost', onclick: stopSpeak }, 'Stop')),
+      ...renderBlocks(ch.blocks, L),
+      isLast && (L.branches || []).length ? h('div', { class: 'card flat' }, h('h3', null, 'Rami da esplorare'), h('div', { class: 'chips' }, L.branches.filter(b => b && b.name).map(b => h('button', { class: 'chip', title: b.why || '', onclick: () => { const id = catalogAdd(b.name, topic ? topic.c : 'Scoperti', b.why, topic && topic.id); close(); openTopic(id); } }, b.name + ' →')))) : null,
+      h('div', { class: 'stop' },
+        h('span', { class: 'mono' }, isLast ? 'Fine della lezione' : 'Punto di stop'),
+        h('p', { class: 'small', style: { margin: 0 } }, isLast ? 'Hai finito. Concludi per salvare le carte di ripasso.' : 'Puoi chiudere qui: ritroverai la lezione in «Da continuare».'),
+        h('div', { class: 'row' },
+          ci > 0 && h('button', { class: 'btn small', onclick: () => show(ci - 1) }, '‹ Indietro'),
+          !isLast && h('button', { class: 'btn small primary', onclick: () => show(ci + 1) }, 'Continua ›'),
+          isLast && h('button', { class: 'btn small primary', onclick: () => finish() }, `Concludi e salva ${(L.cards || []).length} carte`),
+          isLast && topic && h('button', { class: 'btn small', onclick: () => { finish(true); genTopicLesson(topic); } }, '↓ Più a fondo' + (L.next ? ': ' + L.next : '')),
+          h('button', { class: 'btn small ghost', onclick: close }, 'Chiudi'))));
+    host.parentElement && (host.parentElement.scrollTop = 0);
+  }
+  function finish(silent) {
+    let added = 0;
+    for (const c of L.cards || []) if (c && c.q && !S.cards.some(x => x.front === c.q)) { addCard(c.q, c.a, L.area, L.title); added++; }
+    if (!prog.done) { prog.done = true; addLog(L.area || 'scoperta', 'lezione', L.title, 2); bumpInterest((L.tags || []).concat(L.gen && L.gen.topic ? [L.gen.topic] : []), 3); }
+    contDone('lesson', id); save();
+    if (!silent) toast(added ? `${added} carte nel Quaderno` : 'Lezione completata');
+    close();
+  }
+  show(chapter);
+}
+
+/* ---------------- riserva: farsi preparare la lezione da Claude in chat ---------------- */
+function lessonPrompt(kind, subject, extra) {
+  return `Preparami una lezione interattiva per la mia app Ulisse su: «${subject}».
+${extra ? 'Contesto: ' + extra + '\n' : ''}Livello: ${LEVEL[S.level]}. Tipo: ${kind}.
+${SYS.replace(/^Sei l'autore[^\n]*\n/, '')}
+Schema JSON:
+${SCHEMA_TXT}`;
+}
+function askClaudeSheet(kind, subject, extra) {
+  const txt = lessonPrompt(kind, subject, extra);
+  openSheet('Chiedi una lezione a Claude', h('div', { class: 'card' },
+    h('p', { class: 'small', style: { margin: 0 } }, 'Alternativa al motore dell\'app: copia la richiesta, incollala in una chat con Claude, poi importa il JSON che ti risponde.'),
+    h('div', { class: 'row' }, h('button', { class: 'btn primary', onclick: () => copyText(txt) }, 'Copia la richiesta'), h('button', { class: 'btn', onclick: importSheet }, 'Ho già il JSON'))));
+}
+function importSheet() {
+  const ta = h('textarea', { placeholder: 'Incolla qui il JSON della lezione', style: { minHeight: '200px', fontFamily: 'var(--f-mono)', fontSize: '12px' } });
+  const close = openSheet('Importa lezione', h('div', { class: 'card' }, ta,
+    h('button', { class: 'btn primary', onclick: () => {
+      try {
+        let data = parseJSONLoose(ta.value); if (!Array.isArray(data)) data = [data];
+        const ids = data.map(L => {
+          if (!L || !L.title || !Array.isArray(L.chapters)) throw new Error('manca title o chapters');
+          const id = L.id || ('l-' + uid()); L.id = id; L.area = AREAS[L.area] ? L.area : 'scoperta'; S.lessons[id] = L; return id;
+        });
+        save(); close(); toast(`${ids.length} lezione importata`); render();
+        if (ids.length === 1) openLesson(ids[0]);
+      } catch (e) { toast('JSON non valido: ' + (e.message || 'controlla il testo')); }
+    } }, 'Importa')));
+}
+
+/* ---------------- quaderno: carte con ripetizione dilazionata ---------------- */
+function addCard(front, back, area, from) { S.cards.push({ id: uid(), front, back, area: area || 'scoperta', from: from || '', due: today(), iv: 0, ef: 2.5, reps: 0 }); save(); }
+function dueCards() { const d = today(); return S.cards.filter(c => c.due <= d); }
+function grade(card, q) { // q: 0 di nuovo, 1 difficile, 2 bene, 3 facile (SM-2 semplificato)
+  if (q === 0) { card.reps = 0; card.iv = 0; }
+  else {
+    card.reps++;
+    card.iv = card.reps === 1 ? (q === 3 ? 3 : 1) : card.reps === 2 ? (q === 1 ? 3 : 6) : Math.round(card.iv * card.ef * (q === 1 ? .7 : q === 3 ? 1.3 : 1));
+    card.ef = Math.max(1.3, card.ef + (q === 1 ? -0.15 : q === 3 ? 0.1 : 0));
+  }
+  const d = new Date(); d.setDate(d.getDate() + card.iv); card.due = d.toISOString().slice(0, 10); save();
+}
+function reviewSheet() {
+  const queue = dueCards().slice(0, 30);
+  if (!queue.length) { toast('Nessuna carta da ripassare oggi'); return; }
+  const host = pad();
+  const close = openSheet('Ripasso', host, () => render());
+  let i = 0, done = 0;
+  function show() {
+    if (i >= queue.length) { if (done) addLog(queue[0].area, 'ripasso', `${done} carte ripassate`); host.replaceChildren(h('div', { class: 'card' }, h('h3', null, 'Fatto.'), h('p', null, `Hai ripassato ${done} carte.`), h('button', { class: 'btn primary', onclick: close }, 'Chiudi'))); return; }
+    const c = queue[i]; let open = false;
+    const back = h('div', { class: 'back', hidden: true }, c.back);
+    const hint = h('span', { class: 'mono' }, 'tocca per vedere la risposta');
+    const gr = h('div', { class: 'row', hidden: true }, ['Di nuovo', 'Difficile', 'Bene', 'Facile'].map((l, q) => h('button', { class: 'btn small grow' + (q === 2 ? ' primary' : ''), onclick: () => { grade(c, q); done++; i++; show(); } }, l)));
+    const fl = h('div', { class: 'card flash', onclick: () => { if (open) return; open = true; back.hidden = false; gr.hidden = false; hint.remove(); } },
+      h('span', { class: 'mono' }, `${i + 1}/${queue.length} · ${c.from || ''}`), h('div', { class: 'front' }, c.front), back, hint);
+    host.replaceChildren(fl, gr);
+  }
+  show();
+}

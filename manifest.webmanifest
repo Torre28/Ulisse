@@ -1,17 +1,30 @@
 {
   "name": "Ulisse",
   "short_name": "Ulisse",
-  "description": "Notizie con contesto, scoperta di passioni, ripasso, missioni di equilibrio e spazio di preghiera.",
+  "description": "Notizie con il loro contesto storico, scoperta di passioni, paper resi digeribili, preghiera e missioni di equilibrio.",
   "lang": "it",
   "start_url": "./#oggi",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#eef1f4",
-  "theme_color": "#14202b",
+  "background_color": "#0f2a3d",
+  "theme_color": "#0f2a3d",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
