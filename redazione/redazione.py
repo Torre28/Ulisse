@@ -437,7 +437,7 @@ def main():
     items = []
     for u in CFG['feed']:
         try:
-            items += parse_rss(get(u))
+            items += parse_rss(get(u, browser='news.google' not in u))
         except Exception as e:
             log('feed non raggiungibile:', u, e)
     recent = time.time() - 2 * 86400

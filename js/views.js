@@ -761,6 +761,15 @@ function settingsSheet() {
   const imp = h('textarea', { placeholder: 'Incolla qui un backup per ripristinarlo', style: { fontFamily: 'var(--f-mono)', fontSize: '12px' } });
   const night = prepLatest();
   const close = openSheet('Impostazioni', pad(
+    card(h('h3', null, 'Condividi Ulisse'),
+      P('Ogni amico usa lo stesso indirizzo e lo installa sul suo telefono: i suoi dati (missioni, note, carte, progressi) restano sul suo dispositivo, separati dai tuoi, senza bisogno di account. I contenuti preparati dalla redazione sono per tutti.', 'small'),
+      h('div', { class: 'row' }, h('button', { class: 'btn primary', onclick: async () => {
+        const url = location.origin + location.pathname.replace(/index\.html$/, '');
+        const text = 'Ti consiglio Ulisse: notizie spiegate con il loro contesto, scoperte, preghiera e missioni. Aprilo e installalo dal browser:';
+        try { await navigator.share({ title: 'Ulisse', text, url }); } catch (e) { copyText(text + ' ' + url); }
+      } }, 'Invia il link a un amico')),
+      P('Su Android: Chrome → ⋮ → Installa app. Su iPhone: Safari → Condividi → Aggiungi alla schermata Home.', 'small muted')),
+    (() => { const box = h('div', { class: 'small' }, h('div', { class: 'spin' })); serverNews().then(srv => { const f = srv.fonti || {}; box.replaceChildren(...Object.entries(f).map(([n, x]) => h('span', { class: 'tag', style: { color: x.ok ? 'var(--ok)' : 'var(--bad)', marginRight: '4px', display: 'inline-block', marginBottom: '4px' } }, (x.ok ? '✓ ' : '✗ ') + n + (x.ok ? ' · ' + x.n : ''))), P('Aggiornate ' + fmtDate(srv.aggiornato), 'small muted')); }).catch(() => box.replaceChildren(P('Stato non disponibile.', 'small muted'))); return card(h('h3', null, 'Fonti raggiunte dalla redazione'), box); })(),
     card(h('h3', null, 'Redazione notturna'),
       P('Ogni notte un modello aperto, su un computer gratuito di GitHub, prepara i percorsi sulle notizie principali, la scoperta e la Parola del giorno. Li trovi la mattina, uguali per tutti quelli che usano l\'app.'),
       P(night.length ? `Ultima edizione: ${fmtDay(night[0].date)} · ${night.length} contenuti · modello ${PREP.modello || ''}` : 'Nessuna edizione ancora disponibile.', 'small muted')),
@@ -804,7 +813,7 @@ function settingsSheet() {
 applyLook();
 for (const [id, L] of Object.entries(S.lessons)) if (L.gen && L.gen.notte) { S.prepMeta = S.prepMeta || {}; S.prepMeta[id] = { title: L.title, kind: L.kind, area: L.area, tags: L.tags || [], gen: { topic: L.gen.topic } }; delete S.lessons[id]; }
 save(); close(); render(); toast('Backup ripristinato'); } catch (e) { toast('Backup non valido'); } } }, 'Ripristina')),
-    flat(h('span', { class: 'mono' }, 'Ulisse v1.2'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Ollama (notte) e WebLLM (telefono). Codice: github.com/Torre28/Ulisse', 'small muted'))));
+    flat(h('span', { class: 'mono' }, 'Ulisse v1.3'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Ollama (notte) e WebLLM (telefono). Codice: github.com/Torre28/Ulisse', 'small muted'))));
 }
 
 /* primo avvio: per chi riceve l'app da un amico */
@@ -850,8 +859,13 @@ function go(k) {
 
 /* ======================= MISSIONI, DIARIO, PRATICHE ======================= */
 function pickQuest(area, type, avoid) {
-  const list = QT[area][type].filter(t => t !== avoid);
-  const r = seeded(today() + area + type + (avoid || ''));
+  // non riproporre ciò che hai già avuto negli ultimi 10 giorni; le missioni su misura hanno la precedenza
+  const recent = new Set(S.quests.filter(q => q.d >= daysAgo(10)).map(q => q.t));
+  const dyn = dynamicQuests(area, type).filter(t => t !== avoid && !recent.has(t));
+  const stat = QT[area][type].filter(t => t !== avoid && !recent.has(t));
+  const r = seeded(today() + area + type + (avoid || '') + S.quests.length);
+  if (dyn.length && r() < 0.6) return dyn[Math.floor(r() * dyn.length)];
+  const list = stat.length ? stat : QT[area][type].filter(t => t !== avoid);
   return list[Math.floor(r() * list.length)];
 }
 function ensureTodayQuests(force) {

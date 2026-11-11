@@ -11,8 +11,24 @@ from datetime import datetime, timezone
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import redazione as R
 
+# fonti gratuite: si prova il loro feed RSS (con intestazioni da browser) e, se non risponde,
+# si ripiega su Google News limitato al loro sito. Lo stato di ognuna finisce in notizie.json
+FONTI_LIBERE = {
+    'Il Post': ('https://www.ilpost.it/feed/', 'ilpost.it'),
+    'ANSA': ('https://www.ansa.it/sito/ansait_rss.xml', 'ansa.it'),
+    'Rai News': (None, 'rainews.it'),
+    'AGI': (None, 'agi.it'),
+    'Adnkronos': (None, 'adnkronos.com'),
+    'Open': ('https://www.open.online/feed/', 'open.online'),
+    'Fanpage': (None, 'fanpage.it'),
+    'Avvenire': (None, 'avvenire.it'),
+    'Sky TG24': (None, 'tg24.sky.it'),
+    'Euronews': (None, 'it.euronews.com'),
+    'Agenzia Dire': (None, 'dire.it'),
+    'Valigia Blu': ('https://www.valigiablu.it/feed/', 'valigiablu.it'),
+}
 SEZIONI = {
-    'Principali': [R.CFG['feed'][0], 'https://www.ilpost.it/feed/', 'https://www.ansa.it/sito/ansait_rss.xml'],
+    'Principali': [R.CFG['feed'][0]],
     'Italia': ['https://news.google.com/rss/headlines/section/topic/NATION?hl=it&gl=IT&ceid=IT:it'],
     'Mondo': ['https://news.google.com/rss/headlines/section/topic/WORLD?hl=it&gl=IT&ceid=IT:it'],
     'Economia': ['https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=it&gl=IT&ceid=IT:it'],
@@ -95,6 +111,31 @@ def vangelo():
     return out
 
 
+def libere(res):
+    out, res['fonti'] = [], {}
+    recent = time.time() - 2 * 86400
+    for nome, (rss, dominio) in FONTI_LIBERE.items():
+        its, via = [], None
+        if rss:
+            try:
+                its = [i for i in R.parse_rss(R.get(rss, browser=True)) if i['title']]
+                via = 'rss'
+            except Exception as e:
+                R.log('feed diretto non raggiungibile:', nome, str(e)[:80])
+        if not its:
+            try:
+                its = R.parse_rss(R.get(R.gn_search(f'site:{dominio} when:1d')))
+                via = 'google'
+            except Exception as e:
+                R.log('fonte non raggiungibile:', nome, str(e)[:80])
+        its = [dict(i, src=nome, feed=nome) for i in its if not i['ts'] or i['ts'] > recent][:20]
+        res['fonti'][nome] = {'ok': bool(its), 'n': len(its), 'via': via}
+        out += its
+        time.sleep(0.3)
+    R.log('fonti libere:', {k: v['n'] for k, v in res['fonti'].items()})
+    return out
+
+
 def main(out):
     res = {'aggiornato': datetime.now(timezone.utc).isoformat(), 'sezioni': {}}
     recent = time.time() - 4 * 86400
@@ -108,7 +149,10 @@ def main(out):
                 R.log('feed non raggiungibile:', u, e)
         items = [i for i in items if i['title'] and (not i['ts'] or i['ts'] > recent)]
         items.sort(key=lambda i: -i['ts'])
-        res['sezioni'][tag] = [{'title': i['title'], 'src': i['src'], 'link': i['link'], 'date': iso(i['ts']), 'desc': i['desc'], 'feed': i['feed']} for i in items[:80]]
+        if tag == 'Principali':
+            items += libere(res)
+            items.sort(key=lambda i: -i['ts'])
+        res['sezioni'][tag] = [{'title': i['title'], 'src': i['src'], 'link': i['link'], 'date': iso(i['ts']), 'desc': i['desc'], 'feed': i['feed']} for i in items[:140 if tag == 'Principali' else 80]]
     import re as _re
     res['temi'] = {}
     for nome, (q, must) in TEMI.items():

@@ -97,37 +97,55 @@ const OUTSIDE = [
   'Trova un corso serale o un laboratorio che ti incuriosisce e chiedi informazioni'
 ];
 
-/* modelli di missione: [testo, sezione da aprire o null] */
+/* modelli di missione per area: main = impegno vero (30-90 min), side = piccolo gesto (5-20 min) */
 const QT = {
   lavoro: {
-    main: ['Blocca due ore di lavoro profondo sulla tesi, notifiche spente', 'Leggi un paper dalla sezione Tecnico e scrivi tre punti nel Quaderno', 'Sistema una parte della tesi che rimandi da giorni'],
-    side: ['Prepara la lista delle cose di domani', 'Salva nel Quaderno un concetto tecnico che hai capito oggi', 'Rispondi a una mail di lavoro che stai rimandando']
+    main: ['Blocca due ore di lavoro profondo sulla tesi, notifiche spente', 'Leggi un paper dalla sezione Tecnico e scrivi tre punti nel Quaderno', 'Sistema una parte della tesi che rimandi da giorni', 'Rifai a mano un calcolo o una simulazione che usi spesso, per capirla davvero', 'Prepara una slide che spieghi il tuo lavoro a chi non è del settore', 'Fai ordine nei file e nelle note del progetto per un\'ora', 'Cerca e salva tre offerte di lavoro interessanti e annota cosa ti manca per ognuna', 'Scrivi una mail a un professore o a un esperto con una domanda vera sul tuo lavoro'],
+    side: ['Prepara la lista delle cose di domani', 'Salva nel Quaderno un concetto tecnico che hai capito oggi', 'Rispondi a una mail che stai rimandando', 'Rileggi gli appunti dell\'ultima riunione', 'Aggiorna di una riga il tuo CV o il profilo LinkedIn', 'Guarda un video tecnico di 15 minuti su un tema vicino al tuo', 'Ripassa 10 carte del Quaderno', 'Chiudi una piccola cosa rimasta aperta da giorni']
   },
   fede: {
-    main: ['Partecipa a una Messa o a un momento di preghiera con altri', 'Fai una Lectio divina sul Vangelo del giorno (Specchio)', 'Dedica un\'ora a un servizio concreto per qualcuno'],
-    side: ['Prega i Vespri o la Compieta di oggi (Specchio)', 'Esplora un brano della Bibbia in Specchio', 'Prega per una persona precisa e diglielo, se ti va']
+    main: ['Partecipa a una Messa o a un momento di preghiera con altri', 'Fai la preghiera guidata sul Vangelo di oggi (Specchio)', 'Dedica un\'ora a un servizio concreto per qualcuno', 'Leggi con calma un capitolo intero di un Vangelo', 'Fai una Lectio divina completa (Specchio → Pratiche)', 'Vai a trovare qualcuno che è solo o malato', 'Approfondisci una domanda di fede che ti porti dietro (Specchio → La Parola)', 'Prega i Vespri con qualcuno'],
+    side: ['Prega i Vespri o la Compieta di oggi (Specchio)', 'Leggi le letture del giorno (Specchio → Oggi)', 'Prega per una persona precisa e diglielo, se ti va', 'Fai l\'esame di coscienza stasera', 'Ringrazia per tre cose della giornata', 'Ascolta il Vangelo di oggi mentre cammini', 'Scrivi una riga nel diario su ciò che ti ha toccato', 'Fermati due minuti in silenzio prima di cena']
   },
   famiglia: {
-    main: ['Passa un\'ora senza telefono con qualcuno di famiglia: cena, passeggiata o un gioco', 'Chiedi a un familiare più grande di raccontarti un episodio della sua giovinezza', 'Organizza qualcosa insieme per il fine settimana'],
-    side: ['Chiama un parente che senti poco', 'Fai in casa una cosa che di solito fa un altro', 'Manda una foto o un ricordo a qualcuno di famiglia']
+    main: ['Passa un\'ora senza telefono con qualcuno di famiglia: cena, passeggiata o un gioco', 'Chiedi a un familiare più grande di raccontarti un episodio della sua giovinezza', 'Organizza qualcosa insieme per il fine settimana', 'Cucina un piatto di famiglia insieme a chi lo sa fare', 'Aiuta qualcuno di casa in un lavoro lungo che di solito fa da solo', 'Guardate insieme le foto di quando eravate piccoli'],
+    side: ['Chiama un parente che senti poco', 'Fai in casa una cosa che di solito fa un altro', 'Manda una foto o un ricordo a qualcuno di famiglia', 'Chiedi a qualcuno di casa com\'è andata davvero la sua giornata', 'Apparecchia o sparecchia senza che te lo chiedano', 'Lascia un biglietto gentile a qualcuno di casa']
   },
   amici: {
-    main: ['Proponi a un amico un\'uscita concreta, con giorno e ora', 'Invita qualcuno a provare con te una cosa nuova', 'Vai a un evento dove conosci poche persone', 'Proponi un\'attività di volontariato da fare insieme a un amico'],
-    side: ['Scrivi a un amico che non senti da mesi', 'Di\' a qualcuno cosa apprezzi di lui', 'Chiedi a un amico come sta davvero, e ascolta']
+    main: ['Proponi a un amico un\'uscita concreta, con giorno e ora', 'Invita qualcuno a provare con te una cosa nuova', 'Vai a un evento dove conosci poche persone', 'Proponi un\'attività di volontariato da fare insieme a un amico', 'Organizza una serata a casa: cena, giochi o un film', 'Fai una camminata lunga con un amico e parlate davvero'],
+    side: ['Scrivi a un amico che non senti da mesi', 'Di\' a qualcuno cosa apprezzi di lui', 'Chiedi a un amico come sta davvero, e ascolta', 'Manda a un amico un articolo o una lezione che gli piacerebbe', 'Ricordati di un compleanno o di un esame di qualcuno e fatti vivo', 'Rispondi con calma a un messaggio lasciato in sospeso']
   },
   corpo: {
-    main: ['Cammina o pedala almeno 45 minuti all\'aperto', 'Stasera a letto entro mezzanotte, telefono fuori dalla camera', 'Cucina un pasto vero, con calma'],
-    side: ['Dieci minuti di stretching', 'Fai le scale invece dell\'ascensore per tutto il giorno', 'Un esercizio di respiro (Specchio)']
+    main: ['Cammina o pedala almeno 45 minuti all\'aperto', 'Stasera a letto entro mezzanotte, telefono fuori dalla camera', 'Cucina un pasto vero, con calma', 'Fai un\'escursione sui sentieri vicino a casa', 'Fai un allenamento completo di 40 minuti', 'Passa una mattina senza schermi fino a mezzogiorno'],
+    side: ['Dieci minuti di stretching', 'Fai le scale invece dell\'ascensore per tutto il giorno', 'Un esercizio di respiro (Specchio → Pratiche)', 'Bevi acqua: almeno otto bicchieri oggi', 'Una passeggiata di 15 minuti dopo pranzo', 'Spegni gli schermi un\'ora prima di dormire']
   },
   mondo: {
-    main: ['Completa una lezione su una notizia (Notizie)', 'Prendi una notizia e risali la sua storia fino a un evento di almeno 50 anni fa', 'Confronta come due fonti diverse raccontano lo stesso fatto'],
-    side: ['Leggi tre notizie e salva un concetto nel Quaderno', 'Usa «Capire» su una notizia che non ti è chiara', 'Ascolta un podcast di attualità mentre fai altro']
+    main: ['Completa un percorso completo su una notizia (Notizie)', 'Prendi una notizia e risali la sua storia fino a un evento di almeno 50 anni fa', 'Confronta come due testate diverse raccontano lo stesso fatto', 'Ascolta un intero episodio di un podcast di attualità e annota tre cose nuove', 'Studia la mappa di un conflitto in corso finché sai spiegarla a qualcuno', 'Leggi le posizioni di due partiti opposti sullo stesso tema'],
+    side: ['Leggi tre notizie e salva un concetto nel Quaderno', 'Usa «Capire · 5 min» su una notizia che non ti è chiara', 'Ascolta un podcast di attualità mentre fai altro', 'Leggi un articolo di una testata che di solito non leggi', 'Spiega a qualcuno una notizia che hai capito oggi', 'Apri un ramo da una lezione e leggilo fino in fondo']
   },
   scoperta: {
-    main: ['Esplora un argomento mai visto in Scopri e seguilo per tre rami', 'Prova con le mani una cosa nuova: un disegno, un piatto, un lavoretto', 'Vai in un luogo vicino a casa dove non sei mai entrato', 'Cerca un corso, un laboratorio o un\'associazione su una tua passione e chiedi informazioni'],
-    side: ['Apri la proposta del giorno in Scopri', 'Segna come preferito un argomento che ti ha incuriosito', 'Scrivi una domanda a cui vorresti una risposta']
+    main: ['Esplora un argomento mai visto in Scopri e seguilo per tre rami', 'Prova con le mani una cosa nuova: un disegno, un piatto, un lavoretto', 'Vai in un luogo vicino a casa dove non sei mai entrato', 'Cerca un corso, un laboratorio o un\'associazione su una tua passione e chiedi informazioni', 'Visita un museo o una mostra, anche piccola', 'Leggi 50 pagine di un libro fuori dal tuo campo'],
+    side: ['Apri la proposta del giorno in Scopri', 'Segna come preferito un argomento che ti ha incuriosito', 'Scrivi una domanda a cui vorresti una risposta', 'Leggi un «Accadde oggi» e approfondiscilo', 'Ascolta un brano musicale di un genere che non conosci', 'Guarda il cielo stasera e riconosci una costellazione']
   }
 };
+/* missioni costruite su di te: passioni, contenuti pronti, temi in cui vuoi crescere, giorno della settimana */
+function dynamicQuests(area, type) {
+  const out = [];
+  const favs = (typeof S !== 'undefined' && S.favs || []).map(id => typeof topicOf === 'function' ? topicOf(id) : null).filter(Boolean);
+  const weekend = [0, 6].includes(new Date().getDay());
+  if (area === 'scoperta') favs.forEach(f => out.push(type === 'main' ? `Dedica 45 minuti a «${f.n}»: una lezione, un podcast o una prova pratica` : `Apri qualcosa di nuovo su «${f.n}»`));
+  if (area === 'mondo' && typeof PREP !== 'undefined') {
+    const ps = PREP.items.filter(p => p.kind === 'notizia' && p.date === (PREP.items.map(x => x.date).sort().pop()));
+    ps.filter(p => p.mode === 'full').slice(0, 2).forEach(p => type === 'main' && out.push(`Fai il percorso completo su «${p.headline || p.title}»`));
+    ps.filter(p => p.mode !== 'full').slice(0, 3).forEach(p => type === 'side' && out.push(`Capire al volo: «${p.headline || p.title}»`));
+    const low = Object.entries(S.selfRate || {}).filter(([, v]) => v <= 2).map(([k]) => k);
+    low.forEach(th => out.push(type === 'main' ? `Cresci su «${th}»: due lezioni e un ramo` : `Una lezione su «${th}», il tema in cui vuoi migliorare`));
+  }
+  if (area === 'scoperta' && weekend && type === 'main') out.push('È il fine settimana: una gita in un borgo o in un museo della zona');
+  if (area === 'amici' && weekend && type === 'main') out.push('Fine settimana: organizza qualcosa con gli amici per oggi o domani');
+  if (area === 'lavoro' && weekend) out.length = 0;
+  return out;
+}
 
 /* catalogo di partenza: id, nome, categoria, voce Wikipedia, gancio, rami */
 const CATS = ['Cielo e Terra', 'Vita', 'Mente', 'Storia', 'Società', 'Arte', 'Mani', 'Spirito', 'Tecnica', 'Gioco', 'Scoperti'];

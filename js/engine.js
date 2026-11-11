@@ -154,6 +154,8 @@ const BLOCKS = {
   },
   automap(b, ctx) { // mappa automatica: luoghi della lezione trovati sull'enciclopedia
     const holder = h('div', { class: 'card flat' }, h('h3', null, 'Dove succede'), h('div', { class: 'spin' }));
+    const geo = geoContext(lessonContextText(ctx));
+    if (geo) { setTimeout(() => holder.replaceWith(BLOCKS.map(geo)), 0); return holder; }
     (async () => {
       const terms = [];
       for (const c of ctx.chapters || []) for (const bl of c.blocks || []) { if (bl.type === 'glossary') (bl.items || []).forEach(x => terms.push(x.term)); }
@@ -208,7 +210,7 @@ function openLesson(id, chapter) {
       h('div', { class: 'chapters' }, chs.map((c, k) => h('button', { class: 'chip', 'aria-pressed': k === ci ? 'true' : 'false', onclick: () => show(k) }, (k + 1) + ' · ' + (c.label || 'Parte'), h('small', null, c.depth === 'profondo' ? '◆' : '◇')))),
       h('div', null, h('span', { class: 'mono' }, (ch.label || '') + (ch.depth ? ' · ' + ch.depth : '')), h('h2', { style: { marginTop: '4px' } }, ch.title)),
       h('div', { class: 'row' }, h('button', { class: 'btn small ghost', onclick: () => noteSheet({ title: 'Nota: ' + L.title, from: L.title }) }, '📝 Nota'), h('button', { class: 'btn small', onclick: () => speak(ch.title + '. ' + (ch.blocks || []).filter(b => b.type === 'text' || b.type === 'note').map(b => b.md).join(' ')) }, '🔊 Ascolta'), h('button', { class: 'btn small ghost', onclick: stopSpeak }, 'Stop')),
-      ...renderBlocks(ci === 0 && L.kind === 'notizia' && !(L.chapters || []).some(c => (c.blocks || []).some(b => b.type === 'map')) ? (ch.blocks || []).concat([{ type: 'automap' }]) : ch.blocks, L),
+      ...renderBlocks(ci === 0 && L.kind === 'notizia' && !(L.chapters || []).some(c => (c.blocks || []).some(b => b.type === 'map' && (b.groups || []).some(g => (g.countries || []).length))) ? (ch.blocks || []).concat([{ type: 'automap' }]) : ch.blocks, L),
       isLast && (L.branches || []).length ? h('div', { class: 'card flat' }, h('h3', null, 'Rami da esplorare'), P('Argomenti collegati: aprili per una scheda di approfondimento.', 'small muted'), L.branches.filter(b => b && b.name).map(b => h('button', { class: 'card', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => branchSheet(b, L, topic) }, h('b', null, b.name + ' →'), b.why && h('span', { class: 'small muted' }, b.why)))) : null,
       h('div', { class: 'stop' },
         h('span', { class: 'mono' }, isLast ? 'Fine della lezione' : 'Punto di stop'),
