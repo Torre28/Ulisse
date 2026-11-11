@@ -1,281 +1,249 @@
 "use strict";
 /* ======================================================================
    ULISSE · motore di generazione
-   Usa un modello linguistico gratuito con la chiave personale
-   dell'utente (Gemini, piano gratuito di Google AI Studio, oppure
-   OpenRouter con i modelli «:free»). La chiave resta solo sul telefono.
+   Due fonti, entrambe gratuite e senza limiti:
+   1. la «redazione notturna» (GitHub Actions + modello aperto) che prepara
+      ogni notte i contenuti in contenuti/indice.json;
+   2. un modello che gira SUL TELEFONO, nel browser, con WebGPU (WebLLM),
+      per le richieste al momento.
+   Facoltativo: chiave personale Gemini, per chi la vuole.
+   Le istruzioni sono condivise con la redazione in prompts/piani.json.
    ====================================================================== */
 
-const GEM = 'https://generativelanguage.googleapis.com/v1beta';
-const aiReady = () => (S.ai.provider === 'gemini' && S.ai.key) || (S.ai.provider === 'openrouter' && S.ai.orKey);
+let PIANI = null;
+async function loadPiani() { if (!PIANI) PIANI = await getJSON('prompts/piani.json'); return PIANI; }
+const LEVEL_TXT = () => (PIANI ? PIANI.livelli[S.level] : '') || 'curioso con basi minime';
 
+/* ---------------- contenuti preparati stanotte ---------------- */
+let PREP = { items: [] };
+async function loadPrep() {
+  try { PREP = await getJSON('contenuti/indice.json?t=' + Math.floor(Date.now() / 600000)); PREP.items = PREP.items || []; }
+  catch (e) { PREP = { items: [] }; }
+  return PREP;
+}
+const prepLatest = () => { const ds = PREP.items.map(i => i.date).sort(); const d = ds[ds.length - 1]; return PREP.items.filter(i => i.date === d); };
+async function openPrepared(item) {
+  if (!S.lessons[item.id]) {
+    try { const L = await getJSON(item.file); S.lessons[item.id] = L; save(); }
+    catch (e) { toast('Non riesco a scaricare questa lezione'); return; }
+  }
+  openLesson(item.id);
+}
+function prepForNews(it) {
+  const ts = tokenSet(it.title);
+  return PREP.items.find(p => p.kind === 'notizia' && (p.ref === it.link || (p.headline && (() => { const o = tokenSet(p.headline); let n = 0; for (const x of ts) if (o.has(x)) n++; return n >= 3 && n / Math.min(ts.size, o.size) >= 0.5; })())));
+}
+
+/* ---------------- modello sul telefono (WebLLM, WebGPU) ---------------- */
+let webllm = null, engine = null, engineModel = null, engineLoading = null, onEngineProgress = null;
+const hasWebGPU = () => !!navigator.gpu;
+async function loadWebLLM() {
+  if (!webllm) webllm = await import('https://esm.run/@mlc-ai/web-llm');
+  return webllm;
+}
+async function localModels() {
+  const w = await loadWebLLM();
+  let f16 = false;
+  try { const ad = await navigator.gpu.requestAdapter(); f16 = !!(ad && ad.features.has('shader-f16')); } catch (e) { }
+  const q = f16 ? 'q4f16_1' : 'q4f32_1';
+  const ok = /^(Qwen3-(0\.6|1\.7|4)B|Qwen2\.5-(0\.5|1\.5|3)B-Instruct|gemma-2-2b-it|Llama-3\.2-(1|3)B-Instruct|Phi-3\.5-mini-instruct)/;
+  return w.prebuiltAppConfig.model_list.filter(m => ok.test(m.model_id) && m.model_id.includes(q) && !/1k$/.test(m.model_id))
+    .map(m => ({ id: m.model_id, mb: Math.round(m.vram_required_MB || 0) }))
+    .sort((a, b) => a.mb - b.mb);
+}
+function defaultLocal(list) {
+  const pick = re => (list.find(m => re.test(m.id)) || {}).id;
+  return pick(/^Qwen3-1\.7B/) || pick(/^Qwen2\.5-1\.5B/) || pick(/^Qwen/) || (list[0] || {}).id;
+}
+async function getEngine() {
+  if (engine && engineModel === S.ai.localModel) return engine;
+  if (engineLoading) return engineLoading;
+  if (!hasWebGPU()) throw new Error('Questo browser non supporta WebGPU: il modello sul telefono non può girare. Usa i contenuti preparati stanotte.');
+  engineLoading = (async () => {
+    const w = await loadWebLLM();
+    if (!S.ai.localModel) { S.ai.localModel = defaultLocal(await localModels()); save(); }
+    try { await navigator.storage?.persist?.(); } catch (e) { }
+    if (engine) { try { await engine.unload(); } catch (e) { } }
+    engine = await w.CreateMLCEngine(S.ai.localModel, { initProgressCallback: r => onEngineProgress && onEngineProgress(r) }, { context_window_size: 6144 });
+    engineModel = S.ai.localModel; return engine;
+  })();
+  try { return await engineLoading; } finally { engineLoading = null; }
+}
+async function localCall(system, user, maxTok) {
+  const e = await getEngine();
+  const sys = /^Qwen3/.test(S.ai.localModel) ? system + '\n/no_think' : system;
+  const r = await e.chat.completions.create({ messages: [{ role: 'system', content: sys }, { role: 'user', content: user }], temperature: 0.5, max_tokens: maxTok, response_format: { type: 'json_object' } });
+  return r.choices[0].message.content || '';
+}
+
+/* ---------------- Gemini (facoltativo, con chiave personale) ---------------- */
+const GEM = 'https://generativelanguage.googleapis.com/v1beta';
 async function geminiModels(key) {
   const j = await getJSON(`${GEM}/models?pageSize=200&key=${encodeURIComponent(key)}`);
   const ok = (j.models || []).filter(m => (m.supportedGenerationMethods || []).includes('generateContent') && /gemini|gemma/i.test(m.name) && !/image|tts|audio|live|embed|vision|robotics|computer|native/i.test(m.name));
   const ver = n => { const m = n.match(/(\d+(?:\.\d+)?)/); return m ? parseFloat(m[1]) : 0; };
-  // preferisci il Flash più recente (miglior equilibrio qualità/limiti gratuiti), poi Flash-Lite
   const score = n => ver(n) * 10 + (/flash(?!-lite)/i.test(n) ? 3 : /flash-lite/i.test(n) ? 2 : /gemma/i.test(n) ? 0 : 1) - (/preview|exp/i.test(n) ? 0.5 : 0);
   return ok.map(m => m.name.replace(/^models\//, '')).sort((a, b) => score(b) - score(a));
 }
-
 async function geminiCall(system, user, maxTok) {
   let model = S.ai.model;
-  if (!model) { const ms = await geminiModels(S.ai.key); model = ms[0]; if (!model) throw new Error('nessun modello disponibile per questa chiave'); S.ai.model = model; save(); }
-  const body = {
-    systemInstruction: { parts: [{ text: system }] },
-    contents: [{ role: 'user', parts: [{ text: user }] }],
-    generationConfig: { temperature: 0.55, maxOutputTokens: maxTok, responseMimeType: 'application/json' }
-  };
-  const r = await fetchT(`${GEM}/models/${model}:generateContent?key=${encodeURIComponent(S.ai.key)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }, 150000);
+  if (!model) { model = (await geminiModels(S.ai.key))[0]; if (!model) throw new Error('nessun modello per questa chiave'); S.ai.model = model; save(); }
+  const r = await fetchT(`${GEM}/models/${model}:generateContent?key=${encodeURIComponent(S.ai.key)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ systemInstruction: { parts: [{ text: system }] }, contents: [{ role: 'user', parts: [{ text: user }] }], generationConfig: { temperature: 0.55, maxOutputTokens: maxTok, responseMimeType: 'application/json' } }) }, 150000);
   const j = await r.json().catch(() => ({}));
-  if (!r.ok) {
-    const msg = j.error?.message || ('HTTP ' + r.status);
-    if (r.status === 429) throw Object.assign(new Error('Limite gratuito raggiunto per ora. Riprova tra qualche minuto (o domani).'), { quota: true });
-    if (r.status === 404) { S.ai.model = ''; save(); }
-    throw new Error(msg);
-  }
-  const parts = j.candidates?.[0]?.content?.parts || [];
-  const txt = parts.filter(p => !p.thought).map(p => p.text || '').join('');
-  if (!txt) throw new Error('risposta vuota (' + (j.candidates?.[0]?.finishReason || 'sconosciuto') + ')');
-  return txt;
+  if (!r.ok) { if (r.status === 404) { S.ai.model = ''; save(); } throw new Error(r.status === 429 ? 'Limite gratuito di Gemini raggiunto' : (j.error?.message || 'HTTP ' + r.status)); }
+  return (j.candidates?.[0]?.content?.parts || []).filter(p => !p.thought).map(p => p.text || '').join('');
 }
 
-async function openrouterCall(system, user, maxTok) {
-  const r = await fetchT('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + S.ai.orKey, 'X-Title': 'Ulisse' },
-    body: JSON.stringify({ model: S.ai.orModel || 'openrouter/free', max_tokens: maxTok, temperature: 0.55, messages: [{ role: 'system', content: system }, { role: 'user', content: user }] })
-  }, 150000);
-  const j = await r.json().catch(() => ({}));
-  if (!r.ok) { if (r.status === 429) throw Object.assign(new Error('Limite gratuito di OpenRouter raggiunto per oggi.'), { quota: true }); throw new Error(j.error?.message || ('HTTP ' + r.status)); }
-  return j.choices?.[0]?.message?.content || '';
-}
-
-async function aiText(system, user, maxTok = 16000) {
-  const order = S.ai.provider === 'openrouter' ? ['openrouter', 'gemini'] : ['gemini', 'openrouter'];
-  let last;
-  for (const p of order) {
-    if (p === 'gemini' && !S.ai.key) continue;
-    if (p === 'openrouter' && !S.ai.orKey) continue;
-    try { return p === 'gemini' ? await geminiCall(system, user, maxTok) : await openrouterCall(system, user, maxTok); }
-    catch (e) { last = e; if (!e.quota) break; } // se finisce la quota, prova l'altro fornitore
-  }
-  throw last || new Error('Nessun motore configurato');
-}
-
+/* ---------------- interfaccia comune ---------------- */
+const useLocal = () => S.ai.provider !== 'gemini' || !S.ai.key;
+const aiReady = () => useLocal() ? hasWebGPU() : !!S.ai.key;
+async function aiText(system, user, maxTok) { return useLocal() ? localCall(system, user, maxTok) : geminiCall(system, user, maxTok); }
 function parseJSONLoose(txt) {
-  let t = String(txt).replace(/^\s*```(?:json)?/i, '').replace(/```\s*$/, '').trim();
+  let t = String(txt).replace(/<think>[\s\S]*?<\/think>/g, '').replace(/^\s*```(?:json)?/i, '').replace(/```\s*$/, '').trim();
   const a = t.indexOf('{'), b = t.lastIndexOf('}');
   if (a >= 0 && b > a) t = t.slice(a, b + 1);
   try { return JSON.parse(t); }
   catch (e) { return JSON.parse(t.replace(/,\s*([}\]])/g, '$1').replace(/[“”]/g, '"')); }
 }
 async function aiJSON(system, user, maxTok) {
-  const txt = await aiText(system, user, maxTok);
-  try { return parseJSONLoose(txt); }
-  catch (e) { // un secondo tentativo, chiedendo solo di correggere il JSON
-    const fix = await aiText('Correggi il JSON che ricevi perché sia valido. Rispondi solo con il JSON corretto, senza commenti.', txt.slice(0, 60000), maxTok);
-    return parseJSONLoose(fix);
+  let last;
+  for (let i = 0; i < 2; i++) { try { return parseJSONLoose(await aiText(system, user, maxTok)); } catch (e) { last = e; if (/WebGPU|Limite|chiave/.test(e.message || '')) break; } }
+  throw last;
+}
+
+/* ---------------- lezione costruita un capitolo alla volta ---------------- */
+const KNOWN_BLOCKS = new Set(['text', 'note', 'steps', 'timeline', 'compare', 'glossary', 'quiz', 'slider', 'reflect', 'links']);
+function cleanChapter(ch, p) {
+  if (ch && ch.chapter && typeof ch.chapter === 'object') ch = ch.chapter;
+  const blocks = (ch && Array.isArray(ch.blocks) ? ch.blocks : []).filter(b => b && KNOWN_BLOCKS.has(b.type));
+  blocks.forEach(b => { if (b.type === 'quiz') b.correct = parseInt(b.correct, 10) || 0; });
+  if (!blocks.length) throw new Error('capitolo vuoto');
+  return { label: ch.label || p.label, title: ch.title || p.label, depth: p.depth, blocks };
+}
+async function buildLesson(planKey, metaKey, context, log) {
+  const PI = await loadPiani();
+  const plan = PI.piani[planKey], local = useLocal();
+  const planTxt = plan.map((p, i) => `${i + 1}. ${p.label} (${p.depth}): ${p.spec}`).join('\n');
+  const chapters = [];
+  for (let i = 0; i < plan.length; i++) {
+    const p = plan[i];
+    log(`Scrivo il capitolo ${i + 1} di ${plan.length}: ${p.label}`);
+    const done = chapters.map(c => '«' + c.title + '»').join(', ') || 'nessuno';
+    const user = `${context}\n\nPIANO DELLA LEZIONE:\n${planTxt}\n\nCapitoli già scritti: ${done}. Non ripeterne i contenuti.\nScrivi ADESSO SOLO il capitolo ${i + 1} «${p.label}» (${p.depth}).\nIndicazioni: ${p.spec}\n\nRispondi con un JSON così: ${PI.schema_capitolo}\n${PI.blocchi}`;
+    let ch;
+    try { ch = cleanChapter(await aiJSON(PI.sys, user, local ? 1300 : 2600), p); }
+    catch (e) { if (/WebGPU|Limite|chiave/.test(e.message || '')) throw e; log('  capitolo saltato: ' + (e.message || e)); continue; }
+    chapters.push(ch);
   }
+  if (!chapters.length) throw new Error('Il modello non è riuscito a scrivere la lezione. Riprova o scegli un modello più grande in ⚙.');
+  log('Ultimi ritocchi: carte di ripasso e rami');
+  let meta = {};
+  try { meta = await aiJSON(PI.sys, `${context}\n\nLa lezione ha questi capitoli:\n${chapters.map(c => '- ' + c.label + ': ' + c.title).join('\n')}\n\nOra scrivi i metadati. ${PI.meta[metaKey]}\nRispondi con un JSON così: ${PI.schema_meta}`, 1400); } catch (e) { }
+  return { title: meta.title, summary: meta.summary, tags: meta.tags || [], cards: (meta.cards || []).filter(c => c && c.q && c.a), branches: (meta.branches || []).filter(b => b && b.name), next: meta.next, chapters };
 }
 
-/* ---------------- regole comuni a tutte le lezioni ---------------- */
-const SYS = `Sei l'autore delle lezioni di «Ulisse», un'app personale di un ingegnere elettronico italiano (laurea magistrale, molto curioso) che nel tempo libero vuole capire meglio il mondo, la storia e la fede cristiana. Scrivi in italiano chiaro e vivo, mai scolastico, con frasi brevi.
-Regole:
-- Spiega ogni passaggio: chi legge deve poter capire senza conoscenze pregresse sul tema. Se citi un evento, un'istituzione o una persona, dì in una frase chi o cos'è.
-- Distingui sempre i fatti dalle interpretazioni e dalle ipotesi (usa i blocchi "note" con kind fatto, contesto, ipotesi, attenzione).
-- Per i fatti recenti usa SOLO le fonti fornite nel messaggio. Se un'informazione non c'è, dillo invece di inventarla.
-- Per la storia usa conoscenze consolidate. Non inventare date, numeri o citazioni: se non sei sicuro scrivi "circa" o dichiaralo.
-- Su temi politici o controversi presenta in modo equilibrato le posizioni principali con le loro ragioni migliori, senza prendere parte. Valuta i politici su quello che hanno fatto e detto, con fonti.
-- Non copiare frasi degli articoli: riformula sempre.
-- Usa blocchi interattivi dove aiutano davvero a capire (timeline, compare, steps, quiz, slider, glossary).
-- Rispondi SOLO con un oggetto JSON valido, secondo lo schema indicato.`;
-
-const SCHEMA_TXT = `{
- "title": "titolo", "summary": "una frase", "tags": ["2-5 parole chiave"],
- "chapters": [ { "label": "etichetta breve", "title": "titolo del capitolo", "depth": "assaggio|profondo", "blocks": [ BLOCCHI ] } ],
- "cards": [ { "q": "domanda di ripasso", "a": "risposta in 1-2 frasi" } ],
- "branches": [ { "name": "argomento collegato da esplorare", "why": "perché è collegato, una frase" } ],
- "next": "titolo del prossimo approfondimento naturale"
-}
-BLOCCHI disponibili:
-{ "type":"text", "md":"paragrafi separati da riga vuota, **grassetto**, elenchi con - " }
-{ "type":"note", "kind":"fatto|contesto|ipotesi|attenzione", "md":"testo breve" }
-{ "type":"steps", "title":"…", "items":[ {"title":"…","text":"…"} ] }
-{ "type":"timeline", "title":"…", "events":[ {"year":"1946 o 12 ott 2026","title":"…","text":"…"} ] }
-{ "type":"compare", "title":"…", "left":{"title":"…","points":["…"]}, "right":{"title":"…","points":["…"]}, "common":["…"] }
-{ "type":"glossary", "title":"…", "items":[ {"term":"…","def":"…"} ] }
-{ "type":"quiz", "q":"…", "options":["…","…","…"], "correct":0, "explain":"…" }
-{ "type":"slider", "title":"…", "label":"…", "min":0, "max":10, "step":1, "value":5, "unit":"", "vars":{"N":100}, "outputs":[{"label":"…","expr":"espressione in x e vars: + - * / ( ) ?: < > == && || min max round ceil floor abs sqrt pow","unit":""}], "note":"…" }
-{ "type":"reflect", "prompt":"domanda aperta personale" }
-{ "type":"links", "title":"…", "items":[ {"title":"…","url":"https://…","note":"…"} ] }   (usa solo URL ricevuti nelle fonti o voci di it.wikipedia.org che sei certo esistano)`;
-
-const LEVEL = ['', 'principiante assoluto: spiegazioni semplicissime, niente gergo', 'curioso con basi minime', 'intermedio: può reggere qualche dettaglio tecnico', 'avanzato: dettagli, numeri e dibattiti tra studiosi', 'esperto: profondità massima e fonti primarie'];
-
-function srcBlock(title, list, fmt) { return list && list.length ? `\n### ${title}\n` + list.map(fmt).join('\n') : ''; }
-
-/* ---------------- percorsi sulle notizie ---------------- */
-function newsPrompt(cluster, prior, wiki, mode) {
-  const it = cluster.main;
-  const fonti = srcBlock('Come ne parlano le testate (oggi)', cluster.items.slice(0, 8), i => `- [${i.src || i.feed || ''}] ${i.title}${i.desc ? ' — ' + i.desc : ''} (${fmtDay(i.date)}) ${i.link || ''}`);
-  const ante = srcBlock('Notizie degli ultimi 30 giorni sullo stesso tema (dal più vecchio)', prior, i => `- ${fmtDay(i.date)} [${i.src || ''}] ${i.title}`);
-  const wk = srcBlock('Voci di Wikipedia collegate', wiki, w => `- ${w.title}: ${w.extract} (${w.url})`);
-  const quick = `Crea un «Capire al volo» (5-10 minuti) con 3 capitoli, tutti "assaggio":
-1. "Cosa è successo": la notizia in parole semplici e, in una timeline, gli antefatti dei giorni e delle settimane prima presi dalle fonti (proteste, decisioni, dichiarazioni) che servono per capirla.
-2. "Le parole per capire": glossary con istituzioni, leggi, sigle e persone citate; poi steps se c'è un meccanismo (es. come passa una legge).
-3. "Perché conta": a chi cambia qualcosa, cosa dicono le parti in causa, un quiz.`;
-  const full = `Crea un «Percorso completo» guidato (30-90 minuti) che parte dalla notizia, scende nella storia e torna al presente. Capitoli in quest'ordine:
-1. "La notizia" (assaggio): cosa è successo, confrontando come la raccontano testate diverse; note di tipo fatto per ciò che è certo.
-2. "Antefatti" (assaggio): timeline dettagliata degli eventi recenti (giorni, settimane, mesi) che hanno portato a oggi, usando le fonti; spiega cause e passaggi intermedi.
-3. "Capire" (assaggio): glossary e steps su istituzioni, regole, meccanismi e termini necessari.
-4. "Gli attori" (profondo): chi sono i protagonisti (persone, partiti, Stati, gruppi), cosa vogliono, cosa hanno detto e fatto in passato su questo tema; segnala coerenze e contraddizioni solo se documentate, con equilibrio.
-5. "La storia" (profondo): scegli 1-2 precedenti storici davvero pertinenti (non collegati solo da una parola). Per ciascuno: il mondo e l'Italia di allora (situazione politica, economica, geopolitica, sociale) in modo che si capisca anche senza saperne nulla, cosa successe passo per passo (timeline), come finì e cosa lasciò.
-6. "Parallelismi" (profondo): compare tra il precedente storico e il presente; analogie e soprattutto differenze; cosa insegna e dove il paragone non regge (note di tipo attenzione).
-7. "Scenari" (profondo): 2-3 scenari plausibili per i prossimi mesi o anni, ciascuno con premesse, cosa dovrebbe succedere perché si avveri e «segnali da osservare» nelle notizie; note di tipo ipotesi; chiudi con un reflect.
-Aggiungi un quiz in almeno tre capitoli e 6-10 cards. In "branches" proponi 4 temi storici o concettuali da approfondire.`;
-  return `Livello del lettore: ${LEVEL[S.level]}. Oggi è ${new Date().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}.
-NOTIZIA: «${it.title}»
-${mode === 'quick' ? quick : full}
-FONTI (usale per i fatti recenti, cita i link più utili in un blocco links nell'ultimo capitolo):${fonti}${ante}${wk}
-
-Schema JSON:
-${SCHEMA_TXT}`;
+/* ---------------- contesti per ogni tipo di lezione ---------------- */
+function newsContext(cluster, prior, wiki) {
+  const it = cluster.main, lite = useLocal();
+  const L = [`Livello del lettore: ${LEVEL_TXT()}. Oggi è il ${new Date().toLocaleDateString('it-IT')}.`, `NOTIZIA: «${it.title}»`, '', '### Come ne parlano le testate (oggi)'];
+  cluster.items.slice(0, lite ? 4 : 8).forEach(i => L.push(`- [${i.src || i.feed || ''}] ${i.title}${i.desc ? ' — ' + i.desc.slice(0, lite ? 160 : 360) : ''} (${fmtDay(i.date)}) ${i.link || ''}`));
+  if (prior.length) { L.push('', '### Notizie delle ultime settimane sullo stesso tema (dalla più vecchia)'); prior.slice(lite ? -8 : -18).forEach(i => L.push(`- ${fmtDay(i.date)} [${i.src || ''}] ${i.title}`)); }
+  if (wiki.length) { L.push('', '### Voci di Wikipedia collegate'); wiki.forEach(w => L.push(`- ${w.title}: ${w.extract.slice(0, lite ? 450 : 900)} (${w.url || ''})`)); }
+  return L.join('\n');
 }
 
-/* ---------------- scoperta di un argomento ---------------- */
-function topicPrompt(t, prevTitles, ctx) {
-  const serie = prevTitles && prevTitles.length ? `Questa è la puntata ${prevTitles.length + 1} di una serie in verticale. Puntate già fatte: ${prevTitles.map(x => '«' + x + '»').join(', ')}. Vai PIÙ A FONDO senza ripetere, partendo da dove si è arrivati.` : 'È il primo incontro con l\'argomento: deve far venire voglia di saperne di più.';
-  return `Argomento: «${t.n}»${t.hk ? ' (' + t.hk + ')' : ''}.
-Livello del lettore: ${LEVEL[S.level]}. ${serie}
-Crea una lezione di scoperta per il tempo libero: divertente, sorprendente, concreta. 4-5 capitoli:
-1. Il gancio (assaggio): una storia, un paradosso o una domanda che incuriosisce.
-2-3. Come funziona / come è andata (assaggio o profondo secondo il livello): con almeno due blocchi interattivi (timeline, slider con un modello numerico vero, compare, steps, quiz).
-4. Prova tu (assaggio): un'attività concreta da fare nel mondo reale, anche piccola (osservare, costruire, visitare, ascoltare), e un reflect.
-5. Per andare oltre (assaggio): links solo a voci Wikipedia sicure, e cosa cercare (libri, podcast, luoghi, corsi in Italia).
-In "branches" 5 argomenti collegati anche lontani (per esplorare in orizzontale). In "next" il titolo della puntata successiva (per scendere in verticale). 5-8 cards.
-${srcBlock('Base da Wikipedia', ctx, w => `- ${w.title}: ${w.extract}`)}
-
-Schema JSON:
-${SCHEMA_TXT}`;
-}
-
-/* ---------------- paper tecnico ---------------- */
-function paperPrompt(w, abs, link) {
-  return `Paper: «${stripTags(w.display_name)}» (${w.publication_year || ''}, ${w.primary_location?.source?.display_name || ''}). Link: ${link || ''}
-Abstract: ${abs}
-Il lettore è un ingegnere elettronico specializzato in RF, microonde e MMIC: puoi usare il linguaggio tecnico del settore, ma spiega i concetti di altri campi.
-Crea una lezione che renda il paper facile da assimilare. Capitoli: "L'idea in una frase" (assaggio), "Il problema" (assaggio), "Come funziona" (profondo: spiega fisicamente e graficamente cosa succede, con steps e, se ha senso, uno slider con una relazione numerica del settore), "Risultati e numeri" (assaggio: solo quelli dell'abstract, non inventarne), "Limiti e domande aperte" (profondo, con note ipotesi e un reflect su come si collega al lavoro del lettore). 5-8 cards. Basati SOLO sull'abstract per ciò che il paper afferma; il contesto generale puoi spiegarlo tu dichiarandolo.
-
-Schema JSON:
-${SCHEMA_TXT}`;
-}
-
-/* ---------------- fede ---------------- */
-function biblePrompt(ref, title) {
-  return `Brano: ${ref}${title ? ' («' + title + '»)' : ''}.
-Livello: ${LEVEL[S.level]}. Il lettore è un cattolico praticante che vuole capire più a fondo.
-Crea una lezione su questo brano. Non riportare il testo integrale (è protetto): riassumilo e cita al massimo brevi espressioni. Capitoli:
-1. "Il brano in breve" (assaggio): cosa racconta, scena per scena (steps).
-2. "Il contesto" (assaggio): chi lo ha scritto, quando, per chi, in quale situazione storica, politica e religiosa (timeline), genere letterario.
-3. "Le parole chiave" (profondo): glossary con i termini decisivi e, dove utile, il significato dell'ebraico o del greco.
-4. "Come lo ha letto la Chiesa" (profondo): Padri della Chiesa, liturgia, Catechismo della Chiesa Cattolica (indica i numeri dei paragrafi solo se sei sicuro), collegamenti con altri passi biblici.
-5. "Per la tua vita" (assaggio): cosa può dire oggi, una proposta concreta e un reflect.
-Aggiungi un links con: https://www.bibbiaedu.it/ (testo CEI) e https://www.vatican.va/archive/catechism_it/index_it.htm . 5-8 cards. In "branches" 4 brani o temi collegati.
-
-Schema JSON:
-${SCHEMA_TXT}`;
-}
-function faithPrompt(q) {
-  return `Domanda di fede: «${q}».
-Livello: ${LEVEL[S.level]}. Il lettore è un cattolico che vuole capire il perché delle cose, con onestà intellettuale.
-Crea una lezione: "La domanda" (assaggio: perché è seria, anche le obiezioni migliori), "Cosa dice la Scrittura" (con riferimenti precisi ai passi), "Cosa insegna la Chiesa" (Catechismo e magistero, numeri dei paragrafi solo se certi), "Come ci hanno pensato" (timeline di grandi pensatori e santi), "Domande aperte e obiezioni" (compare tra obiezione e risposta, onesto su ciò che resta mistero), "Per la vita" (reflect). Usa note per distinguere dottrina definita, insegnamento comune e opinioni teologiche. 5-8 cards; in "branches" 4 domande collegate.
-
-Schema JSON:
-${SCHEMA_TXT}`;
-}
-
-/* ---------------- dalla risposta del modello a una lezione salvata ---------------- */
-function normalizeLesson(L, meta) {
-  if (!L || !Array.isArray(L.chapters) || !L.chapters.length) throw new Error('la lezione generata è incompleta');
-  L.id = meta.id || ('g-' + uid());
-  L.area = meta.area || 'scoperta'; L.kind = meta.kind || 'passione';
-  L.title = L.title || meta.title || 'Lezione';
-  L.gen = { at: Date.now(), model: S.ai.provider === 'gemini' ? S.ai.model : S.ai.orModel, ref: meta.ref || null, topic: meta.topic || null };
-  L.chapters = L.chapters.filter(c => c && Array.isArray(c.blocks));
-  S.lessons[L.id] = L; save();
-  return L;
-}
-
-/* finestra di avanzamento: mostra i passi mentre la lezione si prepara */
-async function generateWithProgress(title, steps, run) {
-  const list = h('div', { class: 'gen-steps' });
+/* finestra di avanzamento */
+async function generateWithProgress(title, run) {
+  const lines = h('div', { class: 'gen-steps' });
+  const bar = h('div', { class: 'small muted' });
   const err = h('div');
-  const close = openSheet(title, pad(h('div', { class: 'card' }, h('div', { class: 'spin' }), list, h('p', { class: 'small muted', style: { margin: 0 } }, 'Il modello gratuito può impiegare da 20 secondi a un paio di minuti. Puoi chiudere: la lezione verrà salvata nel Quaderno.')), err));
-  const mark = (i, ok) => { list.replaceChildren(...steps.map((s, k) => h('div', { class: k < i || ok ? 'ok' : '' }, (k < i || ok ? '✓ ' : k === i ? '… ' : '· ') + s))); };
-  mark(0);
+  const spin = h('div', { class: 'spin' });
+  const close = openSheet(title, pad(h('div', { class: 'card' }, spin, lines, bar,
+    P(useLocal() ? 'Il modello lavora sul telefono: tieni l\'app aperta. Una lezione breve richiede alcuni minuti.' : 'Di solito ci vuole meno di un minuto.', 'small muted')), err), () => { onEngineProgress = null; });
+  const log = t => { lines.append(h('div', null, '· ' + t)); };
+  onEngineProgress = r => { bar.textContent = (r.text || '').replace(/\[.*?\]\s*/, '').slice(0, 140); };
   try {
-    const L = await run(i => mark(i));
-    close(); toast('Lezione pronta');
+    const L = await run(log);
+    onEngineProgress = null; close(); toast('Lezione pronta');
     openLesson(L.id); return L;
   } catch (e) {
-    err.replaceChildren(h('div', { class: 'card flat' }, h('b', null, 'Non sono riuscito a creare la lezione.'), h('p', { class: 'small', style: { margin: 0 } }, e.message || String(e)),
-      h('p', { class: 'small muted', style: { margin: 0 } }, 'Puoi riprovare più tardi, controllare la chiave in ⚙, oppure usare «Chiedi a Claude».')));
-    $('.spin', list.parentElement)?.remove();
+    onEngineProgress = null; spin.remove();
+    err.replaceChildren(flat(h('b', null, 'Non sono riuscito a creare la lezione.'), P(e.message || String(e)),
+      P('Puoi riprovare, cambiare modello in ⚙ oppure usare «Chiedi a Claude».', 'small muted')));
     return null;
   }
 }
 function needAI() {
   if (aiReady()) return true;
-  openSheet('Attiva il motore gratuito', pad(h('div', { class: 'card' },
-    h('p', { style: { margin: 0 } }, 'Per creare lezioni direttamente nell\'app serve una chiave gratuita di un modello linguistico. Ci vogliono due minuti e nessuna carta di credito.'),
-    h('ol', { class: 'small', style: { margin: 0, paddingLeft: '1.2em' } },
-      h('li', null, 'Apri ', h('a', { href: 'https://aistudio.google.com/apikey', target: '_blank', rel: 'noopener' }, 'Google AI Studio'), ' e accedi con il tuo account Google.'),
-      h('li', null, 'Premi «Create API key» e copia la chiave.'),
-      h('li', null, 'Incollala in ⚙ → Motore delle lezioni.')),
-    h('p', { class: 'small muted', style: { margin: 0 } }, 'Nel piano gratuito Google può usare i testi inviati per migliorare i suoi modelli: non inserire dati personali nelle richieste.'),
+  openSheet('Modello sul telefono non disponibile', pad(card(
+    P(hasWebGPU() ? 'Configura il motore in ⚙.' : 'Questo browser non supporta WebGPU, che serve per far girare il modello direttamente sul telefono. Su Android usa Chrome aggiornato; su iPhone serve iOS 26 o successivo.', ''),
+    P('Nel frattempo trovi i contenuti preparati stanotte in Oggi, Notizie, Scopri e Specchio. In ⚙ puoi anche inserire una chiave Gemini facoltativa.', 'small muted'),
     h('button', { class: 'btn primary', onclick: () => { document.querySelectorAll('.sheet-bg').forEach(e => e.remove()); settingsSheet(); } }, 'Apri le impostazioni'))));
   return false;
 }
+function saveGenerated(L, meta) {
+  L.id = 'g-' + uid(); L.area = meta.area; L.kind = meta.kind; L.title = L.title || meta.title || 'Lezione';
+  L.gen = { at: Date.now(), model: useLocal() ? S.ai.localModel : S.ai.model, ref: meta.ref || null, topic: meta.topic || null };
+  S.lessons[L.id] = L; save();
+  contAdd({ type: 'lesson', id: L.id, title: L.title, area: L.area });
+  return L;
+}
 
+/* ---------------- i quattro tipi di richiesta al momento ---------------- */
 async function genNewsLesson(cluster, mode) {
   if (!needAI()) return;
   const it = cluster.main;
-  return generateWithProgress(mode === 'quick' ? 'Capire al volo' : 'Percorso completo',
-    ['Cerco gli antefatti degli ultimi 30 giorni', 'Leggo il contesto su Wikipedia', 'Scrivo ' + (mode === 'quick' ? 'la spiegazione' : 'il percorso: storia, parallelismi, scenari')],
-    async step => {
-      const prior = await priorNews(it.title, mode === 'quick' ? 14 : 45).catch(() => []);
-      step(1); const wiki = await wikiContext(it.title + ' ' + (it.desc || ''), mode === 'quick' ? 2 : 4);
-      step(2); const L = await aiJSON(SYS, newsPrompt(cluster, prior, wiki, mode), mode === 'quick' ? 8000 : 24000);
-      const out = normalizeLesson(L, { area: 'mondo', kind: 'notizia', ref: it.link, title: it.title });
-      contAdd({ type: 'lesson', id: out.id, title: out.title, area: 'mondo' });
-      return out;
-    });
+  return generateWithProgress(mode === 'quick' ? 'Capire al volo' : 'Percorso completo', async log => {
+    log('Cerco gli antefatti delle ultime settimane');
+    const prior = await priorNews(it.title, mode === 'quick' ? 14 : 45).catch(() => []);
+    log('Leggo il contesto su Wikipedia');
+    const wiki = await wikiContext(it.title + ' ' + (it.desc || ''), mode === 'quick' || useLocal() ? 2 : 4);
+    if (useLocal()) log('Preparo il modello sul telefono');
+    const L = await buildLesson(mode === 'quick' ? 'notizia_rapida' : 'notizia_completa', 'notizia', newsContext(cluster, prior, wiki), log);
+    return saveGenerated(L, { area: 'mondo', kind: 'notizia', ref: it.link, title: it.title });
+  });
 }
 async function genTopicLesson(t) {
   if (!needAI()) return;
   const prev = (S.series[t.id] || []).map(id => S.lessons[id]?.title).filter(Boolean);
-  return generateWithProgress(prev.length ? 'Più a fondo: ' + t.n : t.n, ['Raccolgo le basi', 'Scrivo la lezione interattiva'], async step => {
-    const ctx = await wikiContext(t.w || t.n, 2);
-    step(1); const L = await aiJSON(SYS, topicPrompt(t, prev, ctx), 16000);
-    const out = normalizeLesson(L, { area: 'scoperta', kind: 'passione', topic: t.id });
-    (S.series[t.id] = S.series[t.id] || []).push(out.id);
-    for (const b of L.branches || []) if (b && b.name) catalogAdd(b.name, t.c, b.why, t.id);
-    save(); contAdd({ type: 'lesson', id: out.id, title: out.title, area: 'scoperta' });
-    return out;
+  return generateWithProgress(prev.length ? 'Più a fondo: ' + t.n : t.n, async log => {
+    log('Raccolgo le basi');
+    const ctx = await wikiContext(t.w || t.n, useLocal() ? 1 : 2);
+    await loadPiani();
+    const serie = prev.length ? `Questa è la puntata ${prev.length + 1} di una serie. Puntate già fatte: ${prev.map(x => '«' + x + '»').join(', ')}. Vai PIÙ A FONDO senza ripetere.` : 'È il primo incontro con l\'argomento.';
+    const context = `Argomento: «${t.n}»${t.hk ? ' (' + t.hk + ')' : ''}. Livello del lettore: ${LEVEL_TXT()}. ${serie}\n` + ctx.map(w => `- ${w.title}: ${w.extract.slice(0, 600)}`).join('\n');
+    const L = saveGenerated(await buildLesson('scoperta', 'scoperta', context, log), { area: 'scoperta', kind: 'passione', topic: t.id });
+    (S.series[t.id] = S.series[t.id] || []).push(L.id);
+    for (const b of L.branches || []) catalogAdd(b.name, t.c, b.why, t.id);
+    save(); return L;
   });
 }
 async function genPaperLesson(w, abs, link) {
   if (!needAI()) return;
-  return generateWithProgress('Spiegazione del paper', ['Leggo l\'abstract', 'Scrivo la spiegazione'], async step => {
-    step(1); const L = await aiJSON(SYS, paperPrompt(w, abs, link), 14000);
-    const out = normalizeLesson(L, { area: 'lavoro', kind: 'tecnico', ref: link });
-    contAdd({ type: 'lesson', id: out.id, title: out.title, area: 'lavoro' }); return out;
+  return generateWithProgress('Spiegazione del paper', async log => {
+    await loadPiani();
+    const context = `Paper: «${stripTags(w.display_name)}» (${w.publication_year || ''}, ${w.primary_location?.source?.display_name || ''}). Link: ${link || ''}\nAbstract: ${abs.slice(0, useLocal() ? 1500 : 4000)}\nIl lettore è un ingegnere elettronico (RF, microonde, MMIC): usa il linguaggio del settore, spiega i concetti di altri campi. Per ciò che il paper afferma basati SOLO sull'abstract.`;
+    return saveGenerated(await buildLesson('paper', 'paper', context, log), { area: 'lavoro', kind: 'tecnico', ref: link });
   });
 }
 async function genFaithLesson(kind, a, b) {
   if (!needAI()) return;
-  return generateWithProgress(kind === 'bible' ? a : 'Domanda di fede', ['Raccolgo le fonti', 'Scrivo la lezione'], async step => {
-    step(1); const L = await aiJSON(SYS, kind === 'bible' ? biblePrompt(a, b) : faithPrompt(a), 14000);
-    const out = normalizeLesson(L, { area: 'fede', kind: 'fede' });
-    contAdd({ type: 'lesson', id: out.id, title: out.title, area: 'fede' }); return out;
+  return generateWithProgress(kind === 'bible' ? a : 'Domanda di fede', async log => {
+    await loadPiani();
+    const context = kind === 'bible'
+      ? `Brano: ${a}${b ? ' («' + b + '»)' : ''}. Livello: ${LEVEL_TXT()}. Il lettore è un cattolico che vuole capire più a fondo.`
+      : `Domanda di fede: «${a}». Livello: ${LEVEL_TXT()}. Il lettore è un cattolico che vuole capire il perché delle cose, con onestà intellettuale.`;
+    return saveGenerated(await buildLesson(kind === 'bible' ? 'bibbia' : 'fede', kind === 'bible' ? 'bibbia' : 'fede', context, log), { area: 'fede', kind: 'fede' });
   });
+}
+
+/* riserva: lezione chiesta a Claude in chat */
+function lessonPrompt(kind, subject, extra) {
+  const PI = PIANI || {};
+  return `Preparami una lezione interattiva per la mia app Ulisse su: «${subject}».
+${extra ? 'Contesto: ' + extra + '\n' : ''}Livello: ${LEVEL_TXT()}. Tipo: ${kind}.
+${PI.sys || ''}
+Formato: un oggetto JSON con title, summary, tags, cards [{q,a}], branches [{name,why}], next e chapters, dove ogni capitolo è ${PI.schema_capitolo || '{label,title,depth,blocks}'}.
+${PI.blocchi || ''}`;
 }

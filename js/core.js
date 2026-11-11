@@ -122,8 +122,8 @@ function stopSpeak() { try { speechSynthesis.cancel(); } catch (e) { } }
 const KEY = 'ulisse.v1';
 function defaults() {
   return {
-    v: 2, name: 'Andrea', level: 2, mode: 'orizzontale',
-    ai: { provider: 'gemini', key: '', model: '', orKey: '', orModel: 'openrouter/free' },
+    v: 3, name: '', onboarded: false, level: 2, mode: 'orizzontale',
+    ai: { provider: 'locale', key: '', model: '', localModel: '' },
     feeds: DEFAULT_FEEDS.map(f => Object.assign({}, f)),
     niche: ['semiconduttori', 'spazio', 'Firenze'],
     techKw: ['MMIC 60 GHz', 'reconfigurable intelligent surface active', 'negative resistance amplifier'],
@@ -140,7 +140,8 @@ function load() {
       const d = JSON.parse(r), base = defaults();
       const S2 = Object.assign(base, d);
       S2.ai = Object.assign(defaults().ai, d.ai || {});
-      if (!d.v || d.v < 2) { S2.feeds = DEFAULT_FEEDS.map(f => Object.assign({}, f)); S2.v = 2; }
+      if (!d.v || d.v < 2) { S2.feeds = DEFAULT_FEEDS.map(f => Object.assign({}, f)); }
+      if (!d.v || d.v < 3) { if (S2.ai.provider !== 'gemini' || !S2.ai.key) S2.ai.provider = 'locale'; if (d.name || (d.log || []).length) S2.onboarded = true; S2.v = 3; }
       return S2;
     }
   } catch (e) { }

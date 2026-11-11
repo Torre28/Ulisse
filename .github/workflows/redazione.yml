@@ -1,0 +1,56 @@
+# Redazione notturna di Ulisse: ogni notte un modello aperto (via Ollama, sulla CPU
+# della macchina di GitHub) prepara percorsi sulle notizie, la scoperta e la Parola
+# del giorno. Gratuito per i repository pubblici. Si può lanciare anche a mano
+# da Actions → Redazione notturna → Run workflow.
+name: Redazione notturna
+
+on:
+  schedule:
+    - cron: '7 1 * * *'   # 02:07 in Italia (03:07 con l'ora legale)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: redazione
+  cancel-in-progress: false
+
+jobs:
+  redazione:
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    env:
+      OLLAMA_MODELS: /home/runner/.ollama/models
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Modello dalla cache (evita di riscaricarlo ogni notte)
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/.ollama/models
+          key: ollama-${{ hashFiles('redazione/config.json') }}
+
+      - name: Installa e avvia Ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          sudo systemctl stop ollama || true
+          nohup ollama serve > /tmp/ollama.log 2>&1 &
+          for i in $(seq 1 30); do curl -s http://127.0.0.1:11434/api/version && break; sleep 2; done
+
+      - name: Scarica il modello
+        run: ollama pull "$(python3 -c 'import json;print(json.load(open("redazione/config.json"))["modello"])')"
+
+      - name: Scrivi i contenuti del giorno
+        run: python3 redazione/redazione.py
+
+      - name: Pubblica
+        if: always()
+        run: |
+          git config user.name "Redazione di Ulisse"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add contenuti
+          if git diff --cached --quiet; then echo "Nessun contenuto nuovo"; exit 0; fi
+          git commit -m "Contenuti del $(TZ=Europe/Rome date +%F)"
+          git pull --rebase
+          git push

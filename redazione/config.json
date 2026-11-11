@@ -1,0 +1,20 @@
+{
+  "nota": "Configurazione della redazione notturna. Il modello deve esistere nel catalogo di Ollama (ollama.com/library).",
+  "modello": "qwen3:8b",
+  "contesto_token": 12288,
+  "minuti_disponibili": 300,
+  "giorni_da_tenere": 10,
+  "livello": 2,
+  "percorsi_completi": 3,
+  "capire_al_volo": 5,
+  "scoperta_del_giorno": true,
+  "parola_del_giorno": true,
+  "feed": [
+    "https://news.google.com/rss?hl=it&gl=IT&ceid=IT:it",
+    "https://news.google.com/rss/headlines/section/topic/NATION?hl=it&gl=IT&ceid=IT:it",
+    "https://news.google.com/rss/headlines/section/topic/WORLD?hl=it&gl=IT&ceid=IT:it",
+    "https://www.ilpost.it/feed/",
+    "https://www.ansa.it/sito/ansait_rss.xml"
+  ],
+  "passioni": []
+}

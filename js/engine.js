@@ -174,7 +174,7 @@ function openLesson(id, chapter) {
     const topic = L.gen && L.gen.topic && topicOf(L.gen.topic);
     host.replaceChildren(
       h('div', { class: 'lesson-head' },
-        h('div', { class: 'row' }, areaTag(L.area), L.kind && h('span', { class: 'tag muted' }, L.kind), L.gen && h('span', { class: 'tag muted' }, 'generata'), h('span', { class: 'mono' }, `${prog.seen.length}/${chs.length} capitoli`)),
+        h('div', { class: 'row' }, areaTag(L.area), L.kind && h('span', { class: 'tag muted' }, L.kind), L.gen && h('span', { class: 'tag muted' }, L.gen.notte ? 'di stanotte' : 'generata'), h('span', { class: 'mono' }, `${prog.seen.length}/${chs.length} capitoli`)),
         L.summary && h('p', { class: 'small muted', style: { margin: 0 } }, L.summary)),
       h('div', { class: 'chapters' }, chs.map((c, k) => h('button', { class: 'chip', 'aria-pressed': k === ci ? 'true' : 'false', onclick: () => show(k) }, (k + 1) + ' · ' + (c.label || 'Parte'), h('small', null, c.depth === 'profondo' ? '◆' : '◇')))),
       h('div', null, h('span', { class: 'mono' }, (ch.label || '') + (ch.depth ? ' · ' + ch.depth : '')), h('h2', { style: { marginTop: '4px' } }, ch.title)),
@@ -204,13 +204,6 @@ function openLesson(id, chapter) {
 }
 
 /* ---------------- riserva: farsi preparare la lezione da Claude in chat ---------------- */
-function lessonPrompt(kind, subject, extra) {
-  return `Preparami una lezione interattiva per la mia app Ulisse su: «${subject}».
-${extra ? 'Contesto: ' + extra + '\n' : ''}Livello: ${LEVEL[S.level]}. Tipo: ${kind}.
-${SYS.replace(/^Sei l'autore[^\n]*\n/, '')}
-Schema JSON:
-${SCHEMA_TXT}`;
-}
 function askClaudeSheet(kind, subject, extra) {
   const txt = lessonPrompt(kind, subject, extra);
   openSheet('Chiedi una lezione a Claude', h('div', { class: 'card' },

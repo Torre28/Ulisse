@@ -55,6 +55,16 @@ function episodesBox(loader, area, emptyMsg) {
   return box;
 }
 
+/* ======================= CONTENUTI DI STANOTTE ======================= */
+const PREP_ICON = { notizia: '📰', passione: '🧭', fede: '✝' };
+function prepRow(p) {
+  const mode = { full: 'percorso completo', quick: 'capire al volo', scoperta: 'scoperta del giorno', parola: 'Parola del giorno', serie: 'nuova puntata' }[p.mode] || p.kind;
+  const done = S.progress[p.id]?.done;
+  return h('button', { class: 'card flat', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => openPrepared(p) },
+    h('span', { class: 'mono' }, (PREP_ICON[p.kind] || '·') + ' ' + mode + ' · ' + p.chapters + ' capitoli' + (done ? ' · ✓ fatta' : '')),
+    h('b', null, p.title), p.headline && p.headline !== p.title ? h('span', { class: 'small muted' }, p.headline) : (p.summary ? h('span', { class: 'small muted' }, p.summary) : null));
+}
+
 /* ======================= OGGI ======================= */
 function contRow(c) {
   const open = () => {
@@ -92,7 +102,7 @@ function viewOggi() {
       save(); render();
     } }, q.src === 'app' ? '↻' : '✕'));
   return [
-    header(`${hello}, ${S.name}`, new Date().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })),
+    header(S.name ? `${hello}, ${S.name}` : hello, new Date().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })),
     !storageOk && flat(P('Attenzione: questo browser non sta salvando i dati. Usa l\'app installata.')),
     card(h('div', { class: 'row between' }, h('h2', null, 'Missioni'), h('button', { class: 'btn small', onclick: addQuestSheet }, '+ La mia')),
       h('span', { class: 'mono' }, 'Main quest'), main.length ? main.map(questEl) : h('div', { class: 'empty' }, 'Nessuna'),
@@ -100,6 +110,8 @@ function viewOggi() {
     h('div', { class: 'row' },
       h('button', { class: 'btn grow' + (due ? ' primary' : ''), onclick: reviewSheet }, due ? `Ripassa ${due} carte` : 'Nessun ripasso oggi'),
       h('button', { class: 'btn grow', onclick: () => go('specchio') }, '✝ ' + ho.n)),
+    prepLatest().length ? card(h('div', { class: 'row between' }, h('h2', null, 'Preparato stanotte'), h('span', { class: 'mono' }, fmtDay(prepLatest()[0].date))),
+      prepLatest().slice(0, 4).map(prepRow), prepLatest().length > 4 && h('button', { class: 'btn small ghost', onclick: () => { newsTab = 'percorsi'; go('notizie'); } }, 'tutti i ' + prepLatest().length + ' contenuti')) : null,
     S.cont.length ? card(h('div', { class: 'row between' }, h('h2', null, 'Da continuare'), S.cont.length > 4 && h('button', { class: 'btn small ghost', onclick: () => { qTab = 'cont'; go('quaderno'); } }, 'tutto')), S.cont.slice(0, 4).map(contRow)) : null,
     h('button', { class: 'card', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => openTopic(dt.id) },
       h('span', { class: 'mono' }, 'Scoperta del giorno · ' + dt.c), h('h3', null, dt.n), dt.hk && P(dt.hk)),
@@ -116,12 +128,16 @@ function viewNotizie() {
   const body = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } });
   if (newsTab === 'ascolta') body.append(...viewPodcasts());
   else if (newsTab === 'percorsi') {
-    const ls = Object.values(allLessons()).filter(l => l.kind === 'notizia').sort((a, b) => (b.gen?.at || 0) - (a.gen?.at || 0));
-    body.append(P('Le lezioni nate dalle notizie: «Capire al volo» e «Percorso completo».', 'small muted'), ...ls.map(lessonCard), h('button', { class: 'btn', onclick: importSheet }, 'Importa una lezione'));
+    const ids = new Set(PREP.items.map(p => p.id));
+    const ls = Object.values(S.lessons).filter(l => l.kind === 'notizia' && !ids.has(l.id)).sort((a, b) => (b.gen?.at || 0) - (a.gen?.at || 0));
+    const byDay = {}; PREP.items.filter(p => p.kind === 'notizia').forEach(p => (byDay[p.date] = byDay[p.date] || []).push(p));
+    body.append(P('Percorsi preparati ogni notte dalla redazione automatica, più quelli che hai creato tu.', 'small muted'),
+      ...Object.keys(byDay).sort().reverse().map(d => card(h('span', { class: 'mono' }, 'Stanotte · ' + fmtDay(d)), byDay[d].map(prepRow))),
+      ls.length ? h('h3', null, 'Creati da te') : null, ...ls.map(lessonCard), h('button', { class: 'btn', onclick: importSheet }, 'Importa una lezione'));
   } else { body.append(h('div', { class: 'spin' })); loadNews(body); }
   return [header('Notizie', 'il mondo, con il perché'), tabs(tl, newsTab, k => { newsTab = k; }),
     newsTab === 'temi' && P('Temi: ' + S.niche.join(', ') + '. Li cambi da ⚙.', 'small muted'),
-    !aiReady() && newsTab !== 'ascolta' && h('button', { class: 'card flat', style: { cursor: 'pointer', textAlign: 'left' }, onclick: needAI }, h('b', null, 'Attiva il motore gratuito'), P('Serve per «Capire al volo» e «Percorso completo» generati dall\'app.', 'small muted')),
+    newsTab === 'Principali' && prepLatest().some(p => p.kind === 'notizia') ? h('details', { class: 'card', open: true }, h('summary', { style: { cursor: 'pointer' } }, h('b', null, 'Percorsi di stanotte')), pad(...prepLatest().filter(p => p.kind === 'notizia').map(prepRow))) : null,
     body];
 }
 async function loadNews(box) {
@@ -146,14 +162,16 @@ const lessonForRef = ref => ref && Object.values(S.lessons).filter(l => l.gen &&
 function newsCard(cl) {
   const it = cl.main;
   const done = lessonForRef(it.link) || [];
+  const night = prepForNews(it);
   const more = cl.items.length > 1 ? h('details', null, h('summary', { class: 'mono', style: { cursor: 'pointer' } }, `come ne parlano ${cl.items.length} testate`),
     h('div', { class: 'cluster' }, cl.items.slice(0, 10).map(i => h('a', { href: i.link, target: '_blank', rel: 'noopener' }, h('span', null, (i.src || i.feed) + ' · '), i.title)))) : null;
   return h('div', { class: 'card news' },
     h('div', { class: 'row' }, h('span', { class: 'src' }, [cl.srcs.slice(0, 3).join(' · ') + (cl.srcs.length > 3 ? ' +' + (cl.srcs.length - 3) : ''), fmtDate(it.date)].filter(Boolean).join(' · ')), cl.items.length >= 3 && h('span', { class: 'badge' }, 'in evidenza')),
     h('h3', null, it.title), it.desc && h('p', null, it.desc), more,
+    night ? h('button', { class: 'btn small primary', onclick: () => openPrepared(night) }, '▶ ' + (night.mode === 'full' ? 'Percorso completo' : 'Capire al volo') + ' pronto da stanotte') : null,
     done.length ? h('div', { class: 'sources' }, done.map(l => h('button', { class: 'btn small primary', onclick: () => openLesson(l.id) }, '▶ ' + (l.chapters.length > 4 ? 'Percorso' : 'Capire') + ' pronto'))) : null,
     h('div', { class: 'row' },
-      h('button', { class: 'btn small primary', onclick: () => genNewsLesson(cl, 'quick') }, 'Capire al volo'),
+      h('button', { class: 'btn small' + (night ? '' : ' primary'), onclick: () => genNewsLesson(cl, 'quick') }, 'Capire al volo'),
       h('button', { class: 'btn small', onclick: () => genNewsLesson(cl, 'full') }, 'Percorso completo'),
       it.link && h('a', { class: 'btn small ghost', href: it.link, target: '_blank', rel: 'noopener', onclick: () => addLog('mondo', 'notizia', it.title, 0.5) }, 'Leggi'),
       h('button', { class: 'btn small ghost', 'aria-label': 'Ascolta il titolo', onclick: () => speak(it.title + '. ' + (it.desc || '')) }, '🔊')));
@@ -235,6 +253,7 @@ function viewScopri() {
   return [header('Scopri', 'allarga lo sguardo'), t, lv,
     h('button', { class: 'card', style: { cursor: 'pointer', textAlign: 'left', borderColor: 'var(--ink)' }, onclick: () => openTopic(dt.id) },
       h('span', { class: 'mono' }, 'Proposta del giorno · ' + dt.c), h('h2', null, dt.n), dt.hk && P(dt.hk, '')),
+    (() => { const n = prepLatest().find(p => p.kind === 'passione'); return n ? h('div', { class: 'card' }, h('span', { class: 'mono' }, 'Preparata stanotte'), prepRow(n)) : null; })(),
     search, results,
     fresh.length ? flat(h('span', { class: 'mono' }, 'Rami scoperti di recente'), h('div', { class: 'chips' }, fresh.map(x => h('button', { class: 'chip', onclick: () => openTopic(x.id) }, x.n)))) : null,
     flat(h('span', { class: 'mono' }, 'Tre idee a caso'), h('div', { class: 'chips' }, (() => { const r = seeded('tre' + today() + Object.keys(S.explored).length); const p = allTopics().filter(x => !S.explored[x.id]); return [0, 1, 2].map(() => p.splice(Math.floor(r() * p.length), 1)[0]).filter(Boolean); })().map(x => h('button', { class: 'chip', onclick: () => openTopic(x.id) }, x.n + ' →'))))];
@@ -244,6 +263,7 @@ function openTopic(id) {
   S.explored[id] = (S.explored[id] || 0) + 1; bumpInterest([id], 1); addLog('scoperta', 'esplora', t.n, 0.5);
   contAdd({ type: 'topic', id, title: t.n, area: 'scoperta' });
   const series = (S.series[id] || []).map(x => S.lessons[x]).filter(Boolean);
+  const nightly = PREP.items.filter(p => p.topic === id);
   const favBtn = h('button', { class: 'btn small', 'aria-pressed': S.favs.includes(id) ? 'true' : 'false', onclick: () => {
     if (S.favs.includes(id)) S.favs = S.favs.filter(x => x !== id); else { S.favs.push(id); bumpInterest([id], 3); toast('Aggiunto alle passioni'); }
     favBtn.setAttribute('aria-pressed', S.favs.includes(id) ? 'true' : 'false'); save();
@@ -256,7 +276,7 @@ function openTopic(id) {
   const kids = Object.values(S.catalog).filter(c => c.from === id);
   const ramiBox = h('div', { class: 'chips' }, t.r.map(r => TOP[r] || S.catalog[r]).filter(Boolean).concat(kids).map(x => h('button', { class: 'chip', onclick: () => { close(); openTopic(x.id); } }, x.n + ' →')));
   wikiRelated(t.w, 6).then(rel => ramiBox.append(...rel.filter(n => n.toLowerCase() !== t.n.toLowerCase()).map(n => h('button', { class: 'chip', style: { borderStyle: 'dashed' }, onclick: () => { const nid = catalogAdd(n, t.c, '', id); close(); openTopic(nid); } }, n + ' →')))).catch(() => { });
-  const learn = card(h('span', { class: 'mono' }, S.mode === 'verticale' ? 'Impara · in verticale' : 'Impara'),
+  const learn = card(h('span', { class: 'mono' }, S.mode === 'verticale' ? 'Impara · in verticale' : 'Impara'), nightly.map(prepRow),
     series.length ? [series.map(l => h('button', { class: 'card flat', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => openLesson(l.id) }, h('b', null, l.title), h('span', { class: 'mono' }, (S.progress[l.id]?.done ? '✓ fatta · ' : '') + l.chapters.length + ' capitoli'))),
       h('button', { class: 'btn primary', onclick: () => genTopicLesson(t) }, '↓ Puntata successiva' + (series[series.length - 1].next ? ': ' + series[series.length - 1].next : ''))]
       : [P('Una lezione interattiva su misura per il tuo livello: storie, schemi da toccare, quiz e una cosa da provare dal vivo.'), h('button', { class: 'btn primary', onclick: () => genTopicLesson(t) }, 'Crea la lezione interattiva')],
@@ -345,6 +365,7 @@ function viewSpecchio() {
     hourCard(cur, true),
     h('details', { class: 'card flat' }, h('summary', { style: { cursor: 'pointer' } }, h('b', null, 'Le altre Ore della giornata')),
       pad(...HOURS.filter(o => o !== cur).map(o => hourCard(o, false)))),
+    (() => { const n = prepLatest().find(p => p.mode === 'parola'); return n ? card(h('span', { class: 'mono' }, 'La Parola del giorno · preparata stanotte'), prepRow(n)) : null; })(),
     card(h('h2', null, 'La Parola'), P('Scegli un brano: l\'app ti spiega contesto storico, parole chiave, come lo ha letto la Chiesa e cosa può dire a te.'),
       h('div', { class: 'chips' }, BIBLE.map(([r, t]) => h('button', { class: 'chip', title: t, onclick: () => genFaithLesson('bible', r, t) }, r + ' · ' + t))), ref,
       h('div', { class: 'row' }, linkBtn('https://www.vaticannews.va/it/vangelo-del-giorno-e-parola-del-giorno.html', 'Vangelo del giorno'), linkBtn('https://www.bibbiaedu.it/', 'Bibbia CEI', 'ghost'))),
@@ -391,40 +412,56 @@ function viewQuaderno() {
 }
 
 /* ======================= IMPOSTAZIONI ======================= */
+function engineCard() {
+  const status = h('div', { class: 'small' });
+  const prog = h('div', { class: 'small muted' });
+  const sel = h('select', { disabled: true }, h('option', null, S.ai.localModel || 'caricamento elenco…'));
+  const gpu = hasWebGPU();
+  if (gpu) localModels().then(ms => {
+    const def = defaultLocal(ms);
+    sel.replaceChildren(...ms.map(m => h('option', { value: m.id, selected: m.id === (S.ai.localModel || def) ? true : null }, m.id.replace(/-q4f(16|32)_1-MLC$/, '') + ' · ~' + (m.mb >= 1000 ? (m.mb / 1000).toFixed(1) + ' GB' : m.mb + ' MB'))));
+    sel.disabled = false;
+  }).catch(() => sel.replaceChildren(h('option', null, 'elenco non disponibile (serve la rete)')));
+  sel.addEventListener('change', () => { S.ai.localModel = sel.value; save(); });
+  const test = h('button', { class: 'btn small primary', disabled: !gpu || null, onclick: async () => {
+    test.disabled = true; S.ai.localModel = sel.value || S.ai.localModel; save();
+    status.textContent = 'Scarico e preparo il modello (solo la prima volta, poi resta sul telefono)…';
+    onEngineProgress = r => { prog.textContent = Math.round((r.progress || 0) * 100) + '% · ' + (r.text || '').slice(0, 120); };
+    try {
+      const t0 = Date.now(); const out = await localCall('Rispondi solo con JSON.', 'Scrivi {"saluto": "una frase di benvenuto in italiano"}', 60);
+      status.textContent = '✓ Pronto. Risposta di prova in ' + Math.round((Date.now() - t0) / 1000) + ' s: ' + out.slice(0, 90);
+    } catch (e) { status.textContent = '✗ ' + (e.message || e); }
+    onEngineProgress = null; test.disabled = false;
+  } }, 'Scarica e prova');
+  return card(h('h3', null, 'Motore sul telefono'),
+    P(gpu ? 'Un modello linguistico gira direttamente qui, gratis, senza account né limiti, anche offline una volta scaricato. Serve per le richieste al momento: «Capire al volo», lezioni su un argomento, paper, Bibbia.' : 'Questo browser non supporta WebGPU, quindi il modello sul telefono non è disponibile. Su Android usa Chrome aggiornato; su iPhone serve iOS 26 o successivo. I contenuti preparati stanotte funzionano comunque.'),
+    gpu && h('label', { class: 'lab' }, 'Modello: più è grande, più scrive bene ma più è lento e pesante'), gpu && sel,
+    gpu && h('div', { class: 'row' }, test), status, prog,
+    P('Consiglio: su Android 1,5-2 miliardi di parametri (circa 1-1,5 GB); su iPhone i modelli più piccoli. Le lezioni brevi richiedono qualche minuto.', 'small muted'));
+}
 function settingsSheet() {
-  const name = h('input', { type: 'text', value: S.name });
-  const prov = h('select', null, [['gemini', 'Gemini (Google AI Studio) · consigliato'], ['openrouter', 'OpenRouter · modelli gratuiti']].map(([v, l]) => h('option', { value: v, selected: S.ai.provider === v ? true : null }, l)));
-  const gkey = h('input', { type: 'text', value: S.ai.key, placeholder: 'Chiave Gemini (inizia con AIza…)', autocomplete: 'off' });
-  const gmodel = h('select', null, h('option', { value: S.ai.model || '' }, S.ai.model || 'automatico (il Flash più recente)'));
-  const okey = h('input', { type: 'text', value: S.ai.orKey, placeholder: 'Chiave OpenRouter (facoltativa, di riserva)', autocomplete: 'off' });
-  const omodel = h('input', { type: 'text', value: S.ai.orModel });
-  const status = h('div', { class: 'small muted' });
-  const loadModels = async () => {
-    status.textContent = 'Controllo la chiave…';
-    try { const ms = await geminiModels(gkey.value.trim()); gmodel.replaceChildren(h('option', { value: '' }, 'automatico (' + (ms[0] || '?') + ')'), ...ms.map(m => h('option', { value: m, selected: m === S.ai.model ? true : null }, m))); status.textContent = '✓ Chiave valida: ' + ms.length + ' modelli disponibili.'; }
-    catch (e) { status.textContent = '✗ ' + (e.message || 'chiave non valida'); }
-  };
+  const name = h('input', { type: 'text', value: S.name, placeholder: 'Come ti chiami?' });
+  const gkey = h('input', { type: 'text', value: S.ai.key, placeholder: 'Facoltativa: chiave Gemini (AIza…)', autocomplete: 'off' });
+  const useG = h('input', { type: 'checkbox', checked: S.ai.provider === 'gemini' ? true : null });
   const feeds = h('textarea', { style: { fontFamily: 'var(--f-mono)', fontSize: '11.5px', minHeight: '150px' } }); feeds.value = S.feeds.map(f => [f.tag, f.name, f.url].join(' | ')).join('\n');
   const niche = h('input', { type: 'text', value: S.niche.join(', ') });
   const tech = h('input', { type: 'text', value: S.techKw.join(', ') });
   const imp = h('textarea', { placeholder: 'Incolla qui un backup per ripristinarlo', style: { fontFamily: 'var(--f-mono)', fontSize: '12px' } });
+  const night = prepLatest();
   const close = openSheet('Impostazioni', pad(
-    card(h('h3', null, 'Motore delle lezioni'),
-      P('Ulisse crea lezioni, percorsi e spiegazioni con un modello linguistico gratuito. La chiave resta solo su questo telefono.'),
-      h('label', { class: 'lab' }, 'Servizio principale'), prov,
-      h('label', { class: 'lab' }, 'Chiave Gemini · ', h('a', { href: 'https://aistudio.google.com/apikey', target: '_blank', rel: 'noopener' }, 'ottienila gratis qui')), gkey,
-      h('div', { class: 'row' }, h('button', { class: 'btn small', onclick: loadModels }, 'Verifica chiave e modelli')), status,
-      h('label', { class: 'lab' }, 'Modello Gemini'), gmodel,
-      h('label', { class: 'lab' }, 'Chiave OpenRouter · ', h('a', { href: 'https://openrouter.ai/keys', target: '_blank', rel: 'noopener' }, 'ottienila qui'), ' (usata se Gemini esaurisce i limiti)'), okey,
-      h('label', { class: 'lab' }, 'Modello OpenRouter'), omodel,
-      P('Nel piano gratuito Google può usare i testi inviati per migliorare i modelli: le richieste di Ulisse contengono solo notizie e argomenti, non dati personali.', 'small muted')),
+    card(h('h3', null, 'Redazione notturna'),
+      P('Ogni notte un modello aperto, su un computer gratuito di GitHub, prepara i percorsi sulle notizie principali, la scoperta e la Parola del giorno. Li trovi la mattina, uguali per tutti quelli che usano l\'app.'),
+      P(night.length ? `Ultima edizione: ${fmtDay(night[0].date)} · ${night.length} contenuti · modello ${PREP.modello || ''}` : 'Nessuna edizione ancora disponibile.', 'small muted')),
+    engineCard(),
     card(h('label', { class: 'lab' }, 'Nome'), name,
       h('label', { class: 'lab' }, 'Fonti delle notizie (una per riga: sezione | nome | indirizzo RSS). Sezioni: ' + NEWS_TAGS.join(', ')), feeds,
       h('label', { class: 'lab' }, 'I miei temi (separati da virgola)'), niche,
       h('label', { class: 'lab' }, 'Argomenti tecnici (separati da virgola)'), tech),
+    h('details', { class: 'card flat' }, h('summary', { style: { cursor: 'pointer' } }, h('b', null, 'Avanzate: servizio esterno facoltativo')),
+      pad(P('Se un giorno vorrai più qualità e velocità, puoi usare una chiave gratuita di Google Gemini al posto del modello sul telefono. Non è necessaria.', 'small muted'), gkey, h('label', { class: 'row small' }, useG, 'Usa Gemini invece del modello sul telefono'))),
     h('button', { class: 'btn primary', onclick: () => {
-      S.name = name.value.trim() || S.name;
-      S.ai.provider = prov.value; S.ai.key = gkey.value.trim(); S.ai.model = gmodel.value; S.ai.orKey = okey.value.trim(); S.ai.orModel = omodel.value.trim() || 'openrouter/free';
+      S.name = name.value.trim();
+      S.ai.key = gkey.value.trim(); S.ai.provider = useG.checked && S.ai.key ? 'gemini' : 'locale';
       const fs = feeds.value.split('\n').map(l => l.split('|').map(x => x.trim())).filter(p => p.length >= 3 && /^https?:/.test(p[2])).map(([tag, n, u]) => ({ tag: NEWS_TAGS.includes(tag) ? tag : 'Principali', name: n, url: u }));
       if (fs.length) S.feeds = fs;
       S.niche = niche.value.split(',').map(x => x.trim()).filter(Boolean);
@@ -432,12 +469,26 @@ function settingsSheet() {
       newsCache = {}; techQ = null; save(); close(); render(); toast('Salvato');
     } }, 'Salva'),
     card(h('h3', null, 'Backup'),
-      P('I dati restano su questo telefono. Ogni tanto copia il backup e salvalo in una nota o mandalo a te stesso via mail. Il backup contiene anche le chiavi: non condividerlo.', 'small muted'),
+      P('I tuoi dati (missioni, carte, lezioni, diario) restano su questo telefono. Ogni tanto copia il backup e salvalo in una nota o mandalo a te stesso.', 'small muted'),
       h('div', { class: 'row' }, h('button', { class: 'btn', onclick: () => copyText(JSON.stringify(S)) }, 'Copia backup'),
         h('button', { class: 'btn', onclick: () => { try { const a = h('a', { href: URL.createObjectURL(new Blob([JSON.stringify(S)], { type: 'application/json' })), download: 'ulisse-backup-' + today() + '.json' }); document.body.append(a); a.click(); a.remove(); } catch (e) { toast('Download non disponibile qui'); } } }, 'Scarica file')),
       imp, h('button', { class: 'btn', onclick: () => { try { const d = JSON.parse(imp.value); if (!d.v) throw 0; localStorage.setItem(KEY, JSON.stringify(d)); S = load(); save(); close(); render(); toast('Backup ripristinato'); } catch (e) { toast('Backup non valido'); } } }, 'Ripristina')),
-    flat(h('span', { class: 'mono' }, 'Ulisse v0.2'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Codice: github.com/Torre28/Ulisse', 'small muted'))));
-  if (gkey.value) loadModels();
+    flat(h('span', { class: 'mono' }, 'Ulisse v0.3'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Ollama (notte) e WebLLM (telefono). Codice: github.com/Torre28/Ulisse', 'small muted'))));
+}
+
+/* primo avvio: per chi riceve l'app da un amico */
+function welcomeSheet() {
+  const name = h('input', { type: 'text', placeholder: 'Il tuo nome' });
+  const tech = h('input', { type: 'text', placeholder: 'Es. intelligenza artificiale, energia solare' });
+  const close = openSheet('Benvenuto in Ulisse', pad(card(
+    P('Un compagno per il tempo libero: le notizie con il loro perché, nuove passioni da scoprire, paper resi digeribili, preghiera e piccole missioni per tenere in equilibrio la vita.', ''),
+    h('label', { class: 'lab' }, 'Come ti chiami?'), name,
+    h('label', { class: 'lab' }, 'Su cosa vorresti diventare esperto? (facoltativo, separati da virgola)'), tech,
+    P('Tutto quello che fai resta solo su questo telefono.', 'small muted'),
+    h('button', { class: 'btn primary', onclick: () => {
+      S.name = name.value.trim(); if (tech.value.trim()) S.techKw = tech.value.split(',').map(x => x.trim()).filter(Boolean);
+      S.onboarded = true; save(); close(); render();
+    } }, 'Iniziamo'))));
 }
 
 /* ======================= NAVIGAZIONE ======================= */
@@ -557,8 +608,11 @@ function newCardSheet() {
 
 /* ======================= AVVIO ======================= */
 S = load(); save();
+loadPiani().catch(() => { });
+loadPrep().then(() => render());
 window.addEventListener('hashchange', () => { const k = location.hash.slice(1); if (VIEWS[k] && k !== route) go(k); });
 go(location.hash.slice(1) || 'oggi');
+if (!S.onboarded) welcomeSheet();
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   navigator.serviceWorker.register('sw.js').then(reg => {
     reg.addEventListener('updatefound', () => { const nw = reg.installing; nw && nw.addEventListener('statechange', () => { if (nw.state === 'installed' && navigator.serviceWorker.controller) toast('Nuova versione di Ulisse: chiudi e riapri l\'app', 5000); }); });
