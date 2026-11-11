@@ -17,12 +17,13 @@ from datetime import datetime, timedelta, timezone
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CFG = json.load(open(os.path.join(ROOT, 'redazione', 'config.json'), encoding='utf-8'))
 PIANI = json.load(open(os.path.join(ROOT, 'prompts', 'piani.json'), encoding='utf-8'))
-OUT = os.path.join(ROOT, 'contenuti')
 PROVA = '--prova' in sys.argv
+RAPIDO = '--rapido' in sys.argv  # giro rapido: solo «Capire al volo» sulle notizie nuove, ogni due ore
+OUT = os.environ.get('RAPIDI_DIR') if RAPIDO and os.environ.get('RAPIDI_DIR') else os.path.join(ROOT, 'contenuti')
 OLLAMA = os.environ.get('OLLAMA_URL', 'http://127.0.0.1:11434')
-MODEL = os.environ.get('MODELLO') or CFG['modello']
+MODEL = os.environ.get('MODELLO') or (CFG['modello_rapido'] if RAPIDO else CFG['modello'])
 START = time.time()
-DEADLINE = START + CFG['minuti_disponibili'] * 60
+DEADLINE = START + (CFG['minuti_rapidi'] if RAPIDO else CFG['minuti_disponibili']) * 60
 OGGI = datetime.now(timezone(timedelta(hours=1))).strftime('%Y-%m-%d')
 UA = 'Mozilla/5.0 (Ulisse; redazione notturna; +https://github.com/Torre28/Ulisse)'
 
@@ -277,7 +278,7 @@ def save_lesson(lesson, meta):
     lesson.update({'id': lid, 'area': meta['area'], 'kind': meta['kind'],
                    'gen': {'at': int(time.time() * 1000), 'model': MODEL, 'ref': meta.get('ref'), 'topic': meta.get('topic'), 'notte': True}})
     rel = f'contenuti/{OGGI}/{lid}.json'
-    json.dump(lesson, open(os.path.join(ROOT, rel), 'w', encoding='utf-8'), ensure_ascii=False)
+    json.dump(lesson, open(os.path.join(d, lid + '.json'), 'w', encoding='utf-8'), ensure_ascii=False)
     item = {'id': lid, 'kind': meta['kind'], 'mode': meta.get('mode'), 'title': lesson['title'], 'summary': lesson.get('summary', ''),
             'date': OGGI, 'ref': meta.get('ref'), 'headline': meta.get('headline'), 'srcs': meta.get('srcs', []), 'topic': meta.get('topic'),
             'chapters': len(lesson['chapters']), 'file': rel}
@@ -293,7 +294,7 @@ def write_index():
 
 
 def tidy():
-    keep = (datetime.now() - timedelta(days=CFG['giorni_da_tenere'])).strftime('%Y-%m-%d')
+    keep = (datetime.now() - timedelta(days=2 if RAPIDO else CFG['giorni_da_tenere'])).strftime('%Y-%m-%d')
     for name in os.listdir(OUT):
         if re.match(r'\d{4}-\d{2}-\d{2}$', name) and name < keep:
             shutil.rmtree(os.path.join(OUT, name))
@@ -329,15 +330,18 @@ def main():
     log(f'{len(items)} notizie, {len(stories)} storie nuove')
 
     jobs = []
-    for c in stories[:CFG['percorsi_completi']]:
+    if RAPIDO:  # solo le storie nuove, le più riprese dai giornali per prime
+        stories = [c for c in stories if c['main']['title'] not in {x.get('headline') for x in INDEX['items']}]
+        jobs = [('notizia_rapida', c, 6) for c in stories[:CFG['rapidi_per_giro']]]
+    for c in ([] if RAPIDO else stories[:CFG['percorsi_completi']]):
         jobs.append(('notizia_completa', c, 50))
-    if CFG.get('scoperta_del_giorno'):
+    if CFG.get('scoperta_del_giorno') and not RAPIDO:
         jobs.append(('scoperta', None, 25))
-    if CFG.get('parola_del_giorno'):
+    if CFG.get('parola_del_giorno') and not RAPIDO:
         jobs.append(('bibbia', None, 25))
-    for c in stories[CFG['percorsi_completi']:CFG['percorsi_completi'] + CFG['capire_al_volo']]:
+    for c in ([] if RAPIDO else stories[CFG['percorsi_completi']:CFG['percorsi_completi'] + CFG['capire_al_volo']]):
         jobs.append(('notizia_rapida', c, 15))
-    if CFG.get('passioni'):
+    if CFG.get('passioni') and not RAPIDO:
         jobs.append(('passione', None, 25))
 
     for kind, c, est in jobs:

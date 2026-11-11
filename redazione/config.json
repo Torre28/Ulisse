@@ -16,5 +16,8 @@
     "https://www.ilpost.it/feed/",
     "https://www.ansa.it/sito/ansait_rss.xml"
   ],
-  "passioni": []
+  "passioni": [],
+  "modello_rapido": "qwen3:4b",
+  "rapidi_per_giro": 8,
+  "minuti_rapidi": 50
 }

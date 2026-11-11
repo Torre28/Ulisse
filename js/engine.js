@@ -165,12 +165,14 @@ function openLesson(id, chapter) {
   save();
   const host = pad();
   const close = openSheet(L.title, host, () => render());
-  const chs = L.chapters || [];
+  let chs = L.chapters || [];
   function show(ci) {
+    chs = L.chapters || [];
     ci = Math.max(0, Math.min(chs.length - 1, ci));
     if (!prog.seen.includes(ci)) prog.seen.push(ci); prog.at = ci; save();
     const ch = chs[ci];
-    const isLast = ci === chs.length - 1;
+    const writing = L.writing && chs.length < L.writing;
+    const isLast = ci === chs.length - 1 && !writing;
     const topic = L.gen && L.gen.topic && topicOf(L.gen.topic);
     host.replaceChildren(
       h('div', { class: 'lesson-head' },
@@ -186,7 +188,7 @@ function openLesson(id, chapter) {
         h('p', { class: 'small', style: { margin: 0 } }, isLast ? 'Hai finito. Concludi per salvare le carte di ripasso.' : 'Puoi chiudere qui: ritroverai la lezione in «Da continuare».'),
         h('div', { class: 'row' },
           ci > 0 && h('button', { class: 'btn small', onclick: () => show(ci - 1) }, '‹ Indietro'),
-          !isLast && h('button', { class: 'btn small primary', onclick: () => show(ci + 1) }, 'Continua ›'),
+          !isLast && (ci < chs.length - 1 ? h('button', { class: 'btn small primary', onclick: () => show(ci + 1) }, 'Continua ›') : h('button', { class: 'btn small', disabled: true }, '… il capitolo ' + (ci + 2) + ' è in scrittura')),
           isLast && h('button', { class: 'btn small primary', onclick: () => finish() }, `Concludi e salva ${(L.cards || []).length} carte`),
           isLast && topic && h('button', { class: 'btn small', onclick: () => { finish(true); genTopicLesson(topic); } }, '↓ Più a fondo' + (L.next ? ': ' + L.next : '')),
           h('button', { class: 'btn small ghost', onclick: close }, 'Chiudi'))));
@@ -200,6 +202,8 @@ function openLesson(id, chapter) {
     if (!silent) toast(added ? `${added} carte nel Quaderno` : 'Lezione completata');
     close();
   }
+  const onUpd = ev => { if (ev.detail !== id) return; if (!host.isConnected) { window.removeEventListener('lesson-updated', onUpd); return; } const sc = host.parentElement.scrollTop; show(prog.at); host.parentElement.scrollTop = sc; };
+  window.addEventListener('lesson-updated', onUpd);
   show(chapter);
 }
 

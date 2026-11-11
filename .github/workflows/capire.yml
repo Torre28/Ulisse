@@ -1,0 +1,55 @@
+# «Capire al volo» pronti in anticipo: ogni due ore un modello aperto più piccolo e
+# veloce (qwen3:4b) prepara le spiegazioni delle storie nuove. Pubblica sul ramo
+# «rapidi», riscritto ogni volta (tiene solo gli ultimi due giorni).
+name: Capire al volo
+
+on:
+  schedule:
+    - cron: '20 5-21/2 * * *'   # dalle 6 alle 22 circa, ora italiana
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: capire
+  cancel-in-progress: false
+
+jobs:
+  capire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      OLLAMA_MODELS: /home/runner/.ollama/models
+      RAPIDI_DIR: /tmp/rapidi/contenuti
+    steps:
+      - uses: actions/checkout@v4
+      - name: Recupera i contenuti già pronti
+        run: |
+          mkdir -p /tmp/rapidi
+          if git fetch -q origin rapidi; then git archive origin/rapidi | tar -x -C /tmp/rapidi; fi
+      - uses: actions/cache@v4
+        with:
+          path: /home/runner/.ollama/models
+          key: ollama-rapido-${{ hashFiles('redazione/config.json') }}
+      - name: Installa e avvia Ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          sudo systemctl stop ollama || true
+          nohup ollama serve > /tmp/ollama.log 2>&1 &
+          for i in $(seq 1 30); do curl -s http://127.0.0.1:11434/api/version && break; sleep 2; done
+          ollama pull "$(python3 -c 'import json;print(json.load(open("redazione/config.json"))["modello_rapido"])')"
+      - name: Scrivi i «Capire al volo»
+        run: python3 redazione/redazione.py --rapido
+      - name: Pubblica sul ramo rapidi
+        if: always()
+        run: |
+          [ -f /tmp/rapidi/contenuti/indice.json ] || exit 0
+          git config user.name "Redazione di Ulisse"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -q --orphan rapidi-nuovo
+          git rm -rfq .
+          cp -r /tmp/rapidi/contenuti contenuti
+          git add contenuti
+          git commit -qm "Capire al volo $(TZ=Europe/Rome date '+%F %H:%M')"
+          git push -f origin rapidi-nuovo:rapidi

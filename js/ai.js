@@ -17,14 +17,18 @@ const LEVEL_TXT = () => (PIANI ? PIANI.livelli[S.level] : '') || 'curioso con ba
 /* ---------------- contenuti preparati stanotte ---------------- */
 let PREP = { items: [] };
 async function loadPrep() {
-  try { PREP = await getJSON('contenuti/indice.json?t=' + Math.floor(Date.now() / 600000)); PREP.items = PREP.items || []; }
-  catch (e) { PREP = { items: [] }; }
+  const raw = `https://raw.githubusercontent.com/${repoPath()}/rapidi/`;
+  const t = Math.floor(Date.now() / 600000);
+  const [night, fast] = await Promise.all([
+    getJSON('contenuti/indice.json?t=' + t).catch(() => ({ items: [] })),
+    getJSON(raw + 'contenuti/indice.json?t=' + t).catch(() => ({ items: [] }))]);
+  PREP = night; PREP.items = (night.items || []).concat((fast.items || []).map(i => Object.assign(i, { base: raw })));
   return PREP;
 }
-const prepLatest = () => { const ds = PREP.items.map(i => i.date).sort(); const d = ds[ds.length - 1]; return PREP.items.filter(i => i.date === d); };
+const prepLatest = () => { const ds = PREP.items.filter(i => !i.base).map(i => i.date).sort(); const d = ds[ds.length - 1]; return PREP.items.filter(i => i.date === d && !i.base); };
 async function openPrepared(item) {
   if (!S.lessons[item.id]) {
-    try { const L = await getJSON(item.file); S.lessons[item.id] = L; save(); }
+    try { const L = await getJSON((item.base || '') + item.file); S.lessons[item.id] = L; save(); }
     catch (e) { toast('Non riesco a scaricare questa lezione'); return; }
   }
   openLesson(item.id);
@@ -121,7 +125,7 @@ function cleanChapter(ch, p) {
   if (!blocks.length) throw new Error('capitolo vuoto');
   return { label: ch.label || p.label, title: ch.title || p.label, depth: p.depth, blocks };
 }
-async function buildLesson(planKey, metaKey, context, log) {
+async function buildLesson(planKey, metaKey, context, log, onChapter) {
   const PI = await loadPiani();
   const plan = PI.piani[planKey], local = useLocal();
   const planTxt = plan.map((p, i) => `${i + 1}. ${p.label} (${p.depth}): ${p.spec}`).join('\n');
@@ -135,6 +139,7 @@ async function buildLesson(planKey, metaKey, context, log) {
     try { ch = cleanChapter(await aiJSON(PI.sys, user, local ? 1300 : 2600), p); }
     catch (e) { if (/WebGPU|Limite|chiave/.test(e.message || '')) throw e; log('  capitolo saltato: ' + (e.message || e)); continue; }
     chapters.push(ch);
+    if (onChapter) onChapter(chapters, plan.length);
   }
   if (!chapters.length) throw new Error('Il modello non è riuscito a scrivere la lezione. Riprova o scegli un modello più grande in ⚙.');
   log('Ultimi ritocchi: carte di ripasso e rami');
@@ -162,11 +167,12 @@ async function generateWithProgress(title, run) {
   const close = openSheet(title, pad(h('div', { class: 'card' }, spin, lines, bar,
     P(useLocal() ? 'Il modello lavora sul telefono: tieni l\'app aperta. Una lezione breve richiede alcuni minuti.' : 'Di solito ci vuole meno di un minuto.', 'small muted')), err), () => { onEngineProgress = null; });
   const log = t => { lines.append(h('div', null, '· ' + t)); };
-  onEngineProgress = r => { bar.textContent = (r.text || '').replace(/\[.*?\]\s*/, '').slice(0, 140); };
+  onEngineProgress = r => { const t = r.text || ''; bar.textContent = /fetch|download|cache/i.test(t) ? `Scarico il modello sul telefono: ${Math.round((r.progress || 0) * 100)}% (solo la prima volta, poi resta salvato)` : /load|gpu|shader/i.test(t) ? 'Avvio il modello…' : t.slice(0, 120); };
   try {
     const L = await run(log);
-    onEngineProgress = null; close(); toast('Lezione pronta');
-    openLesson(L.id); return L;
+    onEngineProgress = null;
+    if (L) { close(); toast('Lezione pronta'); openLesson(L.id); }
+    return L;
   } catch (e) {
     onEngineProgress = null; spin.remove();
     err.replaceChildren(flat(h('b', null, 'Non sono riuscito a creare la lezione.'), P(e.message || String(e)),
@@ -194,14 +200,28 @@ function saveGenerated(L, meta) {
 async function genNewsLesson(cluster, mode) {
   if (!needAI()) return;
   const it = cluster.main;
+  const ready = prepForNews(it);
+  if (ready) { openPrepared(ready); return; }
   return generateWithProgress(mode === 'quick' ? 'Capire al volo' : 'Percorso completo', async log => {
-    log('Cerco gli antefatti delle ultime settimane');
+    log('Raccolgo gli antefatti');
     const prior = await priorNews(it.title, mode === 'quick' ? 14 : 45).catch(() => []);
     log('Leggo il contesto su Wikipedia');
     const wiki = await wikiContext(it.title + ' ' + (it.desc || ''), mode === 'quick' || useLocal() ? 2 : 4);
     if (useLocal()) log('Preparo il modello sul telefono');
-    const L = await buildLesson(mode === 'quick' ? 'notizia_rapida' : 'notizia_completa', 'notizia', newsContext(cluster, prior, wiki), log);
-    return saveGenerated(L, { area: 'mondo', kind: 'notizia', ref: it.link, title: it.title });
+    let L = null;
+    // appena è pronto il primo capitolo la lezione si apre; gli altri arrivano mentre leggi
+    const onChapter = (chs, total) => {
+      if (!L) {
+        L = saveGenerated({ title: it.title, chapters: chs.slice(), cards: [], branches: [], writing: total }, { area: 'mondo', kind: 'notizia', ref: it.link, title: it.title });
+        document.querySelectorAll('.sheet-bg').forEach(e => e.remove()); onEngineProgress = null;
+        openLesson(L.id);
+      } else { L.chapters = chs.slice(); L.writing = chs.length < total ? total : 0; save(); }
+      window.dispatchEvent(new CustomEvent('lesson-updated', { detail: L.id }));
+    };
+    const full = await buildLesson(mode === 'quick' ? 'notizia_rapida' : 'notizia_completa', 'notizia', newsContext(cluster, prior, wiki), log, onChapter);
+    Object.assign(L, full, { title: full.title || it.title, writing: 0 }); save();
+    window.dispatchEvent(new CustomEvent('lesson-updated', { detail: L.id }));
+    toast('Lezione completa'); return null;
   });
 }
 async function genTopicLesson(t) {
