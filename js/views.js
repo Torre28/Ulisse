@@ -614,7 +614,7 @@ function liturgyCard() {
     const L = srv.liturgia;
     if (!L) { box.replaceChildren(P('Le letture di oggi non sono ancora arrivate.', 'small muted'), linkBtn('https://www.vaticannews.va/it/vangelo-del-giorno-e-parola-del-giorno.html', 'Apri Vatican News')); return; }
     const paint = () => {
-      const txt = { vangelo: L.vangelo, letture: L.letture, papi: cleanPapi(L.papi) }[litTab] || [];
+      const txt = cleanPapi({ vangelo: L.vangelo, letture: L.letture, papi: L.papi }[litTab]);
       box.replaceChildren(
         h('div', { class: 'row' }, h('span', { class: 'pill-ready' }, L.date === today() ? '✓ di oggi' : 'del ' + fmtDay(L.date)), L.ref && h('span', { class: 'mono' }, 'Vangelo: ' + L.ref)),
         h('div', { class: 'chips' }, [['vangelo', 'Vangelo'], ['letture', 'Letture'], ['papi', 'Commento dei Papi']].filter(([k]) => (L[k] || []).length).map(([k, l]) => h('button', { class: 'chip', 'aria-pressed': litTab === k ? 'true' : 'false', onclick: () => { litTab = k; paint(); } }, l))),
@@ -648,12 +648,15 @@ function gospelCard() {
 /* commento dei Papi senza le righe di servizio della pagina (donazioni, copyright) */
 function cleanPapi(xs) {
   const out = [];
-  for (const t of xs || []) { if (/contributo per una grande missione|sostienici|^©|riproduzione in formato|Fondazione di Religione|newsletter|iscriviti/i.test(t)) break; out.push(t); }
+  for (const t of xs || []) {
+    if (/contributo per una grande missione|sostienici|^©|riproduzione in formato|Fondazione di Religione|Conferenza Episcopale Italiana|newsletter|iscriviti|^(Invia|Stampa|Condividi|Leggi tutto|Ascolta)$/i.test(t.trim())) break;
+    out.push(t);
+  }
   return out;
 }
 /* preghiera guidata in passi chiari costruita sulle letture di Vatican News */
 function vaticanPrayerSteps(L) {
-  const v = (L.vangelo || []).slice(), head = [];
+  const v = cleanPapi(L.vangelo), head = [];
   while (v.length && (/^Dal Vangelo/i.test(v[0]) || /^(Mt|Mc|Lc|Gv)\s?\d/.test(v[0]))) head.push(v.shift());
   const papi = cleanPapi(L.papi), sp = [];
   let cur = [];
@@ -880,7 +883,7 @@ function settingsSheet() {
 applyLook();
 for (const [id, L] of Object.entries(S.lessons)) if (L.gen && L.gen.notte) { S.prepMeta = S.prepMeta || {}; S.prepMeta[id] = { title: L.title, kind: L.kind, area: L.area, tags: L.tags || [], gen: { topic: L.gen.topic } }; delete S.lessons[id]; }
 save(); close(); render(); toast('Backup ripristinato'); } catch (e) { toast('Backup non valido'); } } }, 'Ripristina')),
-    flat(h('span', { class: 'mono' }, 'Ulisse v1.5.2'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Groq (gratuito) e Ollama (notte). Codice: github.com/Torre28/Ulisse', 'small muted'))));
+    flat(h('span', { class: 'mono' }, 'Ulisse v1.5.3'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Groq (gratuito) e Ollama (notte). Codice: github.com/Torre28/Ulisse', 'small muted'))));
 }
 
 /* primo avvio: per chi riceve l'app da un amico */
