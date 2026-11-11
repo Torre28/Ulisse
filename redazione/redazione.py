@@ -470,7 +470,7 @@ def main():
             break
         try:
             global USE_GROQ
-            USE_GROQ = bool(GROQ_KEY) and not RAPIDO and kind in ('notizia_completa', 'bibbia', 'scoperta', 'passione')
+            USE_GROQ = bool(GROQ_KEY) and kind in ('notizia_completa', 'notizia_rapida', 'argomento', 'bibbia', 'scoperta', 'passione')
             if kind.startswith('notizia'):
                 quick = kind == 'notizia_rapida'
                 log(('Capire al volo: ' if quick else 'Percorso completo: ') + c['main']['title'])

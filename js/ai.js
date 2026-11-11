@@ -162,7 +162,9 @@ const hasGroq = () => !!S.ai.groqKey && S.ai.mode !== 'telefono';
 /* ---------------- interfaccia comune ---------------- */
 // ordine: Groq (veloce) → Gemini (se scelto) → modello sul telefono
 const useLocal = () => !hasGroq() && (S.ai.provider !== 'gemini' || !S.ai.key);
+// (il motore sul telefono viene usato solo dopo una richiesta esplicita o se scelto in ⚙)
 const aiReady = () => hasGroq() || (S.ai.provider === 'gemini' && !!S.ai.key) || hasWebGPU();
+let useLocalOnce = false;
 async function aiText(system, user, maxTok) {
   if (hasGroq()) { try { return await groqCall(system, user, Math.min(maxTok, 4000)); } catch (e) { if (!e.groq) throw e; if (!hasWebGPU()) throw new Error('Groq ha raggiunto il limite di questo momento: riprova tra un minuto.'); } }
   if (S.ai.provider === 'gemini' && S.ai.key) return geminiCall(system, user, maxTok);
@@ -315,11 +317,19 @@ async function genNewsLesson(cluster, mode) {
   if (mine) { openLesson(mine.id); return; }
   toast('Preparo la scheda…', 1500);
   const base = await instantLesson(cluster);
-  const ai = aiReady();
-  base.pending = ai ? (mode === 'quick' ? 'La spiegazione completa è in scrittura: arriva qui da sola tra pochi secondi.' : 'Il percorso completo è in scrittura: i capitoli arrivano uno alla volta.') : 'Questa è la scheda istantanea. La spiegazione completa arriverà con il prossimo giro della redazione (ogni due ore).';
+  const auto = autoAI();
+  base.pending = auto ? (mode === 'quick' ? 'La spiegazione completa è in scrittura: arriva qui da sola tra pochi secondi.' : 'Il percorso completo è in scrittura: i capitoli arrivano uno alla volta.') : 'Questa è la scheda istantanea. La spiegazione completa arriverà con il prossimo giro della redazione (ogni due ore).';
+  base.src = { main: it, items: cluster.items.slice(0, 8), mode };
+  base.offerLocal = !auto && hasWebGPU();
   const L = saveGenerated(base, { area: 'mondo', kind: 'notizia', ref: it.link, title: it.title });
   openLesson(L.id);
-  if (!ai) return;
+  if (auto) completeNewsLesson(L, cluster, mode);
+}
+/* motori automatici: solo quelli veloci. Il modello sul telefono parte solo se lo chiedi (o se l'hai scelto in ⚙) */
+const autoAI = () => hasGroq() || (S.ai.provider === 'gemini' && !!S.ai.key) || (S.ai.mode === 'telefono' && hasWebGPU());
+async function completeNewsLesson(L, cluster, mode) {
+  const it = cluster.main;
+  L.pending = 'La spiegazione completa è in scrittura…'; L.offerLocal = false; save(); window.dispatchEvent(new CustomEvent('lesson-updated', { detail: L.id }));
   try {
     const prior = await priorNews(it.title, mode === 'quick' ? 14 : 45).catch(() => []);
     const wiki = await wikiContext(it.title + ' ' + (it.desc || ''), 2);

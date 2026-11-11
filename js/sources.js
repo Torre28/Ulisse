@@ -60,11 +60,22 @@ function repoPath() {
   const m = location.hostname.match(/^([^.]+)\.github\.io$/);
   return m ? m[1] + '/' + (location.pathname.split('/')[1] || 'Ulisse') : 'Torre28/Ulisse';
 }
-let SRV = null, SRVt = 0;
+let SRV = null, SRVt = 0, SRVjob = null;
+(() => { try { const c = JSON.parse(localStorage.getItem('ulisse.srv') || 'null'); if (c && c.data) { SRV = c.data; SRVt = c.t; } } catch (e) { } })();
+async function fetchServerNews() {
+  const p = repoPath(), t = Math.floor(Date.now() / 300000);
+  const urls = [`https://raw.githubusercontent.com/${p}/dati/notizie.json?t=${t}`, `https://cdn.jsdelivr.net/gh/${p}@dati/notizie.json`];
+  let last;
+  for (const u of urls) { try { const d = await getJSON(u, 12000); if (d && d.sezioni) return d; } catch (e) { last = e; } }
+  throw last || new Error('notizie non raggiungibili');
+}
+/* mostra subito l'ultima copia salvata e la aggiorna in sottofondo: le notizie non restano mai bloccate */
 async function serverNews() {
-  if (SRV && Date.now() - SRVt < 10 * 60e3) return SRV;
-  SRV = await getJSON(`https://raw.githubusercontent.com/${repoPath()}/dati/notizie.json?t=${Math.floor(Date.now() / 300000)}`); SRVt = Date.now();
-  return SRV;
+  const fresh = SRV && Date.now() - SRVt < 10 * 60e3;
+  if (fresh) return SRV;
+  if (!SRVjob) SRVjob = fetchServerNews().then(d => { SRV = d; SRVt = Date.now(); try { localStorage.setItem('ulisse.srv', JSON.stringify({ t: SRVt, data: d })); } catch (e) { } return d; }).finally(() => { SRVjob = null; });
+  if (SRV && Date.now() - SRVt < 12 * 3600e3) { SRVjob.catch(() => { }); return SRV; }
+  return SRVjob;
 }
 
 /* antefatti: cosa è uscito sullo stesso tema nelle ultime settimane */

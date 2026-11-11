@@ -27,6 +27,7 @@ jobs:
     env:
       OLLAMA_MODELS: /home/runner/.ollama/models
       RAPIDI_DIR: /tmp/parte/contenuti
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}   # facoltativa: con la chiave le spiegazioni sono più ricche e molte di più
     steps:
       - uses: actions/checkout@v4
       - name: Indice dei contenuti già pronti (per non rifarli)

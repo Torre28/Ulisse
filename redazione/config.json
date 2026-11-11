@@ -20,7 +20,7 @@
   ],
   "passioni": [],
   "modello_rapido": "qwen3:8b",
-  "rapidi_per_giro": 12,
+  "rapidi_per_giro": 20,
   "minuti_rapidi": 55,
   "argomenti_per_giro": 2
 }

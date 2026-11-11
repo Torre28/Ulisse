@@ -834,7 +834,7 @@ function settingsSheet() {
 applyLook();
 for (const [id, L] of Object.entries(S.lessons)) if (L.gen && L.gen.notte) { S.prepMeta = S.prepMeta || {}; S.prepMeta[id] = { title: L.title, kind: L.kind, area: L.area, tags: L.tags || [], gen: { topic: L.gen.topic } }; delete S.lessons[id]; }
 save(); close(); render(); toast('Backup ripristinato'); } catch (e) { toast('Backup non valido'); } } }, 'Ripristina')),
-    flat(h('span', { class: 'mono' }, 'Ulisse v1.3'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Ollama (notte) e WebLLM (telefono). Codice: github.com/Torre28/Ulisse', 'small muted'))));
+    flat(h('span', { class: 'mono' }, 'Ulisse v1.4'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Ollama (notte) e WebLLM (telefono). Codice: github.com/Torre28/Ulisse', 'small muted'))));
 }
 
 /* primo avvio: per chi riceve l'app da un amico */
