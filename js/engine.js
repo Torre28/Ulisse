@@ -192,9 +192,11 @@ function openLesson(id, chapter) {
   save();
   const host = pad();
   const close = openSheet(L.title, host, () => render());
-  let chs = L.chapters || [];
+  L.chapters = (L.chapters || []).filter(c => c && typeof c === 'object');
+  let chs = L.chapters;
+  if (!chs.length) { toast('Questa lezione è vuota o danneggiata'); return; }
   function show(ci) {
-    chs = L.chapters || [];
+    chs = (L.chapters || []).filter(c => c && typeof c === 'object');
     ci = Math.max(0, Math.min(chs.length - 1, ci));
     if (!prog.seen.includes(ci)) prog.seen.push(ci); prog.at = ci; save();
     const ch = chs[ci];

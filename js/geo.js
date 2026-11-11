@@ -54,9 +54,12 @@ function detectCountries(text) {
   return Object.entries(hits).sort((a, b) => b[1] - a[1]).map(([n, k]) => Object.assign({ k }, COUNTRIES.find(c => c.n === n)));
 }
 /* blocco mappa costruito dal testo: Paesi coinvolti + alleanze che li riguardano */
+const GEOPOL = /guerr|alleat|alleanz|\bnato\b|diplomaz|sanzion|conflitt|attacc|missil|vertice|trattat|negoziat|ostagg|tregua|esercit|invasion|bombard|cessate il fuoco|dazi|geopolit|ambasciat|summit|onu\b|nazioni unite|nucleare/i;
 function geoContext(text, max = 8) {
-  const cs = detectCountries(text).filter(c => c.k >= 1).slice(0, max);
-  if (!cs.length) return null;
+  // le alleanze servono solo se la notizia riguarda rapporti tra Stati (guerre, accordi, vertici…)
+  if (!GEOPOL.test(text)) return null;
+  const cs = detectCountries(text).filter(c => c.k >= 2).slice(0, max);
+  if (cs.filter(c => c.n !== 'Italia' && c.n !== 'Vaticano').length < 2) return null;
   const ens = new Set(cs.map(c => c.en).filter(Boolean));
   // alleanze che toccano almeno due Paesi coinvolti, o una se è la sola informazione utile
   let groups = ALLIANCES.map(a => ({ a, hit: a.m.filter(x => ens.has(x)).length })).filter(x => x.hit >= 2 || (cs.length <= 2 && x.hit >= 1)).sort((x, y) => y.hit - x.hit).slice(0, 4);

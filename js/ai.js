@@ -40,7 +40,7 @@ async function prefetchPrepared() {
 }
 const PREPMEM = {}; // lezioni pronte: in memoria e nella cache, non nella memoria permanente (che è piccola)
 async function openPrepared(item) {
-  if (!allLessons()[item.id]) {
+  if (!(allLessons()[item.id] || {}).chapters) {
     try { const L = await fetchLessonFile(item); PREPMEM[item.id] = L; S.prepMeta = S.prepMeta || {}; S.prepMeta[item.id] = { title: L.title, kind: L.kind, area: L.area, tags: L.tags || [], gen: { topic: L.gen && L.gen.topic } }; save(); }
     catch (e) { toast('Non riesco a scaricare questa lezione'); return; }
   }
