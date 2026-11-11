@@ -40,13 +40,16 @@ def log(*a):
 
 
 # ------------------------------------------------------------------ rete
-def get(url, timeout=25, tries=2):
+BROWSER_UA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36'
+
+
+def get(url, timeout=25, tries=2, browser=False):
     if PROVA:
         return FINTI.get(url)
     last = None
     for i in range(tries):
         try:
-            req = urllib.request.Request(url, headers={'User-Agent': UA})
+            req = urllib.request.Request(url, headers={'User-Agent': BROWSER_UA if browser else UA, 'Accept-Language': 'it-IT,it;q=0.9'})
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 return r.read().decode('utf-8', 'replace')
         except Exception as e:  # rete instabile: riprova una volta
@@ -61,6 +64,38 @@ def get_json(url):
 
 def strip(s):
     return re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', s or ''))).strip()
+
+
+# ------------------------------------------------------------------ liturgia del giorno (Vatican News)
+def liturgia(day=None):
+    """Letture, Vangelo e commento dei Papi dalla pagina «Parola del giorno» di Vatican News."""
+    d = day or datetime.now(timezone(timedelta(hours=1)))
+    url = f"https://www.vaticannews.va/it/vangelo-del-giorno-e-parola-del-giorno/{d:%Y/%m/%d}.html"
+    page = get(url, browser=True)
+    page = re.sub(r'(?is)<(script|style|noscript|header|footer|nav)[^>]*>.*?</\1>', ' ', page)
+    page = re.sub(r'(?i)<br\s*/?>|</(p|div|h\d|li|section)>', '\n', page)
+    lines = [l.strip() for l in html.unescape(re.sub(r'<[^>]+>', ' ', page)).split('\n')]
+    lines = [re.sub(r'\s+', ' ', l) for l in lines if l.strip()]
+
+    def section(start, stops):
+        try:
+            i = next(k for k, l in enumerate(lines) if l.lower().startswith(start.lower()))
+        except StopIteration:
+            return []
+        out = []
+        for l in lines[i + 1:]:
+            if any(l.lower().startswith(x.lower()) for x in stops):
+                break
+            out.append(l)
+        return out
+    STOPS = ['Letture del Giorno', 'Vangelo del Giorno', 'Le Parole dei Papi', 'Altri eventi', 'Santo del giorno', "L'ATTIVITÀ DEL PAPA"]
+    letture = section('Letture del Giorno', STOPS)
+    vangelo = section('Vangelo del Giorno', STOPS)
+    papi = section('Le Parole dei Papi', STOPS)
+    ref = next((m.group(0) for l in vangelo[:4] for m in [re.search(r'\b(Mt|Mc|Lc|Gv)\s?\d+[,.]\s?[\d\-.,a-z]+', l)] if m), '')
+    if not vangelo:
+        raise RuntimeError('pagina della liturgia senza Vangelo')
+    return {'date': d.strftime('%Y-%m-%d'), 'link': url, 'letture': letture[:80], 'vangelo': vangelo[:80], 'ref': ref, 'papi': papi[:30]}
 
 
 # ------------------------------------------------------------------ notizie
@@ -467,11 +502,14 @@ def main():
                 L = build_lesson('scoperta', 'scoperta', ctx)
                 save_lesson(L, {'area': 'scoperta', 'kind': 'passione', 'mode': 'scoperta', 'topic': t[0], 'ref': 'topic:' + t[0]}, folder='argomenti')
             elif kind == 'bibbia':
-                bible = load_js_array('js/data.js', 'BIBLE')
-                n = (datetime.now() - datetime(2026, 1, 1)).days % len(bible)
-                ref, title = bible[n]
-                log('Parola del giorno:', ref)
-                ctx = f"Brano: {ref} («{title}»). Livello: {level()}. Il lettore è un cattolico che vuole capire più a fondo."
+                # la Parola del giorno è il Vangelo della liturgia di oggi, con il suo testo davanti
+                lit = liturgia()
+                ref, title = lit['ref'] or 'Vangelo del giorno', 'il Vangelo di oggi'
+                log('Parola del giorno (Vangelo di oggi):', ref)
+                ctx = (f"Brano: {ref}, il Vangelo della Messa di oggi {lit['date']}. Livello: {level()}. Il lettore è un cattolico che vuole capire più a fondo.\n"
+                       f"### Testo del Vangelo di oggi\n" + '\n'.join(lit['vangelo'])[:3500] +
+                       ("\n### Le altre letture di oggi\n" + '\n'.join(lit['letture'])[:1500] if lit['letture'] else '') +
+                       ("\n### Commento dei Papi (Vatican News)\n" + '\n'.join(lit['papi'])[:1200] if lit['papi'] else ''))
                 L = build_lesson('bibbia', 'bibbia', ctx)
                 save_lesson(L, {'area': 'fede', 'kind': 'fede', 'mode': 'parola', 'ref': 'bibbia:' + ref + ':' + OGGI, 'headline': ref})
             elif kind == 'passione':

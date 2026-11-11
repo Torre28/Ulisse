@@ -152,6 +152,24 @@ const BLOCKS = {
     setTimeout(() => drawMap(box, legend, b).catch(() => box.replaceChildren(P('Mappa non disponibile senza connessione.', 'small muted'))), 30);
     return h('div', { class: 'card flat' }, h('h3', null, b.title || 'Dove succede'), box, legend, b.note && P(b.note, 'small muted'));
   },
+  automap(b, ctx) { // mappa automatica: luoghi della lezione trovati sull'enciclopedia
+    const holder = h('div', { class: 'card flat' }, h('h3', null, 'Dove succede'), h('div', { class: 'spin' }));
+    (async () => {
+      const terms = [];
+      for (const c of ctx.chapters || []) for (const bl of c.blocks || []) { if (bl.type === 'glossary') (bl.items || []).forEach(x => terms.push(x.term)); }
+      keywords(ctx.title, 6).filter(w => /^[A-ZÀ-Ý]/.test(w)).forEach(w => terms.push(w));
+      const uniq = [...new Set(terms.filter(Boolean))].slice(0, 10);
+      const found = await Promise.all(uniq.map(t => wikiResolve(t).catch(() => null)));
+      const places = found.filter(x => x && x.coordinates).map(x => ({ name: x.title, lat: x.coordinates.lat, lon: x.coordinates.lon, note: x.description || '' }));
+      const seen = new Set(); const pl = places.filter(p => !seen.has(p.name) && seen.add(p.name));
+      if (!pl.length) { holder.remove(); return; }
+      const box = h('div', { style: { height: '300px', borderRadius: '8px', overflow: 'hidden', background: 'var(--soft)' } });
+      const legend = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px' } });
+      holder.replaceChildren(h('h3', null, 'Dove succede'), box, legend, P('Luoghi trovati in automatico tra quelli citati nella lezione.', 'small muted'));
+      drawMap(box, legend, { places: pl, groups: [] }).catch(() => holder.remove());
+    })();
+    return holder;
+  },
   links: b => h('div', { class: 'card flat' }, h('h3', null, b.title || 'Per andare oltre'),
     (b.items || []).filter(l => /^https?:\/\//.test(l.url || '')).map(l => h('div', null, h('a', { href: l.url, target: '_blank', rel: 'noopener' }, l.title), l.note && h('div', { class: 'small muted' }, l.note))))
 };
@@ -190,7 +208,7 @@ function openLesson(id, chapter) {
       h('div', { class: 'chapters' }, chs.map((c, k) => h('button', { class: 'chip', 'aria-pressed': k === ci ? 'true' : 'false', onclick: () => show(k) }, (k + 1) + ' · ' + (c.label || 'Parte'), h('small', null, c.depth === 'profondo' ? '◆' : '◇')))),
       h('div', null, h('span', { class: 'mono' }, (ch.label || '') + (ch.depth ? ' · ' + ch.depth : '')), h('h2', { style: { marginTop: '4px' } }, ch.title)),
       h('div', { class: 'row' }, h('button', { class: 'btn small ghost', onclick: () => noteSheet({ title: 'Nota: ' + L.title, from: L.title }) }, '📝 Nota'), h('button', { class: 'btn small', onclick: () => speak(ch.title + '. ' + (ch.blocks || []).filter(b => b.type === 'text' || b.type === 'note').map(b => b.md).join(' ')) }, '🔊 Ascolta'), h('button', { class: 'btn small ghost', onclick: stopSpeak }, 'Stop')),
-      ...renderBlocks(ch.blocks, L),
+      ...renderBlocks(ci === 0 && L.kind === 'notizia' && !(L.chapters || []).some(c => (c.blocks || []).some(b => b.type === 'map')) ? (ch.blocks || []).concat([{ type: 'automap' }]) : ch.blocks, L),
       isLast && (L.branches || []).length ? h('div', { class: 'card flat' }, h('h3', null, 'Rami da esplorare'), P('Argomenti collegati: aprili per una scheda di approfondimento.', 'small muted'), L.branches.filter(b => b && b.name).map(b => h('button', { class: 'card', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => branchSheet(b, L, topic) }, h('b', null, b.name + ' →'), b.why && h('span', { class: 'small muted' }, b.why)))) : null,
       h('div', { class: 'stop' },
         h('span', { class: 'mono' }, isLast ? 'Fine della lezione' : 'Punto di stop'),
@@ -209,7 +227,7 @@ function openLesson(id, chapter) {
     let added = 0;
     for (const c of L.cards || []) if (c && c.q && !S.cards.some(x => x.front === c.q)) { addCard(c.q, c.a, L.area, L.title); added++; }
     prog.read = true;
-    if (!prog.done) { prog.done = true; addLog(L.area || 'scoperta', 'lezione', L.title, 2); bumpInterest((L.tags || []).concat(L.gen && L.gen.topic ? [L.gen.topic] : []), 3); }
+    if (!prog.done) { prog.done = true; addLog(L.area || 'scoperta', 'lezione', L.title, 2, typeof themeOf === 'function' ? themeOf(L) : null); bumpInterest((L.tags || []).concat(L.gen && L.gen.topic ? [L.gen.topic] : []), 3); }
     contDone('lesson', id); save();
     if (!silent) toast(added ? `${added} carte nel Quaderno` : 'Lezione completata');
     close();
@@ -315,6 +333,7 @@ function branchSheet(b, L, topic) {
     (b.facts || []).length ? card(h('h3', null, 'Fatti chiave'), h('ul', { class: 'small', style: { margin: 0, paddingLeft: '1.2em' } }, b.facts.map(f => h('li', null, f))),
       h('button', { class: 'btn small', onclick: () => { addCard(b.name + ': fatti chiave', b.facts.join(' · '), L.area, L.title); toast('Nel Quaderno'); } }, '+ Quaderno')) : null,
     card(h('h3', null, 'Cosa ti serve per capire «' + (L.title || '').slice(0, 60) + '»'), P('I passaggi della voce enciclopedica più legati alla lezione da cui arrivi.', 'small muted'), passages),
+    otherSources(b.name, typeof themeOf === 'function' ? themeOf(L) : 'default'),
     h('button', { class: 'btn', onclick: () => { openTopic(id); } }, 'Esploralo come argomento: podcast, libri, lezioni')));
 }
 
@@ -398,4 +417,21 @@ async function drawMap(box, legend, b) {
   setTimeout(() => map.invalidateSize(), 200);
   legend.replaceChildren(...groups.map(g => h('div', { class: 'row', style: { flexWrap: 'nowrap', alignItems: 'flex-start' } }, h('span', { class: 'dotc', style: { background: col(g.name), marginTop: '6px' } }), h('div', { class: 'small' }, h('b', null, g.name), g.desc ? ' · ' + g.desc : ''))),
     ...(b.places || []).filter(p => p && p.note).slice(0, 8).map(p => h('div', { class: 'small muted' }, '• ' + p.name + ': ' + p.note)));
+}
+
+/* altre fonti: notizie recenti dal nostro archivio + siti autorevoli del tema */
+function otherSources(name, theme) {
+  const news = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px' } });
+  serverNews().then(srv => {
+    const kw = keywords(name, 4).map(w => w.toLowerCase().slice(0, Math.max(4, w.length - 1)));
+    const pool = [].concat(...Object.values(srv.sezioni || {}), ...Object.values(srv.temi || {}), ...Object.values(srv.testate || {}));
+    const seen = new Set();
+    const hits = pool.filter(i => kw.length && kw.every(k => (i.title + ' ' + (i.desc || '')).toLowerCase().includes(k)) && !seen.has(i.title) && seen.add(i.title)).slice(0, 5);
+    if (hits.length) news.replaceChildren(h('span', { class: 'mono' }, 'Notizie recenti che ne parlano'), ...hits.map(i => h('a', { href: i.link, target: '_blank', rel: 'noopener', class: 'small' }, (i.src ? i.src + ' · ' : '') + i.title)));
+  }).catch(() => { });
+  const list = AUTH_SOURCES[theme] || AUTH_SOURCES.default;
+  return card(h('h3', null, 'Altre fonti'), news,
+    h('span', { class: 'mono' }, 'Cerca «' + name + '» su fonti autorevoli'),
+    h('div', { class: 'chips' }, list.map(([n, dom]) => h('a', { class: 'chip', href: dom === 'treccani.it' ? 'https://www.treccani.it/enciclopedia/ricerca/' + encodeURIComponent(name) + '/' : siteSearch(dom, name), target: '_blank', rel: 'noopener', style: { textDecoration: 'none', color: 'inherit' } }, n + ' ↗'))),
+    h('a', { class: 'small', href: 'https://archive.org/search?query=' + encodeURIComponent(name) + '&and%5B%5D=mediatype%3A%22texts%22&and%5B%5D=language%3A%22Italian%22', target: '_blank', rel: 'noopener' }, 'Libri e documenti liberi su Internet Archive ↗'));
 }

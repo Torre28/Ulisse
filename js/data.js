@@ -16,6 +16,7 @@ const DEFAULT_FEEDS = [
 ];
 const NEWS_TAGS = ['Principali', 'Italia', 'Mondo', 'Economia', 'Scienza'];
 /* temi seguiti: raccolti dalla redazione con ricerche ragionate (vedi redazione/notizie.py) */
+const TESTATE_NOMI = ['Corriere della Sera', 'la Repubblica', 'Il Sole 24 Ore', 'La Stampa', 'Il Messaggero', 'Avvenire', 'Il Post', 'Il Fatto Quotidiano', 'Domani', 'Il Foglio', 'Internazionale', 'La Nazione', 'Il Giornale', 'Libero', 'ISPI', 'Limes', 'Wired Italia', 'Le Scienze', 'Milano Finanza', 'Il Manifesto'];
 const TEMI_NOMI = ['Spazio e astronomia', 'Elettronica e semiconduttori', 'Intelligenza artificiale', 'Fiorentina', 'Firenze', 'Toscana', 'Clima e ambiente', 'Energia', 'Scienza e medicina', 'Chiesa e Papa', 'Europa e UE', 'Medio Oriente', 'Ucraina e Russia', 'Stati Uniti', 'Cina e Asia', 'Economia italiana', 'Tecnologia', 'Cultura e libri', 'Formula 1 e motori'];
 
 /* podcast: id Apple Podcasts quando noto, altrimenti si cerca per nome */
@@ -74,6 +75,19 @@ const FAITH_Q = [
   'Chi è Maria e perché la Chiesa la venera?', 'Paradiso, Purgatorio e Inferno: cosa crede davvero la Chiesa?', 'Perché la Chiesa ha i dogmi?', 'Cos\'è la coscienza e come si forma?',
   'Come si fa discernimento su una scelta di vita?', 'Perché l\'anno liturgico ha tempi e colori diversi?', 'Cosa dice la Chiesa su lavoro, ricchezza e poveri?', 'Chi erano i profeti e cosa facevano davvero?'
 ];
+
+/* fonti autorevoli da consultare, per tema (ricerca dentro il sito) */
+const AUTH_SOURCES = {
+  'Politica italiana': [['Openpolis', 'openpolis.it'], ['Pagella Politica', 'pagellapolitica.it'], ['Senato', 'senato.it'], ['Camera dei deputati', 'camera.it'], ['Treccani', 'treccani.it']],
+  'Esteri e geopolitica': [['ISPI', 'ispionline.it'], ['Limes', 'limesonline.com'], ['Affari Internazionali', 'affarinternazionali.it'], ['Internazionale', 'internazionale.it'], ['Treccani', 'treccani.it']],
+  'Economia': [['ISTAT', 'istat.it'], ['Banca d\'Italia', 'bancaditalia.it'], ['lavoce.info', 'lavoce.info'], ['Il Sole 24 Ore', 'ilsole24ore.com'], ['Osservatorio CPI', 'osservatoriocpi.unicatt.it']],
+  'Scienza e tecnologia': [['Le Scienze', 'lescienze.it'], ['Il Bo Live (Univ. Padova)', 'ilbolive.unipd.it'], ['INFN', 'infn.it'], ['ASI', 'asi.it'], ['Treccani', 'treccani.it']],
+  'Storia': [['Treccani', 'treccani.it'], ['Rai Cultura', 'raicultura.it'], ['Storica National Geographic', 'storicang.it'], ['Internet Archive (libri)', 'archive.org']],
+  'Fede e Scrittura': [['Vatican.va', 'vatican.va'], ['Chiesa cattolica italiana', 'chiesacattolica.it'], ['Avvenire', 'avvenire.it'], ['La Civiltà Cattolica', 'laciviltacattolica.it']],
+  'Tecnica e ricerca': [['IEEE Spectrum', 'spectrum.ieee.org'], ['arXiv', 'arxiv.org'], ['Le Scienze', 'lescienze.it']],
+  'default': [['Treccani', 'treccani.it'], ['Il Post', 'ilpost.it'], ['Internazionale', 'internazionale.it'], ['Rai Cultura', 'raicultura.it']]
+};
+const siteSearch = (dom, q) => 'https://duckduckgo.com/?q=' + encodeURIComponent('site:' + dom + ' ' + q);
 
 /* serve all'interfaccia per la prima esecuzione: possibilità concrete fuori dallo schermo */
 const OUTSIDE = [

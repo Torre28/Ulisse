@@ -17,7 +17,7 @@
       {
         "label": "Cosa è successo",
         "depth": "assaggio",
-        "spec": "3-4 paragrafi che raccontano la notizia con tutti i fatti concreti delle fonti (chi, cosa, quando, dove, numeri). Poi una timeline degli antefatti con ALMENO 6 eventi dei giorni, settimane e mesi precedenti presi dalle fonti, ognuno con data e 2-3 frasi di spiegazione: chi non ha seguito la vicenda deve poterla ricostruire tutta. Se contano luoghi o Stati, una mappa con i posti citati e, se ci sono schieramenti, i gruppi di Paesi."
+        "spec": "3-4 paragrafi che raccontano la notizia con tutti i fatti concreti delle fonti (chi, cosa, quando, dove, numeri). Poi una timeline degli antefatti con ALMENO 6 eventi dei giorni, settimane e mesi precedenti presi dalle fonti, ognuno con data e 2-3 frasi di spiegazione: chi non ha seguito la vicenda deve poterla ricostruire tutta. Se contano luoghi o Stati, una mappa con i posti citati e, se ci sono schieramenti, i gruppi di Paesi. Includi SEMPRE un blocco map con i luoghi citati (città, regioni, Stati), anche se è uno solo; se ci sono schieramenti tra Paesi, mettili come gruppi con legenda."
       },
       {
         "label": "Le parole per capire",
@@ -34,7 +34,7 @@
       {
         "label": "La notizia",
         "depth": "assaggio",
-        "spec": "4-5 paragrafi su cosa è successo, confrontando come la raccontano testate diverse, con tutti i fatti concreti. Note fatto per ciò che è certo, attenzione per ciò che è ancora incerto. Se contano luoghi, una mappa."
+        "spec": "4-5 paragrafi su cosa è successo, confrontando come la raccontano testate diverse, con tutti i fatti concreti. Note fatto per ciò che è certo, attenzione per ciò che è ancora incerto. Se contano luoghi, una mappa. Includi SEMPRE un blocco map con i luoghi citati, anche se è uno solo."
       },
       {
         "label": "Antefatti",

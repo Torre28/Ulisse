@@ -176,7 +176,7 @@ const AREAS = {
 };
 const areaColor = a => `var(--${AREAS[a] ? a : 'scoperta'})`;
 const areaTag = a => h('span', { class: 'tag', style: { color: areaColor(a) } }, (AREAS[a] || AREAS.scoperta).n);
-function addLog(area, kind, title, w = 1) { S.log.push({ d: today(), t: Date.now(), area, kind, title, w }); if (S.log.length > 3000) S.log = S.log.slice(-3000); save(); }
+function addLog(area, kind, title, w = 1, th) { S.log.push({ d: today(), t: Date.now(), area, kind, title, w, th }); if (S.log.length > 3000) S.log = S.log.slice(-3000); save(); }
 function balance(days = 14) {
   const from = daysAgo(days - 1), out = {}; for (const a in AREAS) out[a] = 0;
   for (const e of S.log) if (e.d >= from && out[e.area] !== undefined) out[e.area] += e.w || 1;

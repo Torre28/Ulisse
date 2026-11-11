@@ -117,16 +117,41 @@ const LV_NAME = ['', 'Curioso', 'Informato', 'Consapevole', 'Esperto', 'Maestro'
 /* punti esperienza della giornata: tutto ciò che fai pesa, letture confermate e missioni di più */
 function xpOf(day) { return Math.round(S.log.filter(e => e.d === day && e.kind !== 'sessione').reduce((a, e) => a + (e.w || 1) * 10, 0)); }
 function streak() { let n = 0; for (let i = 0; i < 400; i++) { if (xpOf(daysAgo(i)) > 0) n++; else if (i > 0) break; } return n; }
+const GOAL_CATS = ['Attualità e politica', 'Economia', 'Scienza e tecnologia', 'Passioni', 'Lavoro e studio', 'Fede', 'Relazioni', 'Corpo'];
+const GOAL_ICON = { 'Attualità e politica': '📰', 'Economia': '📈', 'Scienza e tecnologia': '🔬', 'Passioni': '✨', 'Lavoro e studio': '🛠', 'Fede': '✝', 'Relazioni': '🤝', 'Corpo': '🚶' };
+function catOf(e) {
+  if (e.area === 'mondo') return e.th === 'Economia' ? 'Economia' : e.th === 'Scienza e tecnologia' ? 'Scienza e tecnologia' : 'Attualità e politica';
+  return { scoperta: 'Passioni', lavoro: 'Lavoro e studio', fede: 'Fede', famiglia: 'Relazioni', amici: 'Relazioni', corpo: 'Corpo' }[e.area] || 'Passioni';
+}
+function myGoalCats() { return S.goalCats || ['Attualità e politica', 'Economia', 'Passioni', 'Lavoro e studio', 'Fede']; }
+function xpByCat(day) { const o = {}; for (const e of S.log) if (e.d === day && e.kind !== 'sessione') { const c = catOf(e); o[c] = (o[c] || 0) + (e.w || 1) * 10; } return o; }
+function ringSvg(pct, label, size = 84, stroke = 9) {
+  const R = (size - stroke) / 2 - 1, C = 2 * Math.PI * R, c = size / 2;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${c}" cy="${c}" r="${R}" fill="none" stroke="var(--soft)" stroke-width="${stroke}"/><circle cx="${c}" cy="${c}" r="${R}" fill="none" stroke="var(--terra)" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${C * Math.min(1, pct)} ${C}" transform="rotate(-90 ${c} ${c})"/><text x="${c}" y="${c + 5}" text-anchor="middle" font-family="JetBrains Mono" font-size="${size > 60 ? 15 : 11}" fill="var(--ink)">${label}</text></svg>`;
+}
 function dayCard() {
-  const goal = S.xpGoal || 60, xp = xpOf(today()), pct = Math.min(1, xp / goal);
+  const cats = myGoalCats(), per = S.catGoal || 20, goal = cats.length * per;
+  const by = xpByCat(today()), xp = xpOf(today());
   const days = Array.from({ length: 14 }, (_, i) => daysAgo(13 - i)), vals = days.map(xpOf), mx = Math.max(goal, ...vals);
-  const W = 300, H = 70, bw = W / 14 - 4;
-  const bars = days.map((d, i) => `<rect x="${i * (W / 14) + 2}" y="${H - vals[i] / mx * (H - 10)}" width="${bw}" height="${Math.max(1, vals[i] / mx * (H - 10))}" rx="3" fill="${vals[i] >= goal ? 'var(--terra)' : 'var(--line)'}"/>`).join('') + `<line x1="0" x2="${W}" y1="${H - goal / mx * (H - 10)}" y2="${H - goal / mx * (H - 10)}" stroke="var(--muted)" stroke-dasharray="3 3"/>`;
-  const R = 34, C = 2 * Math.PI * R;
-  return card(h('div', { class: 'row between' }, h('h2', null, 'La tua giornata'), h('span', { class: 'mono' }, '🔥 ' + streak() + ' giorni di fila')),
-    h('div', { class: 'row', style: { flexWrap: 'nowrap', gap: '16px' } },
-      h('div', { html: `<svg width="84" height="84" viewBox="0 0 84 84"><circle cx="42" cy="42" r="${R}" fill="none" stroke="var(--soft)" stroke-width="9"/><circle cx="42" cy="42" r="${R}" fill="none" stroke="var(--terra)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C * pct} ${C}" transform="rotate(-90 42 42)"/><text x="42" y="46" text-anchor="middle" font-family="JetBrains Mono" font-size="15" fill="var(--ink)">${xp}</text></svg>` }),
-      h('div', { class: 'grow' }, P(xp >= goal ? 'Obiettivo di oggi raggiunto!' : `Ancora ${goal - xp} punti per l'obiettivo di oggi (${goal}).`, 'small'), h('div', { html: `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" preserveAspectRatio="none">${bars}</svg>` }), h('span', { class: 'mono' }, 'ultimi 14 giorni'))));
+  const W = 300, H = 60, bw = W / 14 - 4;
+  const bars = days.map((d, i) => `<rect x="${i * (W / 14) + 2}" y="${H - vals[i] / mx * (H - 8)}" width="${bw}" height="${Math.max(1, vals[i] / mx * (H - 8))}" rx="3" fill="${vals[i] >= goal ? 'var(--terra)' : 'var(--line)'}"/>`).join('');
+  const doneCats = cats.filter(c => (by[c] || 0) >= per).length;
+  return card(h('div', { class: 'row between' }, h('h2', null, 'La tua giornata'), h('div', { class: 'row' }, h('span', { class: 'mono' }, '🔥 ' + streak() + ' giorni'), h('button', { class: 'btn small ghost', onclick: goalSettings }, '⚙'))),
+    h('div', { class: 'row', style: { flexWrap: 'nowrap', gap: '14px' } },
+      h('div', { html: ringSvg(xp / goal, xp) }),
+      h('div', { class: 'grow' }, P(doneCats === cats.length ? 'Tutti gli obiettivi di oggi raggiunti!' : `${doneCats} obiettivi su ${cats.length} raggiunti · ${xp}/${goal} punti`, 'small'),
+        h('div', { html: `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" preserveAspectRatio="none">${bars}</svg>` }), h('span', { class: 'mono' }, 'ultimi 14 giorni'))),
+    h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(92px,1fr))', gap: '8px' } }, cats.map(c => h('div', { style: { textAlign: 'center' } },
+      h('div', { html: ringSvg((by[c] || 0) / per, (GOAL_ICON[c] || '') , 56, 6) }), h('div', { class: 'small', style: { lineHeight: 1.2 } }, c), h('span', { class: 'mono' }, (by[c] || 0) + '/' + per)))));
+}
+function goalSettings() {
+  const box = pad();
+  const paint = () => box.replaceChildren(card(P('Scegli su cosa vuoi crescere ogni giorno: ogni area ha il suo obiettivo, e insieme fanno l\'obiettivo generale.', 'small'),
+    h('div', { class: 'chips' }, GOAL_CATS.map(c => h('button', { class: 'chip', 'aria-pressed': myGoalCats().includes(c) ? 'true' : 'false', onclick: () => { const cur = myGoalCats(); S.goalCats = cur.includes(c) ? cur.filter(x => x !== c) : cur.concat(c); if (!S.goalCats.length) S.goalCats = [c]; save(); paint(); } }, (GOAL_ICON[c] || '') + ' ' + c))),
+    h('label', { class: 'lab' }, 'Punti per area al giorno'),
+    h('div', { class: 'chips' }, [10, 20, 30, 50].map(v => h('button', { class: 'chip', 'aria-pressed': (S.catGoal || 20) === v ? 'true' : 'false', onclick: () => { S.catGoal = v; save(); paint(); } }, v))),
+    P('Una lezione letta e confermata vale 20 punti, una missione principale 30, una secondaria 10, un ripasso o una preghiera 10-20.', 'small muted')));
+  paint(); openSheet('Obiettivi del giorno', box, () => render());
 }
 function selfRateSheet() {
   S.selfRate = S.selfRate || {};
@@ -210,7 +235,7 @@ function viewOggi() {
 /* ======================= NOTIZIE ======================= */
 let newsTab = 'Principali', temaSel = 'tutti', newsCache = (() => { try { return JSON.parse(localStorage.getItem('ulisse.news') || '{}'); } catch (e) { return {}; } })();
 function viewNotizie() {
-  const tl = NEWS_TAGS.map(t => [t, t]).concat([['temi', 'I miei temi'], ['ascolta', '🎧 Ascolta'], ['percorsi', 'Percorsi']]);
+  const tl = NEWS_TAGS.map(t => [t, t]).concat([['temi', 'I miei temi'], ['testate', '📰 Le mie testate'], ['ascolta', '🎧 Ascolta'], ['percorsi', 'Percorsi']]);
   const body = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } });
   if (newsTab === 'ascolta') body.append(...viewPodcasts());
   else if (newsTab === 'percorsi') {
@@ -220,6 +245,15 @@ function viewNotizie() {
     body.append(P('Percorsi preparati ogni notte dalla redazione automatica, più quelli che hai creato tu.', 'small muted'),
       ...Object.keys(byDay).sort().reverse().map(d => card(h('span', { class: 'mono' }, 'Stanotte · ' + fmtDay(d)), byDay[d].map(prepRow))),
       ls.length ? h('h3', null, 'Creati da te') : null, ...ls.map(lessonCard), h('button', { class: 'btn', onclick: importSheet }, 'Importa una lezione'));
+  } else if (newsTab === 'testate') {
+    const mine = (S.testate || []).concat((S.feedsCustom || []).map(f => f.name));
+    if (!mine.length) body.append(card(P('Hai un abbonamento a un giornale? Aggiungilo: le sue notizie entrano nell\'app e nelle spiegazioni, e aprendo un articolo lo leggi per intero sul sito dove hai già fatto l\'accesso.'), testatePicker()));
+    else {
+      body.append(h('div', { class: 'scrollx' }, mine.map(t => h('button', { class: 'chip', 'aria-pressed': temaSel === t ? 'true' : 'false', onclick: () => { temaSel = t; render(); } }, t)), h('button', { class: 'chip', onclick: () => openSheet('Le mie testate', card(testatePicker())) }, '＋ / modifica')));
+      if (!mine.includes(temaSel)) temaSel = mine[0];
+      const box = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } }, h('div', { class: 'spin' }));
+      body.append(box); loadNews(box, 'testata:' + temaSel);
+    }
   } else if (newsTab === 'temi') {
     const mine = (S.temi || []).concat(S.niche || []);
     if (!mine.length) body.append(card(P('Scegli gli argomenti da seguire: ognuno diventa una sezione con le notizie che ne parlano davvero.'), temiPicker()));
@@ -240,14 +274,22 @@ function withTimeout(p, ms) { return Promise.race([p, new Promise((_, ko) => set
 async function fetchNewsFor(key) {
   let items = [], ok = 0, tot = 0, srv = null;
   srv = await withTimeout(serverNews(), 9000).catch(() => null);
-  if (key.startsWith('tema:')) {
+  if (key.startsWith('testata:')) {
+    const name = key.slice(8), custom = (S.feedsCustom || []).find(f => f.name === name);
+    if (custom) { const xs = await withTimeout(fetchFeed(custom.url), 20000).catch(() => []); items = xs.map(i => Object.assign(i, { feed: name, src: i.src || name })); ok = items.length ? 1 : 0; tot = 1; srv = null; }
+    else if (srv && srv.testate && srv.testate[name]) { items = srv.testate[name].slice(); ok = tot = 1; }
+  } else if (key.startsWith('tema:')) {
     const name = key.slice(5);
     if (srv && srv.temi && srv.temi[name]) { items = srv.temi[name].slice(); ok = tot = 1; }
     else if (!TEMI_NOMI.includes(name)) { // parola chiave personale: ricerca diretta (può non funzionare su tutti i browser)
       const xs = await withTimeout(fetchFeed(GN('/search', name + ' when:3d')), 20000).catch(() => []);
       items = xs.map(i => Object.assign(i, { feed: name })); ok = items.length ? 1 : 0; tot = 1; srv = null;
     }
-  } else if (srv && (srv.sezioni[key] || []).length) { items = srv.sezioni[key].slice(); ok = tot = 1; }
+  } else if (srv && (srv.sezioni[key] || []).length) {
+    items = srv.sezioni[key].slice(); ok = tot = 1;
+    // le testate a cui sei abbonato entrano nel flusso principale
+    if (key === 'Principali' && srv.testate) for (const t of S.testate || []) items = items.concat((srv.testate[t] || []).slice(0, 8));
+  }
   else {
     const feeds = key === 'temi' ? [] : S.feeds.filter(f => f.tag === key);
     tot = feeds.length;
@@ -260,6 +302,20 @@ async function fetchNewsFor(key) {
   const lim = Date.now() - 4 * 864e5; items = items.filter(i => !Date.parse(i.date) || Date.parse(i.date) > lim);
   items.sort((a, b) => (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0));
   return { t: Date.now(), cl: clusterNews(items).slice(0, 40), ok, tot, srv: !!(srv && ok) };
+}
+function testatePicker() {
+  const box = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } });
+  const paint = () => {
+    const nm = h('input', { type: 'text', placeholder: 'Nome (es. Corriere Fiorentino)' }), url = h('input', { type: 'text', placeholder: 'Indirizzo del feed RSS (facoltativo)' });
+    box.replaceChildren(h('span', { class: 'mono' }, 'Testate principali'),
+      h('div', { class: 'chips' }, TESTATE_NOMI.map(t => h('button', { class: 'chip', 'aria-pressed': (S.testate || []).includes(t) ? 'true' : 'false', onclick: () => { S.testate = (S.testate || []).includes(t) ? S.testate.filter(x => x !== t) : (S.testate || []).concat(t); save(); paint(); } }, t))),
+      h('span', { class: 'mono' }, 'Altra testata con feed RSS'),
+      h('div', { class: 'chips' }, (S.feedsCustom || []).map(f => h('button', { class: 'chip', onclick: () => { S.feedsCustom = S.feedsCustom.filter(x => x !== f); save(); paint(); } }, f.name + ' ✕'))), nm, url,
+      h('button', { class: 'btn small', onclick: () => { if (!nm.value.trim() || !/^https?:/.test(url.value.trim())) { toast('Serve nome e indirizzo del feed'); return; } S.feedsCustom = (S.feedsCustom || []).concat({ name: nm.value.trim(), url: url.value.trim() }); save(); paint(); } }, '+ Aggiungi'),
+      P('Gli articoli si aprono sul sito della testata: se lì hai fatto l\'accesso con il tuo abbonamento, li leggi per intero. L\'app non conserva le tue credenziali.', 'small muted'),
+      h('button', { class: 'btn primary', onclick: () => { closeAllSheets(); newsCache = {}; render(); } }, 'Fatto'));
+  };
+  paint(); return box;
 }
 function temiPicker() {
   const box = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '10px' } });
@@ -439,6 +495,7 @@ function openTopic(id) {
     card(h('span', { class: 'mono' }, 'Dall\'enciclopedia'), sum),
     card(h('span', { class: 'mono' }, '🎧 Ascolta'), episodesBox(() => episodeSearch(t.n, 4, true), 'scoperta', 'Nessun episodio in italiano davvero su questo tema.')),
     card(h('span', { class: 'mono' }, '📚 Leggi'), (() => { const b = h('div', null, h('div', { class: 'spin' })); bookSearch(t.n, 4).then(bs => b.replaceChildren(...(bs.length ? bs.map(x => h('div', { style: { padding: '6px 0', borderTop: '1px solid var(--soft)' } }, h('a', { href: x.link, target: '_blank', rel: 'noopener' }, x.title), h('div', { class: 'mono' }, [x.authors, x.year].filter(Boolean).join(' · ')))) : [P('Nessun libro trovato.', 'small muted')]))).catch(() => b.replaceChildren(P('Ricerca libri non disponibile.', 'small muted'))); return b; })()),
+    otherSources(t.n, ({ Storia: 'Storia', Spirito: 'Fede e Scrittura', Tecnica: 'Scienza e tecnologia', 'Cielo e Terra': 'Scienza e tecnologia', Vita: 'Scienza e tecnologia', Mente: 'Scienza e tecnologia', Società: 'Politica italiana' })[t.c] || 'default'),
     card(h('span', { class: 'mono' }, '▶ Guarda e consulta'), h('div', { class: 'row' }, linkBtn('https://www.youtube.com/results?search_query=' + encodeURIComponent(t.n + ' spiegato documentario'), 'Video su YouTube'), linkBtn('https://www.treccani.it/enciclopedia/ricerca/' + encodeURIComponent(t.n) + '/', 'Enciclopedia Treccani'))),
     card(h('span', { class: 'mono' }, 'Rami · tratteggiati quelli nuovi'), ramiBox)
   ), () => render());
@@ -501,20 +558,37 @@ function hourCard(o, current) {
       h('button', { class: 'btn small', onclick: showAudio }, '🎧 Ascolta e prega'), h('button', { class: 'btn small ghost', onclick: () => { addLog('fede', 'liturgia', o.n, 2); toast('Segnata'); render(); } }, '✓ Pregata')),
     audio);
 }
-function gospelCard() {
+let specTab = 'oggi', litTab = 'vangelo';
+function liturgyCard() {
   const box = h('div', null, h('div', { class: 'spin' }));
   serverNews().then(srv => {
+    const L = srv.liturgia;
+    if (!L) { box.replaceChildren(P('Le letture di oggi non sono ancora arrivate.', 'small muted'), linkBtn('https://www.vaticannews.va/it/vangelo-del-giorno-e-parola-del-giorno.html', 'Apri Vatican News')); return; }
+    const paint = () => {
+      const txt = { vangelo: L.vangelo, letture: L.letture, papi: L.papi }[litTab] || [];
+      box.replaceChildren(
+        h('div', { class: 'row' }, h('span', { class: 'pill-ready' }, L.date === today() ? '✓ di oggi' : 'del ' + fmtDay(L.date)), L.ref && h('span', { class: 'mono' }, 'Vangelo: ' + L.ref)),
+        h('div', { class: 'chips' }, [['vangelo', 'Vangelo'], ['letture', 'Letture'], ['papi', 'Commento dei Papi']].filter(([k]) => (L[k] || []).length).map(([k, l]) => h('button', { class: 'chip', 'aria-pressed': litTab === k ? 'true' : 'false', onclick: () => { litTab = k; paint(); } }, l))),
+        h('div', { class: 'prose' }, txt.map((t, n) => n < 2 && litTab !== 'papi' ? h('p', { class: 'mono', style: { margin: '0 0 .4em' } }, t) : h('p', null, t))),
+        h('div', { class: 'row' }, h('button', { class: 'btn small', onclick: () => speak(txt.join(' ')) }, '🔊 Ascolta'), linkBtn(L.link, 'Fonte: Vatican News', 'ghost')));
+    };
+    paint();
+  }).catch(() => box.replaceChildren(linkBtn('https://www.vaticannews.va/it/vangelo-del-giorno-e-parola-del-giorno.html', 'Apri le letture su Vatican News')));
+  return card(h('h2', null, 'Le letture di oggi'), box);
+}
+function gospelCard() {
+  const box = h('div');
+  serverNews().then(srv => {
     const g = (srv.vangelo || [])[0];
-    if (!g) { box.replaceChildren(P('Il commento di oggi non è ancora disponibile.', 'small muted'), linkBtn('https://getupandwalk.gesuiti.it/', 'Apri Get Up and Walk')); return; }
+    if (!g || !(g.paras || []).length) { box.replaceChildren(linkBtn('https://getupandwalk.gesuiti.it/', 'Prega su Get Up and Walk')); return; }
     box.replaceChildren(
       h('div', { class: 'row' }, h('span', { class: 'pill-ready' }, g.oggi ? '✓ di oggi' : 'del ' + fmtDay(g.date)), h('span', { class: 'mono' }, g.ref)),
       h('h3', null, g.title),
       h('div', { class: 'row' }, h('button', { class: 'btn primary', onclick: () => gospelPrayer(g) }, 'Prega con il Vangelo'), linkBtn(g.link, 'Apri l\'originale', 'ghost')));
-  }).catch(() => box.replaceChildren(P('Non raggiungibile ora.', 'small muted'), linkBtn('https://getupandwalk.gesuiti.it/', 'Apri Get Up and Walk')));
-  return h('div', { class: 'card hero' }, h('span', { class: 'mono' }, 'Il Vangelo del giorno · Get Up and Walk, gesuiti'), box);
+  }).catch(() => box.replaceChildren(linkBtn('https://getupandwalk.gesuiti.it/', 'Prega su Get Up and Walk')));
+  return h('div', { class: 'card hero' }, h('span', { class: 'mono' }, 'Preghiera guidata sul Vangelo · Get Up and Walk, gesuiti'), box);
 }
 function gospelPrayer(g) {
-  // la pagina di Get Up and Walk è già una preghiera guidata: la si percorre un passo alla volta
   const steps = []; let cur = [];
   for (const p of g.paras) { cur.push(p); if (cur.join(' ').length > 420 || /^(Come un amico|Recito|Mi preparo|Chiedo|Leggo|Immagino|Mi metto)/i.test(p)) { steps.push(cur); cur = []; } }
   if (cur.length) steps.push(cur);
@@ -534,29 +608,37 @@ function gospelPrayer(g) {
 }
 function viewSpecchio() {
   const cur = currentHour();
-  const ref = h('input', { type: 'text', placeholder: 'Un brano a scelta, es. «Marco 4» o «Salmo 139»' });
-  ref.addEventListener('keydown', e => { if (e.key === 'Enter' && ref.value.trim()) genFaithLesson('bible', ref.value.trim()); });
-  const fq = h('input', { type: 'text', placeholder: 'Una tua domanda sulla fede…' });
-  fq.addEventListener('keydown', e => { if (e.key === 'Enter' && fq.value.trim()) genFaithLesson('faith', fq.value.trim()); });
-  const fede = Object.values(S.lessons).filter(l => l.kind === 'fede').sort((a, b) => (b.gen?.at || 0) - (a.gen?.at || 0));
-  const jr = S.journal.slice(-4).reverse();
-  return [header('Specchio', 'fermarsi, pregare, conoscersi'),
-    gospelCard(),
-    hourCard(cur, true),
-    h('details', { class: 'card flat' }, h('summary', { style: { cursor: 'pointer' } }, h('b', null, 'Le altre Ore della giornata')),
-      pad(...HOURS.filter(o => o !== cur).map(o => hourCard(o, false)))),
-    (() => { const n = prepLatest().find(p => p.mode === 'parola'); return n ? card(h('span', { class: 'mono' }, 'La Parola del giorno · preparata stanotte'), prepRow(n)) : null; })(),
-    card(h('h2', null, 'La Parola'), P('Scegli un brano: l\'app ti spiega contesto storico, parole chiave, come lo ha letto la Chiesa e cosa può dire a te.'),
-      h('div', { class: 'chips' }, BIBLE.map(([r, t]) => h('button', { class: 'chip', title: t, onclick: () => genFaithLesson('bible', r, t) }, r + ' · ' + t))), ref,
-      h('div', { class: 'row' }, linkBtn('https://www.bibbiaedu.it/', 'Bibbia CEI', 'ghost'))),
-    card(h('h2', null, 'Il perché della fede'), P('Domande serie, risposte con Scrittura, Catechismo, santi e anche le obiezioni.'),
-      h('div', { class: 'chips' }, FAITH_Q.map(q => h('button', { class: 'chip', onclick: () => genFaithLesson('faith', q) }, q))), fq,
-      linkBtn('https://www.vatican.va/archive/catechism_it/index_it.htm', 'Catechismo della Chiesa cattolica', 'ghost')),
-    fede.length ? [h('h2', null, 'Le tue lezioni di fede'), fede.slice(0, 6).map(lessonCard)] : null,
-    card(h('h2', null, 'Pratiche guidate'), Object.entries(GUIDES).map(([k, g]) => h('button', { class: 'card flat', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => guideSheet(k) }, h('b', null, g.n), h('span', { class: 'small muted' }, g.intro)))),
-    card(h('div', { class: 'row between' }, h('h2', null, 'Diario'), h('button', { class: 'btn small', onclick: journalSheet }, '+ Scrivi')),
-      jr.length ? jr.map(j => flat(h('span', { class: 'mono' }, j.d + (j.from ? ' · ' + j.from : '')), j.prompt && h('b', { class: 'small' }, j.prompt), h('div', { class: 'small' }, j.text)))
-        : h('div', { class: 'empty' }, 'Le tue riflessioni, anche quelle delle lezioni, finiscono qui.'))];
+  const t = tabs([['oggi', 'Oggi'], ['ore', 'Liturgia delle Ore'], ['parola', 'La Parola'], ['pratiche', 'Pratiche'], ['diario', 'Diario']], specTab, k => { specTab = k; });
+  let body;
+  if (specTab === 'oggi') {
+    const pa = prepLatest().find(p => p.mode === 'parola');
+    body = [gospelCard(), liturgyCard(),
+      pa ? card(h('span', { class: 'mono' }, 'Approfondisci il Vangelo di oggi'), prepRow(pa)) : null,
+      h('button', { class: 'card flat', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => { specTab = 'ore'; render(); } }, h('span', { class: 'mono' }, 'Adesso · ' + cur.when), h('b', null, cur.n), P(cur.what.split('. ')[0] + '.', 'small muted'))];
+  } else if (specTab === 'ore') {
+    body = [hourCard(cur, true), h('h3', null, 'Le altre Ore'), ...HOURS.filter(o => o !== cur).map(o => h('details', { class: 'card flat' }, h('summary', { style: { cursor: 'pointer' } }, h('b', null, o.n), h('span', { class: 'mono' }, ' · ' + o.when)), hourCard(o, false)))];
+  } else if (specTab === 'parola') {
+    const ref = h('input', { type: 'text', placeholder: 'Un brano a scelta, es. «Marco 4» o «Salmo 139»' });
+    ref.addEventListener('keydown', e => { if (e.key === 'Enter' && ref.value.trim()) genFaithLesson('bible', ref.value.trim()); });
+    const fq = h('input', { type: 'text', placeholder: 'Una tua domanda sulla fede…' });
+    fq.addEventListener('keydown', e => { if (e.key === 'Enter' && fq.value.trim()) genFaithLesson('faith', fq.value.trim()); });
+    const fede = Object.values(allLessons()).filter(l => l.kind === 'fede' && l.chapters).sort((a, b) => (b.gen?.at || 0) - (a.gen?.at || 0));
+    body = [card(h('h2', null, 'Esplora un brano'), P('Contesto storico, parole chiave, come lo ha letto la Chiesa e cosa può dire a te.', 'small muted'),
+        h('details', null, h('summary', { class: 'mono', style: { cursor: 'pointer' } }, BIBLE.length + ' brani suggeriti'), h('div', { class: 'chips', style: { marginTop: '8px' } }, BIBLE.map(([r, tt]) => h('button', { class: 'chip', title: tt, onclick: () => genFaithLesson('bible', r, tt) }, r + ' · ' + tt)))), ref,
+        linkBtn('https://www.bibbiaedu.it/', 'Bibbia CEI', 'ghost')),
+      card(h('h2', null, 'Il perché della fede'), P('Domande serie, risposte con Scrittura, Catechismo, santi e anche le obiezioni.', 'small muted'),
+        h('details', null, h('summary', { class: 'mono', style: { cursor: 'pointer' } }, FAITH_Q.length + ' domande'), h('div', { class: 'chips', style: { marginTop: '8px' } }, FAITH_Q.map(q => h('button', { class: 'chip', onclick: () => genFaithLesson('faith', q) }, q)))), fq,
+        linkBtn('https://www.vatican.va/archive/catechism_it/index_it.htm', 'Catechismo della Chiesa cattolica', 'ghost')),
+      fede.length ? [h('h3', null, 'Le tue lezioni di fede'), fede.slice(0, 10).map(lessonCard)] : null];
+  } else if (specTab === 'pratiche') {
+    body = Object.entries(GUIDES).map(([k, g]) => h('button', { class: 'card', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => guideSheet(k) }, h('h3', null, g.n), h('span', { class: 'small muted' }, g.intro)));
+  } else {
+    const jr = S.journal.slice().reverse();
+    body = [h('button', { class: 'btn primary', onclick: journalSheet }, '+ Scrivi nel diario'),
+      jr.length ? jr.slice(0, 40).map(j => flat(h('span', { class: 'mono' }, j.d + (j.from ? ' · ' + j.from : '')), j.prompt && h('b', { class: 'small' }, j.prompt), h('div', { class: 'small' }, j.text)))
+        : h('div', { class: 'empty' }, 'Le tue riflessioni, anche quelle delle lezioni, finiscono qui.')];
+  }
+  return [header('Specchio', 'fermarsi, pregare, conoscersi'), t, ...[body].flat(Infinity).filter(Boolean)];
 }
 
 /* ======================= QUADERNO ======================= */
@@ -697,9 +779,7 @@ function settingsSheet() {
     card(h('h3', null, 'Lettura'), h('label', { class: 'lab' }, 'Dimensione del testo'),
       h('div', { class: 'chips' }, [[0.92, 'Piccolo'], [1, 'Normale'], [1.1, 'Grande'], [1.22, 'Molto grande']].map(([v, l]) => h('button', { class: 'chip', 'aria-pressed': (S.fontScale || 1) === v ? 'true' : 'false', onclick: ev => { S.fontScale = v; save(); applyLook(); ev.currentTarget.parentElement.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === ev.currentTarget ? 'true' : 'false')); } }, l))),
       h('label', { class: 'lab' }, 'Aspetto'),
-      h('div', { class: 'chips' }, [['auto', 'Come il telefono'], ['light', 'Chiaro'], ['dark', 'Scuro']].map(([v, l]) => h('button', { class: 'chip', 'aria-pressed': (S.theme || 'auto') === v ? 'true' : 'false', onclick: ev => { S.theme = v; save(); applyLook(); ev.currentTarget.parentElement.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === ev.currentTarget ? 'true' : 'false')); } }, l))),
-      h('label', { class: 'lab' }, 'Obiettivo giornaliero di punti'),
-      h('div', { class: 'chips' }, [30, 60, 100, 150].map(v => h('button', { class: 'chip', 'aria-pressed': (S.xpGoal || 60) === v ? 'true' : 'false', onclick: ev => { S.xpGoal = v; save(); ev.currentTarget.parentElement.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === ev.currentTarget ? 'true' : 'false')); } }, v)))),
+      h('div', { class: 'chips' }, [['auto', 'Come il telefono'], ['light', 'Chiaro'], ['dark', 'Scuro']].map(([v, l]) => h('button', { class: 'chip', 'aria-pressed': (S.theme || 'auto') === v ? 'true' : 'false', onclick: ev => { S.theme = v; save(); applyLook(); ev.currentTarget.parentElement.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === ev.currentTarget ? 'true' : 'false')); } }, l)))),
     card(h('label', { class: 'lab' }, 'Nome'), name,
       h('label', { class: 'lab' }, 'Fonti delle notizie (una per riga: sezione | nome | indirizzo RSS). Sezioni: ' + NEWS_TAGS.join(', ')), feeds,
       h('label', { class: 'lab' }, 'I miei temi (separati da virgola)'), niche,
@@ -724,7 +804,7 @@ function settingsSheet() {
 applyLook();
 for (const [id, L] of Object.entries(S.lessons)) if (L.gen && L.gen.notte) { S.prepMeta = S.prepMeta || {}; S.prepMeta[id] = { title: L.title, kind: L.kind, area: L.area, tags: L.tags || [], gen: { topic: L.gen.topic } }; delete S.lessons[id]; }
 save(); close(); render(); toast('Backup ripristinato'); } catch (e) { toast('Backup non valido'); } } }, 'Ripristina')),
-    flat(h('span', { class: 'mono' }, 'Ulisse v1.1'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Ollama (notte) e WebLLM (telefono). Codice: github.com/Torre28/Ulisse', 'small muted'))));
+    flat(h('span', { class: 'mono' }, 'Ulisse v1.2'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Ollama (notte) e WebLLM (telefono). Codice: github.com/Torre28/Ulisse', 'small muted'))));
 }
 
 /* primo avvio: per chi riceve l'app da un amico */

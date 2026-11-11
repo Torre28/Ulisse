@@ -43,6 +43,13 @@ TEMI = {
     'Cultura e libri': ('(libro OR romanzo OR mostra OR museo OR scrittore OR premio letterario OR Strega)', r'libr|romanz|mostra|muse|scrittor|premio|letterari|strega|poesi|arte\b|artist'),
     'Formula 1 e motori': ('("Formula 1" OR F1 OR Ferrari OR Gran Premio OR MotoGP)', r'formula 1|\bf1\b|ferrari|gran premio|gp\b|motogp|leclerc|hamilton|verstappen|bagnaia'),
 }
+TESTATE = {
+    'Corriere della Sera': 'corriere.it', 'la Repubblica': 'repubblica.it', 'Il Sole 24 Ore': 'ilsole24ore.com', 'La Stampa': 'lastampa.it',
+    'Il Messaggero': 'ilmessaggero.it', 'Avvenire': 'avvenire.it', 'Il Post': 'ilpost.it', 'Il Fatto Quotidiano': 'ilfattoquotidiano.it',
+    'Domani': 'editorialedomani.it', 'Il Foglio': 'ilfoglio.it', 'Internazionale': 'internazionale.it', 'La Nazione': 'lanazione.it',
+    'Il Giornale': 'ilgiornale.it', 'Libero': 'liberoquotidiano.it', 'ISPI': 'ispionline.it', 'Limes': 'limesonline.com', 'Wired Italia': 'wired.it',
+    'Le Scienze': 'lescienze.it', 'Milano Finanza': 'milanofinanza.it', 'Il Manifesto': 'ilmanifesto.it',
+}
 NOMI = {'ilpost': 'Il Post', 'ansa': 'ANSA', 'news.google': 'Google News'}
 
 
@@ -57,7 +64,7 @@ def vangelo():
     import xml.etree.ElementTree as ET
     from datetime import timedelta
     try:
-        root = ET.fromstring(R.get('https://getupandwalk.gesuiti.it/feed/').encode('utf-8'))
+        root = ET.fromstring(R.get('https://getupandwalk.gesuiti.it/feed/', browser=True).encode('utf-8'))
     except Exception as e:
         R.log('Get Up and Walk non raggiungibile:', e)
         return []
@@ -70,6 +77,13 @@ def vangelo():
         if not ref:
             continue  # non è un commento al Vangelo: si scarta
         paras = [R.strip(p) for p in re.findall(r'<p[^>]*>(.*?)</p>', html_, re.S)]
+        if len([p for p in paras if len(p) > 40]) < 4 and it.findtext('link'):
+            try:
+                page = R.get(it.findtext('link'), browser=True)
+                body = page.split('entry-content', 1)[-1] if 'entry-content' in page else page
+                paras = [R.strip(p) for p in re.findall(r'<p[^>]*>(.*?)</p>', body, re.S)]
+            except Exception as e:
+                R.log('pagina Get Up and Walk non leggibile:', e)
         paras = [p for p in paras if len(p) > 2][:60]
         try:
             d = email.utils.parsedate_to_datetime(it.findtext('pubDate')).astimezone(timezone(timedelta(hours=1))).strftime('%Y-%m-%d')
@@ -108,6 +122,19 @@ def main(out):
             R.log('tema non raggiungibile:', nome, e)
         time.sleep(0.5)
     res['vangelo'] = vangelo()
+    try:
+        res['liturgia'] = R.liturgia()
+    except Exception as e:
+        R.log('liturgia non disponibile:', e)
+    res['testate'] = {}
+    for nome, dominio in TESTATE.items():  # per chi ha un abbonamento: le ultime della sua testata
+        try:
+            its = R.parse_rss(R.get(R.gn_search(f'site:{dominio} when:2d')))
+            its.sort(key=lambda i: -i['ts'])
+            res['testate'][nome] = [{'title': i['title'], 'src': nome, 'link': i['link'], 'date': iso(i['ts']), 'desc': i['desc'], 'feed': nome} for i in its[:30]]
+        except Exception as e:
+            R.log('testata non raggiungibile:', nome, e)
+        time.sleep(0.4)
     # antefatti per le storie principali (servono al «Capire al volo» sul telefono)
     prior = {}
     tops = []
