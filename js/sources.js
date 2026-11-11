@@ -55,8 +55,22 @@ function clusterNews(items) {
   return cl;
 }
 
+/* notizie raccolte lato server ogni mezz'ora (ramo «dati» del repository) */
+function repoPath() {
+  const m = location.hostname.match(/^([^.]+)\.github\.io$/);
+  return m ? m[1] + '/' + (location.pathname.split('/')[1] || 'Ulisse') : 'Torre28/Ulisse';
+}
+let SRV = null, SRVt = 0;
+async function serverNews() {
+  if (SRV && Date.now() - SRVt < 10 * 60e3) return SRV;
+  SRV = await getJSON(`https://raw.githubusercontent.com/${repoPath()}/dati/notizie.json?t=${Math.floor(Date.now() / 300000)}`); SRVt = Date.now();
+  return SRV;
+}
+
 /* antefatti: cosa è uscito sullo stesso tema nelle ultime settimane */
 async function priorNews(title, days = 30) {
+  const pre = SRV && SRV.antefatti && SRV.antefatti[title];
+  if (pre && pre.length) return pre;
   const kw = keywords(title, 5).join(' ');
   const items = await fetchFeed(GN('/search', kw + ' when:' + days + 'd'));
   return items.filter(i => i.title && i.title !== title).sort((a, b) => (Date.parse(a.date) || 0) - (Date.parse(b.date) || 0)).slice(-18);

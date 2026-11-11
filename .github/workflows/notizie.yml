@@ -1,0 +1,35 @@
+# Notizie di Ulisse: ogni mezz'ora raccoglie i feed lato server (i browser non
+# possono leggerli direttamente) e pubblica notizie.json sul ramo «dati».
+# Il ramo viene riscritto ogni volta, così la cronologia non cresce.
+name: Notizie
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: notizie
+  cancel-in-progress: true
+
+jobs:
+  notizie:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Raccogli le notizie
+        run: python3 redazione/notizie.py /tmp/notizie.json
+      - name: Pubblica sul ramo dati
+        run: |
+          git config user.name "Redazione di Ulisse"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan dati
+          git rm -rfq .
+          cp /tmp/notizie.json notizie.json
+          git add notizie.json
+          git commit -qm "Notizie $(TZ=Europe/Rome date '+%F %H:%M')"
+          git push -f origin dati

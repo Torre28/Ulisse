@@ -144,18 +144,23 @@ async function loadNews(box) {
   const key = newsTab;
   try {
     if (!newsCache[key] || Date.now() - newsCache[key].t > 15 * 60e3) {
-      const feeds = key === 'temi' ? S.niche.map(k => ({ name: k, url: GN('/search', k + ' when:3d') })) : S.feeds.filter(f => f.tag === key);
-      if (!feeds.length) throw new Error('nessuna fonte');
-      const res = await Promise.allSettled(feeds.map(f => fetchFeed(f.url).then(items => items.map(i => Object.assign(i, { feed: f.name })))));
-      let items = res.filter(r => r.status === 'fulfilled').flatMap(r => r.value).filter(i => i.title);
+      let items = [], res = [], tot = 0;
+      const srv = key !== 'temi' ? await serverNews().catch(() => null) : null;
+      if (srv && (srv.sezioni[key] || []).length) { items = srv.sezioni[key].slice(); res = [{ status: 'fulfilled' }]; tot = 1; }
+      else {
+        const feeds = key === 'temi' ? S.niche.map(k => ({ name: k, url: GN('/search', k + ' when:3d') })) : S.feeds.filter(f => f.tag === key);
+        if (!feeds.length) throw new Error('nessuna fonte');
+        res = await Promise.allSettled(feeds.map(f => fetchFeed(f.url).then(items => items.map(i => Object.assign(i, { feed: f.name })))));
+        items = res.filter(r => r.status === 'fulfilled').flatMap(r => r.value).filter(i => i.title); tot = feeds.length;
+      }
       if (!items.length) throw new Error('feed');
       const lim = Date.now() - 4 * 864e5; items = items.filter(i => !Date.parse(i.date) || Date.parse(i.date) > lim);
       items.sort((a, b) => (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0));
-      newsCache[key] = { t: Date.now(), cl: clusterNews(items).slice(0, 40), ok: res.filter(r => r.status === 'fulfilled').length, tot: feeds.length };
+      newsCache[key] = { t: Date.now(), cl: clusterNews(items).slice(0, 40), ok: res.filter(r => r.status === 'fulfilled').length, tot, srv: !!(srv && items.length) };
     }
     if (newsTab !== key || !box.isConnected) return;
     const c = newsCache[key];
-    box.replaceChildren(h('span', { class: 'mono' }, `${c.cl.length} storie · ${c.ok}/${c.tot} fonti raggiunte · aggiornate ${fmtDate(c.t)}`), ...c.cl.map(newsCard));
+    box.replaceChildren(h('span', { class: 'mono' }, `${c.cl.length} storie · ${c.srv ? 'raccolte dalla redazione' : c.ok + '/' + c.tot + ' fonti raggiunte'} · ${fmtDate(c.t)}`), ...c.cl.map(newsCard));
   } catch (e) { if (box.isConnected) box.replaceChildren(netError('le fonti delle notizie')); }
 }
 const lessonForRef = ref => ref && Object.values(S.lessons).filter(l => l.gen && l.gen.ref === ref);
