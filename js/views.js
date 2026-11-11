@@ -140,28 +140,39 @@ function viewNotizie() {
     newsTab === 'Principali' && prepLatest().some(p => p.kind === 'notizia') ? h('details', { class: 'card', open: true }, h('summary', { style: { cursor: 'pointer' } }, h('b', null, 'Percorsi di stanotte')), pad(...prepLatest().filter(p => p.kind === 'notizia').map(prepRow))) : null,
     body];
 }
+const newsJobs = {};
+function withTimeout(p, ms) { return Promise.race([p, new Promise((_, ko) => setTimeout(() => ko(new Error('tempo scaduto')), ms))]); }
+async function fetchNewsFor(key) {
+  let items = [], ok = 0, tot = 0, srv = null;
+  if (key !== 'temi') srv = await withTimeout(serverNews(), 9000).catch(() => null);
+  if (srv && (srv.sezioni[key] || []).length) { items = srv.sezioni[key].slice(); ok = tot = 1; }
+  else {
+    const feeds = key === 'temi' ? S.niche.map(k => ({ name: k, url: GN('/search', k + ' when:3d') })) : S.feeds.filter(f => f.tag === key);
+    tot = feeds.length;
+    const res = await Promise.allSettled(feeds.map(f => withTimeout(fetchFeed(f.url), 20000).then(xs => xs.map(i => Object.assign(i, { feed: f.name })))));
+    ok = res.filter(r => r.status === 'fulfilled').length;
+    items = res.filter(r => r.status === 'fulfilled').flatMap(r => r.value);
+  }
+  items = items.filter(i => i.title);
+  if (!items.length) throw new Error('nessuna notizia');
+  const lim = Date.now() - 4 * 864e5; items = items.filter(i => !Date.parse(i.date) || Date.parse(i.date) > lim);
+  items.sort((a, b) => (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0));
+  return { t: Date.now(), cl: clusterNews(items).slice(0, 40), ok, tot, srv: !!(srv && ok) };
+}
 async function loadNews(box) {
   const key = newsTab;
   try {
     if (!newsCache[key] || Date.now() - newsCache[key].t > 15 * 60e3) {
-      let items = [], res = [], tot = 0;
-      const srv = key !== 'temi' ? await serverNews().catch(() => null) : null;
-      if (srv && (srv.sezioni[key] || []).length) { items = srv.sezioni[key].slice(); res = [{ status: 'fulfilled' }]; tot = 1; }
-      else {
-        const feeds = key === 'temi' ? S.niche.map(k => ({ name: k, url: GN('/search', k + ' when:3d') })) : S.feeds.filter(f => f.tag === key);
-        if (!feeds.length) throw new Error('nessuna fonte');
-        res = await Promise.allSettled(feeds.map(f => fetchFeed(f.url).then(items => items.map(i => Object.assign(i, { feed: f.name })))));
-        items = res.filter(r => r.status === 'fulfilled').flatMap(r => r.value).filter(i => i.title); tot = feeds.length;
-      }
-      if (!items.length) throw new Error('feed');
-      const lim = Date.now() - 4 * 864e5; items = items.filter(i => !Date.parse(i.date) || Date.parse(i.date) > lim);
-      items.sort((a, b) => (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0));
-      newsCache[key] = { t: Date.now(), cl: clusterNews(items).slice(0, 40), ok: res.filter(r => r.status === 'fulfilled').length, tot, srv: !!(srv && items.length) };
+      newsJobs[key] = newsJobs[key] || fetchNewsFor(key).finally(() => { delete newsJobs[key]; });
+      newsCache[key] = await newsJobs[key];
     }
     if (newsTab !== key || !box.isConnected) return;
     const c = newsCache[key];
-    box.replaceChildren(h('span', { class: 'mono' }, `${c.cl.length} storie · ${c.srv ? 'raccolte dalla redazione' : c.ok + '/' + c.tot + ' fonti raggiunte'} · ${fmtDate(c.t)}`), ...c.cl.map(newsCard));
-  } catch (e) { if (box.isConnected) box.replaceChildren(netError('le fonti delle notizie')); }
+    box.replaceChildren(h('div', { class: 'row between' }, h('span', { class: 'mono' }, `${c.cl.length} storie · ${c.srv ? 'raccolte dalla redazione' : c.ok + '/' + c.tot + ' fonti raggiunte'} · ${fmtDate(c.t)}`),
+      h('button', { class: 'btn small ghost', onclick: () => { delete newsCache[key]; render(); } }, '↻')), ...c.cl.map(newsCard));
+  } catch (e) {
+    if (box.isConnected) box.replaceChildren(netError('le notizie'), h('button', { class: 'btn', onclick: () => { delete newsCache[key]; render(); } }, 'Riprova'));
+  }
 }
 const lessonForRef = ref => ref && Object.values(S.lessons).filter(l => l.gen && l.gen.ref === ref);
 function newsCard(cl) {
@@ -276,7 +287,7 @@ function openTopic(id) {
   const sum = h('div', null, h('div', { class: 'spin' }));
   wikiSummary(t.w).then(s => sum.replaceChildren(h('div', { class: 'row', style: { alignItems: 'flex-start', flexWrap: 'nowrap' } },
     s.thumbnail && h('img', { class: 'thumb', src: s.thumbnail.source, alt: '', onerror: e => e.target.remove() }),
-    h('div', { class: 'grow' }, P((S.level <= 2 ? (s.extract || '').split(/(?<=\.)\s/).slice(0, 2).join(' ') : s.extract) || '', 'small'), s.content_urls && linkBtn(s.content_urls.mobile.page, 'Wikipedia', 'ghost'))))).catch(() => sum.replaceChildren(P('Nessuna voce enciclopedica trovata.', 'small muted')));
+    h('div', { class: 'grow' }, P(s.extract || '', 'small'))), wikiReader(s.title || t.w))).catch(() => sum.replaceChildren(P('Nessuna voce enciclopedica trovata.', 'small muted')));
   // rami: catalogo, figli scoperti, voci simili
   const kids = Object.values(S.catalog).filter(c => c.from === id);
   const ramiBox = h('div', { class: 'chips' }, t.r.map(r => TOP[r] || S.catalog[r]).filter(Boolean).concat(kids).map(x => h('button', { class: 'chip', onclick: () => { close(); openTopic(x.id); } }, x.n + ' →')));
@@ -293,7 +304,7 @@ function openTopic(id) {
       h('button', { class: 'btn small', onclick: () => { bumpInterest([id], -3); contDone('topic', id); toast('Ok, te lo proporrò meno'); close(); } }, 'Non fa per me'),
       h('button', { class: 'btn small ghost', onclick: () => { contDone('topic', id); toast('Tolto da «Da continuare»'); } }, 'Fatto per ora')),
     learn,
-    card(h('span', { class: 'mono' }, 'In due righe'), sum),
+    card(h('span', { class: 'mono' }, 'Dall\'enciclopedia'), sum),
     card(h('span', { class: 'mono' }, '🎧 Ascolta'), episodesBox(() => episodeSearch(t.n, 4), 'scoperta', 'Nessun episodio in italiano su questo tema.')),
     card(h('span', { class: 'mono' }, '📚 Leggi'), (() => { const b = h('div', null, h('div', { class: 'spin' })); bookSearch(t.n, 4).then(bs => b.replaceChildren(...(bs.length ? bs.map(x => h('div', { style: { padding: '6px 0', borderTop: '1px solid var(--soft)' } }, h('a', { href: x.link, target: '_blank', rel: 'noopener' }, x.title), h('div', { class: 'mono' }, [x.authors, x.year].filter(Boolean).join(' · ')))) : [P('Nessun libro trovato.', 'small muted')]))).catch(() => b.replaceChildren(P('Ricerca libri non disponibile.', 'small muted'))); return b; })()),
     card(h('span', { class: 'mono' }, '▶ Guarda'), h('div', { class: 'row' }, linkBtn('https://www.youtube.com/results?search_query=' + encodeURIComponent(t.n + ' spiegato'), 'YouTube'), linkBtn('https://www.raiplay.it/ricerca.html?q=' + encodeURIComponent(t.n), 'RaiPlay'), linkBtn('https://www.raiplaysound.it/ricerca?q=' + encodeURIComponent(t.n), 'RaiPlay Sound'))),
@@ -478,7 +489,7 @@ function settingsSheet() {
       h('div', { class: 'row' }, h('button', { class: 'btn', onclick: () => copyText(JSON.stringify(S)) }, 'Copia backup'),
         h('button', { class: 'btn', onclick: () => { try { const a = h('a', { href: URL.createObjectURL(new Blob([JSON.stringify(S)], { type: 'application/json' })), download: 'ulisse-backup-' + today() + '.json' }); document.body.append(a); a.click(); a.remove(); } catch (e) { toast('Download non disponibile qui'); } } }, 'Scarica file')),
       imp, h('button', { class: 'btn', onclick: () => { try { const d = JSON.parse(imp.value); if (!d.v) throw 0; localStorage.setItem(KEY, JSON.stringify(d)); S = load(); save(); close(); render(); toast('Backup ripristinato'); } catch (e) { toast('Backup non valido'); } } }, 'Ripristina')),
-    flat(h('span', { class: 'mono' }, 'Ulisse v0.3'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Ollama (notte) e WebLLM (telefono). Codice: github.com/Torre28/Ulisse', 'small muted'))));
+    flat(h('span', { class: 'mono' }, 'Ulisse v0.5'), P('Fonti gratuite: Google News e feed RSS, Wikipedia, OpenAlex, Apple Podcasts, Google Books, iBreviary. Modelli aperti via Ollama (notte) e WebLLM (telefono). Codice: github.com/Torre28/Ulisse', 'small muted'))));
 }
 
 /* primo avvio: per chi riceve l'app da un amico */

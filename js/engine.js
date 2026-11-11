@@ -146,12 +146,18 @@ const BLOCKS = {
       (b.items || []).map(it => { const el = h('button', { class: 'gloss', onclick: () => el.classList.toggle('on') }, h('b', null, it.term), h('div', { class: 'd' }, it.def,
         h('div', null, h('span', { class: 'btn small ghost', style: { marginTop: '6px' }, onclick: e => { e.stopPropagation(); addCard(it.term, it.def, ctx && ctx.area, ctx && ctx.title); toast('Nel Quaderno'); } }, '+ Quaderno')))); return el; }));
   },
+  map(b) {
+    const box = h('div', { style: { height: '320px', borderRadius: '8px', overflow: 'hidden', background: 'var(--soft)' } }, h('div', { class: 'spin' }));
+    const legend = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px' } });
+    setTimeout(() => drawMap(box, legend, b).catch(() => box.replaceChildren(P('Mappa non disponibile senza connessione.', 'small muted'))), 30);
+    return h('div', { class: 'card flat' }, h('h3', null, b.title || 'Dove succede'), box, legend, b.note && P(b.note, 'small muted'));
+  },
   links: b => h('div', { class: 'card flat' }, h('h3', null, b.title || 'Per andare oltre'),
     (b.items || []).filter(l => /^https?:\/\//.test(l.url || '')).map(l => h('div', null, h('a', { href: l.url, target: '_blank', rel: 'noopener' }, l.title), l.note && h('div', { class: 'small muted' }, l.note))))
 };
 
 function renderBlocks(blocks, ctx) {
-  return (blocks || []).map(b => { try { return (BLOCKS[b.type] || BLOCKS.text)(b, ctx); } catch (e) { return h('div', { class: 'empty' }, 'Blocco non leggibile: ' + b.type); } });
+  return (blocks || []).filter(b => b && b.type !== 'quiz').map(b => { try { return (BLOCKS[b.type] || BLOCKS.text)(b, ctx); } catch (e) { return h('div', { class: 'empty' }, 'Blocco non leggibile: ' + b.type); } });
 }
 
 
@@ -182,7 +188,7 @@ function openLesson(id, chapter) {
       h('div', null, h('span', { class: 'mono' }, (ch.label || '') + (ch.depth ? ' · ' + ch.depth : '')), h('h2', { style: { marginTop: '4px' } }, ch.title)),
       h('div', { class: 'row' }, h('button', { class: 'btn small', onclick: () => speak(ch.title + '. ' + (ch.blocks || []).filter(b => b.type === 'text' || b.type === 'note').map(b => b.md).join(' ')) }, '🔊 Ascolta'), h('button', { class: 'btn small ghost', onclick: stopSpeak }, 'Stop')),
       ...renderBlocks(ch.blocks, L),
-      isLast && (L.branches || []).length ? h('div', { class: 'card flat' }, h('h3', null, 'Rami da esplorare'), h('div', { class: 'chips' }, L.branches.filter(b => b && b.name).map(b => h('button', { class: 'chip', title: b.why || '', onclick: () => { const id = catalogAdd(b.name, topic ? topic.c : 'Scoperti', b.why, topic && topic.id); close(); openTopic(id); } }, b.name + ' →')))) : null,
+      isLast && (L.branches || []).length ? h('div', { class: 'card flat' }, h('h3', null, 'Rami da esplorare'), P('Argomenti collegati: aprili per una scheda di approfondimento.', 'small muted'), L.branches.filter(b => b && b.name).map(b => h('button', { class: 'card', style: { cursor: 'pointer', textAlign: 'left' }, onclick: () => branchSheet(b, L, topic) }, h('b', null, b.name + ' →'), b.why && h('span', { class: 'small muted' }, b.why)))) : null,
       h('div', { class: 'stop' },
         h('span', { class: 'mono' }, isLast ? 'Fine della lezione' : 'Punto di stop'),
         h('p', { class: 'small', style: { margin: 0 } }, isLast ? 'Hai finito. Concludi per salvare le carte di ripasso.' : 'Puoi chiudere qui: ritroverai la lezione in «Da continuare».'),
@@ -259,4 +265,105 @@ function reviewSheet() {
     host.replaceChildren(fl, gr);
   }
   show();
+}
+
+
+/* ---------------- scheda di un ramo ---------------- */
+function branchSheet(b, L, topic) {
+  const id = catalogAdd(b.name, topic ? topic.c : 'Scoperti', b.why, topic ? topic.id : null);
+  const wiki = h('div', null, h('div', { class: 'spin' }));
+  wikiSearch(b.name, 1).then(async rs => {
+    if (!rs.length) { wiki.replaceChildren(P('Nessuna voce enciclopedica trovata.', 'small muted')); return; }
+    const s = await wikiSummary(rs[0].title);
+    wiki.replaceChildren(P(s.extract || '', 'small'), wikiReader(rs[0].title));
+  }).catch(() => wiki.replaceChildren(P('Wikipedia non raggiungibile.', 'small muted')));
+  openSheet(b.name, pad(
+    b.link || b.why ? h('div', { class: 'note contesto' }, h('span', { class: 'mono' }, 'Perché è collegato a «' + (L.title || '') + '»'), P(b.link || b.why)) : null,
+    b.md ? card(h('div', { class: 'prose', html: md(b.md) })) : null,
+    (b.facts || []).length ? card(h('h3', null, 'Fatti chiave'), h('ul', { class: 'small', style: { margin: 0, paddingLeft: '1.2em' } }, b.facts.map(f => h('li', null, f))),
+      h('button', { class: 'btn small', onclick: () => { addCard(b.name + ': fatti chiave', b.facts.join(' · '), L.area, L.title); toast('Nel Quaderno'); } }, '+ Quaderno')) : null,
+    card(h('span', { class: 'mono' }, 'Dall\'enciclopedia'), wiki),
+    h('div', { class: 'row' }, h('button', { class: 'btn primary', onclick: () => { document.querySelectorAll('.sheet-bg').forEach(e => e.remove()); openTopic(id); } }, 'Esploralo come argomento: podcast, libri, lezione'))));
+}
+
+/* ---------------- lettura di una voce di Wikipedia capitolo per capitolo ---------------- */
+function wikiReader(title) {
+  const box = h('div', { style: { display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '8px' } });
+  const btn = h('button', { class: 'btn small', onclick: async () => {
+    btn.remove(); box.append(h('div', { class: 'spin' }));
+    try {
+      const secs = await wikiSections(title);
+      box.replaceChildren(h('span', { class: 'mono' }, 'La voce, capitolo per capitolo'), ...secs.slice(0, 20).map(s => {
+        const body = h('div', { class: 'prose small', hidden: true });
+        const b = h('button', { class: 'card flat', style: { cursor: 'pointer', textAlign: 'left' }, onclick: async () => {
+          if (!body.hidden) { body.hidden = true; return; }
+          body.hidden = false; body.textContent = 'Carico…';
+          try { body.replaceChildren(...(await wikiSectionText(title, s.index)).map(t => h('p', null, t))); } catch (e) { body.textContent = 'Non disponibile.'; }
+        } }, h('b', null, stripTags(s.line)));
+        return h('div', null, b, body);
+      }));
+    } catch (e) { box.replaceChildren(P('Capitoli non disponibili.', 'small muted')); }
+  } }, '📖 Leggi la voce completa');
+  box.append(btn);
+  return box;
+}
+
+/* ---------------- mappe: OpenStreetMap + confini dei Paesi colorati per gruppo ---------------- */
+const MAP_COLORS = ['#2b63c4', '#c4542b', '#1f8a6a', '#8a3cb2', '#c48a12', '#0b7d8f', '#b0392a'];
+let leafletP = null, worldP = null;
+function loadScript(src) { return new Promise((ok, ko) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = ko; document.head.append(s); }); }
+function loadLeaflet() {
+  if (!leafletP) leafletP = (async () => {
+    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'; document.head.append(css);
+    await loadScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js');
+  })();
+  return leafletP;
+}
+function loadWorld() {
+  if (!worldP) worldP = (async () => {
+    await loadScript('https://unpkg.com/topojson-client@3/dist/topojson-client.min.js');
+    const topo = await getJSON('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
+    return topojson.feature(topo, topo.objects.countries).features;
+  })();
+  return worldP;
+}
+const CN_ALIAS = { 'usa': 'united states of america', 'united states': 'united states of america', 'us': 'united states of america', 'uk': 'united kingdom', 'great britain': 'united kingdom', 'russian federation': 'russia', 'czech republic': 'czechia', 'south korea': 'south korea', 'north korea': 'north korea', 'democratic republic of the congo': 'dem. rep. congo', 'dr congo': 'dem. rep. congo', 'bosnia and herzegovina': 'bosnia and herz.', 'central african republic': 'central african rep.', 'south sudan': 's. sudan', 'ivory coast': "côte d'ivoire", 'palestine': 'palestine', 'taiwan': 'taiwan' };
+const normC = n => { const l = String(n || '').toLowerCase().trim(); return CN_ALIAS[l] || l; };
+async function geocodeClient(name, country) {
+  const q = name + (country && !name.toLowerCase().includes(String(country).toLowerCase()) ? ', ' + country : '');
+  let cache = {}; try { cache = JSON.parse(localStorage.getItem('ulisse.geo') || '{}'); } catch (e) { }
+  if (q in cache) return cache[q];
+  let ll = null;
+  try { const r = await getJSON('https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=it&q=' + encodeURIComponent(q)); if (r[0]) ll = [+r[0].lat, +r[0].lon]; } catch (e) { }
+  cache[q] = ll; try { localStorage.setItem('ulisse.geo', JSON.stringify(cache)); } catch (e) { }
+  return ll;
+}
+async function drawMap(box, legend, b) {
+  await loadLeaflet();
+  const Lf = window.L;
+  box.replaceChildren();
+  const map = Lf.map(box, { zoomControl: true, attributionControl: true, worldCopyJump: true }).setView([42, 12], 3);
+  Lf.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '© OpenStreetMap · © CARTO', maxZoom: 12 }).addTo(map);
+  const groups = (b.groups || []).filter(g => g && g.name);
+  const col = name => { const i = groups.findIndex(g => g.name === name); return MAP_COLORS[(i < 0 ? groups.length : i) % MAP_COLORS.length]; };
+  const bounds = [];
+  if (groups.some(g => (g.countries || []).length)) {
+    try {
+      const feats = await loadWorld();
+      const owner = {}; groups.forEach(g => (g.countries || []).forEach(c => { owner[normC(c)] = g.name; }));
+      const sel = feats.filter(f => owner[normC(f.properties.name)]);
+      const layer = Lf.geoJSON(sel, { style: f => ({ color: col(owner[normC(f.properties.name)]), weight: 1, fillOpacity: 0.35 }), onEachFeature: (f, l) => l.bindTooltip(f.properties.name + ' · ' + owner[normC(f.properties.name)]) }).addTo(map);
+      if (sel.length) bounds.push(layer.getBounds());
+    } catch (e) { }
+  }
+  for (const pl of (b.places || []).filter(p => p && p.name)) {
+    let ll = pl.lat !== undefined ? [pl.lat, pl.lon] : await geocodeClient(pl.name, pl.country);
+    if (!ll) continue;
+    Lf.circleMarker(ll, { radius: 8, color: '#1e1614', weight: 1.5, fillColor: col(pl.group), fillOpacity: 0.95 }).addTo(map).bindTooltip('<b>' + esc(pl.name) + '</b>' + (pl.note ? '<br>' + esc(pl.note) : ''), { direction: 'top' });
+    bounds.push(Lf.latLngBounds([ll, ll]));
+  }
+  if (bounds.length) { const all = bounds.reduce((a, x) => a.extend(x), Lf.latLngBounds(bounds[0].getSouthWest(), bounds[0].getNorthEast())); map.fitBounds(all.pad(0.25), { maxZoom: 6 }); }
+  setTimeout(() => map.invalidateSize(), 200);
+  legend.replaceChildren(...groups.map(g => h('div', { class: 'row', style: { flexWrap: 'nowrap', alignItems: 'flex-start' } }, h('span', { class: 'dotc', style: { background: col(g.name), marginTop: '6px' } }), h('div', { class: 'small' }, h('b', null, g.name), g.desc ? ' · ' + g.desc : ''))),
+    ...(b.places || []).filter(p => p && p.note).slice(0, 8).map(p => h('div', { class: 'small muted' }, '• ' + p.name + ': ' + p.note)));
 }

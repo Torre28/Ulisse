@@ -14,10 +14,13 @@
     "https://news.google.com/rss/headlines/section/topic/NATION?hl=it&gl=IT&ceid=IT:it",
     "https://news.google.com/rss/headlines/section/topic/WORLD?hl=it&gl=IT&ceid=IT:it",
     "https://www.ilpost.it/feed/",
-    "https://www.ansa.it/sito/ansait_rss.xml"
+    "https://www.ansa.it/sito/ansait_rss.xml",
+    "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=it&gl=IT&ceid=IT:it",
+    "https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=it&gl=IT&ceid=IT:it"
   ],
   "passioni": [],
   "modello_rapido": "qwen3:4b",
-  "rapidi_per_giro": 8,
-  "minuti_rapidi": 50
+  "rapidi_per_giro": 12,
+  "minuti_rapidi": 50,
+  "argomenti_per_giro": 2
 }

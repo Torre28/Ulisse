@@ -84,6 +84,13 @@ async function wikiRelated(title, n = 6) { // voci simili per contenuto, non sol
   const j = await getJSON(`${WP}/w/api.php?action=query&list=search&srsearch=${encodeURIComponent('morelike:' + title)}&srlimit=${n}&srnamespace=0&format=json&origin=*`);
   return j.query.search.map(s => s.title).filter(t => !/^(Lista|Elenco|Anni|Disambigua)/i.test(t));
 }
+async function wikiSections(t) { const j = await getJSON(`${WP}/w/api.php?action=parse&page=${encodeURIComponent(t)}&prop=sections&redirects=1&format=json&origin=*`); return (j.parse?.sections || []).filter(s => s.toclevel === 1 && !/^(Note|Bibliografia|Voci correlate|Collegamenti esterni|Altri progetti|Filmografia)$/i.test(stripTags(s.line))); }
+async function wikiSectionText(t, idx) {
+  const j = await getJSON(`${WP}/w/api.php?action=parse&page=${encodeURIComponent(t)}&section=${idx}&prop=text&redirects=1&disableeditsection=1&format=json&origin=*`);
+  const doc = new DOMParser().parseFromString(j.parse.text['*'], 'text/html');
+  doc.querySelectorAll('sup, .reference, .mw-editsection, table, style, .thumb, figure, .noprint').forEach(e => e.remove());
+  return [...doc.querySelectorAll('p, li')].map(e => e.textContent.replace(/\s+/g, ' ').trim()).filter(x => x.length > 40).slice(0, 20);
+}
 async function wikiContext(text, n = 3) { // estratti brevi da dare al modello come base
   const rs = await wikiSearch(keywords(text, 5).join(' '), n).catch(() => []);
   const out = [];
@@ -124,9 +131,12 @@ async function podcastSearch(term, n = 8) {
   const j = await getJSON(`${IT}/search?media=podcast&country=IT&limit=${n}&term=${encodeURIComponent(term)}`);
   return (j.results || []).map(r => ({ name: r.collectionName + ' · ' + (r.artistName || ''), id: String(r.collectionId), art: r.artworkUrl100, title: r.collectionName }));
 }
-async function episodeSearch(term, n = 6) { // episodi su un tema, da qualsiasi podcast italiano
-  const j = await getJSON(`${IT}/search?media=podcast&entity=podcastEpisode&country=IT&limit=${n}&term=${encodeURIComponent(term)}`);
-  return (j.results || []).map(r => ({ title: r.trackName, show: r.collectionName, url: r.episodeUrl, date: r.releaseDate, art: r.artworkUrl160 || r.artworkUrl60, dur: r.trackTimeMillis ? Math.round(r.trackTimeMillis / 60000) : null })).filter(e => e.url);
+const IT_W = new Set('il gli della delle dello degli nel nella sono è perché anche questo questa alla alle con non più come una per'.split(' '));
+const XX_W = new Set('el los las y del está qué cómo también este esta para pero the and of to is in with que por une les des est dans der die und'.split(' '));
+function looksItalian(t) { let a = 0, b = 0; for (const w of String(t || '').toLowerCase().split(/[^a-zàèéìòù]+/)) { if (IT_W.has(w)) a++; if (XX_W.has(w)) b++; } return a > 0 && a >= b * 1.5; }
+async function episodeSearch(term, n = 6) { // episodi su un tema, solo in italiano
+  const j = await getJSON(`${IT}/search?media=podcast&entity=podcastEpisode&country=IT&lang=it_it&limit=40&term=${encodeURIComponent(term)}`);
+  return (j.results || []).filter(r => looksItalian((r.trackName || '') + ' ' + (r.description || r.shortDescription || '') + ' ' + (r.collectionName || ''))).slice(0, n).map(r => ({ title: r.trackName, show: r.collectionName, url: r.episodeUrl, date: r.releaseDate, art: r.artworkUrl160 || r.artworkUrl60, dur: r.trackTimeMillis ? Math.round(r.trackTimeMillis / 60000) : null })).filter(e => e.url);
 }
 
 /* ---------------- Google Books (ricerca libera, senza chiave) ---------------- */

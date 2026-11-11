@@ -117,7 +117,7 @@ async function aiJSON(system, user, maxTok) {
 }
 
 /* ---------------- lezione costruita un capitolo alla volta ---------------- */
-const KNOWN_BLOCKS = new Set(['text', 'note', 'steps', 'timeline', 'compare', 'glossary', 'quiz', 'slider', 'reflect', 'links']);
+const KNOWN_BLOCKS = new Set(['text', 'note', 'steps', 'timeline', 'compare', 'glossary', 'slider', 'reflect', 'links', 'map']);
 function cleanChapter(ch, p) {
   if (ch && ch.chapter && typeof ch.chapter === 'object') ch = ch.chapter;
   const blocks = (ch && Array.isArray(ch.blocks) ? ch.blocks : []).filter(b => b && KNOWN_BLOCKS.has(b.type));
@@ -183,7 +183,11 @@ async function generateWithProgress(title, run) {
 function needAI() {
   if (aiReady()) return true;
   openSheet('Modello sul telefono non disponibile', pad(card(
-    P(hasWebGPU() ? 'Configura il motore in ⚙.' : 'Questo browser non supporta WebGPU, che serve per far girare il modello direttamente sul telefono. Su Android usa Chrome aggiornato; su iPhone serve iOS 26 o successivo.', ''),
+    P(hasWebGPU() ? 'Configura il motore in ⚙.' : 'Questa spiegazione non è ancora pronta e su questo dispositivo il modello locale non può girare, perché il browser non ha accesso alla scheda video (WebGPU).', ''),
+    !hasWebGPU() && h('ul', { class: 'small', style: { margin: 0, paddingLeft: '1.2em' } },
+      h('li', null, 'Le spiegazioni delle notizie principali vengono preparate in automatico ogni due ore: riprova più tardi.'),
+      h('li', null, 'Sul PC: usa Chrome o Edge aggiornati, attiva «Usa accelerazione grafica» nelle impostazioni del browser e riavvialo. Su Linux può servire attivare WebGPU da chrome://flags. Controlla su chrome://gpu se compare «WebGPU: Hardware accelerated».'),
+      h('li', null, 'Sul Pixel 7 con Chrome aggiornato dovrebbe funzionare; su iPhone serve iOS 26.')),
     P('Nel frattempo trovi i contenuti preparati stanotte in Oggi, Notizie, Scopri e Specchio. In ⚙ puoi anche inserire una chiave Gemini facoltativa.', 'small muted'),
     h('button', { class: 'btn primary', onclick: () => { document.querySelectorAll('.sheet-bg').forEach(e => e.remove()); settingsSheet(); } }, 'Apri le impostazioni'))));
   return false;

@@ -193,7 +193,27 @@ def ask_json(system, user, max_tok):
     raise last
 
 
-KNOWN = {'text', 'note', 'steps', 'timeline', 'compare', 'glossary', 'quiz', 'slider', 'reflect', 'links'}
+KNOWN = {'text', 'note', 'steps', 'timeline', 'compare', 'glossary', 'slider', 'reflect', 'links', 'map'}
+GEO = {}
+
+
+def geocode(name, country=''):
+    """Coordinate da OpenStreetMap (Nominatim), al massimo una richiesta al secondo."""
+    q = (name + (', ' + country if country and country.lower() not in name.lower() else '')).strip()
+    if q in GEO:
+        return GEO[q]
+    GEO[q] = None
+    if PROVA:
+        GEO[q] = [43.77, 11.25]
+        return GEO[q]
+    try:
+        time.sleep(1.1)
+        r = get_json('https://nominatim.openstreetmap.org/search?' + urllib.parse.urlencode({'q': q, 'format': 'json', 'limit': 1, 'accept-language': 'it'}))
+        if r:
+            GEO[q] = [round(float(r[0]['lat']), 4), round(float(r[0]['lon']), 4)]
+    except Exception as e:
+        log('  geocodifica non riuscita:', q, str(e)[:80])
+    return GEO[q]
 
 
 def clean_chapter(ch, plan):
@@ -208,6 +228,12 @@ def clean_chapter(ch, plan):
                 b['correct'] = int(b.get('correct', 0))
             except Exception:
                 b['correct'] = 0
+        if b['type'] == 'map':
+            for pl in b.get('places', []) or []:
+                if isinstance(pl, dict) and pl.get('name') and 'lat' not in pl:
+                    ll = geocode(pl['name'], pl.get('country', ''))
+                    if ll:
+                        pl['lat'], pl['lon'] = ll
         if b['type'] == 'links':
             b['items'] = [l for l in b.get('items', []) if isinstance(l, dict) and str(l.get('url', '')).startswith('http')]
     if not blocks:
@@ -234,6 +260,17 @@ def build_lesson(kind_plan, kind_meta, context, chapter_tok=2600):
     lesson['cards'] = [c for c in lesson.get('cards', []) if isinstance(c, dict) and c.get('q') and c.get('a')]
     lesson['branches'] = [b for b in lesson.get('branches', []) if isinstance(b, dict) and b.get('name')]
     lesson['chapters'] = chapters
+    # ogni ramo ha la sua scheda: aprendolo si trova già qualcosa di sostanzioso da leggere
+    for b in lesson['branches'][:4]:
+        if not time_left(3):
+            break
+        try:
+            card = ask_json(PIANI['sys'], f"{context}\n\nLezione: «{lesson.get('title', '')}».\n" + PIANI['ramo'].format(name=b['name'], why=b.get('why', '')) + f"\nRispondi con un JSON così: {PIANI['schema_ramo']}", 1400)
+            if card.get('md'):
+                b['md'], b['facts'], b['link'] = card['md'], [f for f in card.get('facts', []) if isinstance(f, str)][:8], card.get('link', '')
+                log('  ramo:', b['name'])
+        except Exception as e:
+            log('  ramo saltato:', str(e)[:80])
     return lesson
 
 
@@ -271,13 +308,13 @@ def load_js_array(path, name):
 
 
 # ------------------------------------------------------------------ salvataggio
-def save_lesson(lesson, meta):
-    d = os.path.join(OUT, OGGI)
+def save_lesson(lesson, meta, folder=None):
+    d = os.path.join(OUT, folder or OGGI)
     os.makedirs(d, exist_ok=True)
     lid = 'n-' + OGGI + '-' + hashlib.sha1((meta.get('ref') or lesson['title']).encode()).hexdigest()[:8]
     lesson.update({'id': lid, 'area': meta['area'], 'kind': meta['kind'],
                    'gen': {'at': int(time.time() * 1000), 'model': MODEL, 'ref': meta.get('ref'), 'topic': meta.get('topic'), 'notte': True}})
-    rel = f'contenuti/{OGGI}/{lid}.json'
+    rel = f'contenuti/{folder or OGGI}/{lid}.json'
     json.dump(lesson, open(os.path.join(d, lid + '.json'), 'w', encoding='utf-8'), ensure_ascii=False)
     item = {'id': lid, 'kind': meta['kind'], 'mode': meta.get('mode'), 'title': lesson['title'], 'summary': lesson.get('summary', ''),
             'date': OGGI, 'ref': meta.get('ref'), 'headline': meta.get('headline'), 'srcs': meta.get('srcs', []), 'topic': meta.get('topic'),
@@ -298,7 +335,7 @@ def tidy():
     for name in os.listdir(OUT):
         if re.match(r'\d{4}-\d{2}-\d{2}$', name) and name < keep:
             shutil.rmtree(os.path.join(OUT, name))
-    INDEX['items'] = [x for x in INDEX['items'] if x['date'] >= keep]
+    INDEX['items'] = [x for x in INDEX['items'] if x['date'] >= keep or '/argomenti/' in x.get('file', '')]
 
 
 def time_left(minutes_needed):
@@ -333,6 +370,7 @@ def main():
     if RAPIDO:  # solo le storie nuove, le più riprese dai giornali per prime
         stories = [c for c in stories if c['main']['title'] not in {x.get('headline') for x in INDEX['items']}]
         jobs = [('notizia_rapida', c, 6) for c in stories[:CFG['rapidi_per_giro']]]
+        jobs += [('argomento', None, 8)] * CFG.get('argomenti_per_giro', 0)
     for c in ([] if RAPIDO else stories[:CFG['percorsi_completi']]):
         jobs.append(('notizia_completa', c, 50))
     if CFG.get('scoperta_del_giorno') and not RAPIDO:
@@ -365,6 +403,18 @@ def main():
                 ctx = f"Argomento: «{t[1]}» ({t[4]}). Livello del lettore: {level()}. È il primo incontro con l'argomento.\n" + '\n'.join(f"- {w['title']}: {w['extract']}" for w in wiki)
                 L = build_lesson('scoperta', 'scoperta', ctx)
                 save_lesson(L, {'area': 'scoperta', 'kind': 'passione', 'mode': 'scoperta', 'topic': t[0], 'ref': 'topic:' + t[0] + ':' + OGGI})
+            elif kind == 'argomento':
+                topics = load_js_array('js/data.js', 'TOPICS')
+                have = {x.get('topic') for x in INDEX['items']}
+                todo = [t for t in topics if t[0] not in have]
+                if not todo:
+                    continue
+                t = todo[0]
+                log('Argomento del catalogo:', t[1])
+                wiki = wiki_context(t[3], 2)
+                ctx = f"Argomento: «{t[1]}» ({t[4]}). Livello del lettore: {level()}. È il primo incontro con l'argomento.\n" + '\n'.join(f"- {w['title']}: {w['extract']}" for w in wiki)
+                L = build_lesson('scoperta', 'scoperta', ctx)
+                save_lesson(L, {'area': 'scoperta', 'kind': 'passione', 'mode': 'scoperta', 'topic': t[0], 'ref': 'topic:' + t[0]}, folder='argomenti')
             elif kind == 'bibbia':
                 bible = load_js_array('js/data.js', 'BIBLE')
                 n = (datetime.now() - datetime(2026, 1, 1)).days % len(bible)
@@ -406,8 +456,10 @@ if PROVA:
     def FINTO_LLM(user):
         if 'metadati' in user:
             return {'title': 'Lezione di prova', 'summary': 'Riassunto', 'tags': ['prova'], 'cards': [{'q': 'D?', 'a': 'R.'}], 'branches': [{'name': 'Ramo', 'why': 'perché'}], 'next': 'Dopo'}
+        if 'scheda di approfondimento' in user:
+            return {'md': 'Scheda del ramo.', 'facts': ['fatto 1'], 'link': 'collegato'}
         m = re.search(r'SOLO il capitolo (\d+) «([^»]+)»', user)
-        return {'label': m.group(2), 'title': 'Titolo ' + m.group(1), 'blocks': [{'type': 'text', 'md': 'Testo.'}, {'type': 'quiz', 'q': 'Q', 'options': ['a', 'b'], 'correct': '1', 'explain': 'x'}, {'type': 'fantasia'}]}
+        return {'label': m.group(2), 'title': 'Titolo ' + m.group(1), 'blocks': [{'type': 'text', 'md': 'Testo.'}, {'type': 'map', 'places': [{'name': 'Roma', 'country': 'Italia', 'group': 'A'}], 'groups': [{'name': 'A', 'countries': ['Italy']}]}, {'type': 'quiz', 'q': 'Q', 'options': ['a', 'b'], 'correct': '1', 'explain': 'x'}, {'type': 'fantasia'}]}
 
 if __name__ == '__main__':
     main()
