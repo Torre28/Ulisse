@@ -158,8 +158,42 @@
    "topic": null,
    "chapters": 3,
    "file": "contenuti/2026-11-11/n-2026-11-11-1bfee1c8.json"
+  },
+  {
+   "id": "n-2026-11-12-a7d75143",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "L’accordo tra imprese e sindacati: come si fanno i contratti",
+   "summary": "Un accordo tra sindacati e imprese ha deciso come calcolare i salari e gestire i contratti in Italia.",
+   "date": "2026-11-12",
+   "ref": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQXzFVejFFYTM4djBVTXBYSFM1ZVlVWEJPNW0tWU11dlJ5eXkyX2xnREExQklSbXI2eWxBQWt6eDR1VnFYV3gySS11NFBfcERPX2ZtOFg3QmRmR3haVTU2S1p0aTBhYlBDdmRoNlpNOVJJSnB0U1BUNWxuMjRQTVBSM1FvaWMybjhlRlhJU3R5NjZGdUlGQWVhWGNiVTFBbnhhbWk0ZHg4aw?oc=5",
+   "headline": "Rappresentanza, contratti e salari: firmato l’accordo tra imprese e sindacati",
+   "srcs": [
+    "Il Sole 24 ORE",
+    "la Repubblica"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-12/n-2026-11-12-a7d75143.json"
+  },
+  {
+   "id": "n-2026-11-12-f1f9b86f",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "L'agenda economica e i nodi del momento",
+   "summary": "L'agenda economica del 12 novembre 2026 racchiude eventi e decisioni chiave che influenzano l'economia italiana e globale.",
+   "date": "2026-11-12",
+   "ref": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNTENwWnNkVWQxYjRzTnRaNnRHeW1qZFFqeWN6NDlEbktaVzhPbVBDQ0NZMWxSaVY2UEJ0cEF0clFqcy1GN3U4YlBrYy1EVW5Dd3g0UXRoQ0dMM1BjVVpwdkpwNEFuRXVDZE1FRmZkclI0LXEyTGtTeXRTalduektmeTZMT0VNSVpKRHFFYUFjY1pOQkV1?oc=5",
+   "headline": "Agenda economica del 12 novembre 2026",
+   "srcs": [
+    "SoldiOnline.it",
+    "Borsa Italiana"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-12/n-2026-11-12-f1f9b86f.json"
   }
  ],
- "aggiornato": "2026-11-11T16:40:02.178601+00:00",
+ "aggiornato": "2026-11-12T14:49:05.517567+00:00",
  "modello": "qwen3:8b"
 }
