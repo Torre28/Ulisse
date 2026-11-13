@@ -192,8 +192,88 @@
    "topic": null,
    "chapters": 7,
    "file": "contenuti/2026-11-12/n-2026-11-12-f1f9b86f.json"
+  },
+  {
+   "id": "n-2026-11-13-2a6d4734",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Maltempo in Toscana: allerta rossa e scuole chiuse",
+   "summary": "Un'ondata di maltempo ha colpito il Centro-Nord Italia, con allerta rossa in Toscana e chiusura di scuole e infrastrutture.",
+   "date": "2026-11-13",
+   "ref": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQdkdlNzUzUkNfRk1EWFRpUWFoWGY2R1RwTDlCUXlNSjZJY3o0Rm9mSzFKOHEzRUQ2WFF6UkNZOGVKcUJSRkdrWHQwbUFvZ0QwdEMxQnc5YUdhQ0c0RjdqdHpyME05ZFVobG1TVGJmVmYzYmRkeVh5M2hfclBsd1VpRTZQZG1HZ29wS3ljdDl2azZtRXZnYTJpYk1VVEpnQkctWjVJbjBrdlVkR3VXTzZVSDVEUlBna00?oc=5",
+   "headline": "Maltempo nel Centro-Nord, allerta rossa in Toscana",
+   "srcs": [
+    "Tgcom24",
+    "Corriere Fiorentino",
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-13/n-2026-11-13-2a6d4734.json"
+  },
+  {
+   "id": "n-2026-11-13-33447309",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Allerta meteo in Marche: vento, piogge e mareggiate",
+   "summary": "In Marche c'è un allerta meteo per vento forte, piogge e mareggiate che potrebbero causare disagi e interventi di soccorso.",
+   "date": "2026-11-13",
+   "ref": "https://news.google.com/rss/articles/CBMivAFBVV95cUxQSk9ZYmFWNWpMYnB0SHNTRHl6WXZqVUFPZGt6YlhtZU1NV3VZYnI2cFNSam9nM1pyNHVOa0VTUFlxX01lamtrdmEzYUZKXzdMWHpiYlFxT3dqNENqa2V3NDVwTUF4bmhxZERQM3JhZTJRaDlvdFVVM2JSREYzNmd5UjJEd0dnbTNMVEpjN1c0Wm10bklfcTAtRFRWYUdYZFJ6WkxuVzZ5TlFiRGg3U1pnLVJFWVB3LVlJcGhXVtIBwgFBVV95cUxNOXBZWjhCcmJjcnBubmJIWnBLU1FvUm9LeUw2SWdqTHJOUk95OHE5VDBwcFY3bzFpXzIteUcxaEJrbnhLY2xsUVUySTd3T1hXMFlybW1uYktPZU05eDIzOFdNeUVONDJUUlJIUVF2TXNVN2U0c1YzX0hVNzh6cHFOTGduRFE4Qk9yelRXNWhlR0dMeXc1UU5waF9hdm05dk9sbjFxdDM1bF8yVFp0dWZTWFlvLUI1WVRUanBWcDlYQ0lsdw?oc=5",
+   "headline": "Marche, raffiche fino a 100 km orari Nuova allerta meteo per vento fiumi, temporali e mareggiate Avvisi dai Comuni: scattano i divieti",
+   "srcs": [
+    "Corriere Adriatico",
+    "CesenaToday"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-13/n-2026-11-13-33447309.json"
+  },
+  {
+   "id": "n-2026-11-13-de684235",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Papa Leone XIV in Perù: il ritorno di un figlio alla sua patria",
+   "summary": "Papa Leone XIV torna in Perù dopo anni, ricevendo un'accoglienza calorosa da parte del popolo.",
+   "date": "2026-11-13",
+   "ref": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5aZTV5Sm55Q1dGUmFlbE1jT0NVWVE2RnlxYXhLTzlWUDlKY3V0S0Y1XzQ1TGd0dFFXakgwZXpKQUNqQnZLY1hZNi05dDRwM3lsaFJ2ZXJLWlpYd2NyVHJETmFZSWFVZnpZ?oc=5",
+   "headline": "Papa Leone XIV torna in Perù, l'accoglienza a Lima. FOTO",
+   "srcs": [
+    "Sky TG24",
+    "Corriere della Sera"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-13/n-2026-11-13-de684235.json"
+  },
+  {
+   "id": "n-2026-11-13-e3a89e4f",
+   "kind": "passione",
+   "mode": "scoperta",
+   "title": "Camminare per scoprire: l'escursionismo a portata di passo",
+   "summary": "Scopri perché camminare è un modo per conoscere il mondo, la natura e se stessi, con esempi pratici e consigli per iniziare.",
+   "date": "2026-11-13",
+   "ref": "topic:escursionismo:2026-11-13",
+   "headline": null,
+   "srcs": [],
+   "topic": "escursionismo",
+   "chapters": 4,
+   "file": "contenuti/2026-11-13/n-2026-11-13-e3a89e4f.json"
+  },
+  {
+   "id": "n-2026-11-13-8df83911",
+   "kind": "fede",
+   "mode": "parola",
+   "title": "Quando il Signore viene nelle cose di ogni giorno",
+   "summary": "Gesù ci dice che il Figlio dell’uomo verrà come nei giorni di Noè e di Lot, quando nessuno si aspettava niente. Ci avverte di stare svegli e di non perdere tempo a cercare di salvare la vita, perché la vera vita è in lui.",
+   "date": "2026-11-13",
+   "ref": "bibbia:Lc 17,26-37:2026-11-13",
+   "headline": "Lc 17,26-37",
+   "srcs": [],
+   "topic": null,
+   "chapters": 5,
+   "file": "contenuti/2026-11-13/n-2026-11-13-8df83911.json"
   }
  ],
- "aggiornato": "2026-11-12T14:49:05.517567+00:00",
+ "aggiornato": "2026-11-13T08:33:03.110033+00:00",
  "modello": "qwen3:8b"
 }
