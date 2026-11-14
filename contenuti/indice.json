@@ -1,0 +1,591 @@
+{
+ "items": [
+  {
+   "id": "n-2026-11-12-7416b128",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Colloqui Usa-Russia, guerra Ucraina-Russia e le ultime notizie",
+   "summary": "Gli Usa inviano mediatori a Mosca per parlare con Putin, mentre la guerra in Ucraina continua con attacchi e negoziati.",
+   "date": "2026-11-12",
+   "ref": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQSWc2b1VmNXJOTXAxUk52aXk0MHkwOTJVZ00wS1lyb0hrcEtIb0VQUDh1YTVGVHhFUDEyclk5MnJiQVlsSFVacE1MeTR0QUk2NVVRMWMwTEJWWE5FUDRFUU5xSHoxWVltcGFWR3BJZVpEV2JFUkxfTWo3cUQzMS1oeTh2cElGV1dE?oc=5",
+   "headline": "Guerra Ucraina Russia, inviati Usa a Mosca per colloqui con Putin",
+   "srcs": [
+    "Sky TG24",
+    "Corriere della Sera"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-12/n-2026-11-12-7416b128.json"
+  },
+  {
+   "id": "n-2026-11-12-f1f9b86f",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "L'agenda economica del 12 novembre 2026",
+   "summary": "Il 12 novembre 2026 si è tenuta un'agenda economica che ha messo in discussione le priorità del governo e le politiche per il Sud Italia.",
+   "date": "2026-11-12",
+   "ref": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNTENwWnNkVWQxYjRzTnRaNnRHeW1qZFFqeWN6NDlEbktaVzhPbVBDQ0NZMWxSaVY2UEJ0cEF0clFqcy1GN3U4YlBrYy1EVW5Dd3g0UXRoQ0dMM1BjVVpwdkpwNEFuRXVDZE1FRmZkclI0LXEyTGtTeXRTalduektmeTZMT0VNSVpKRHFFYUFjY1pOQkV1?oc=5",
+   "headline": "Agenda economica del 12 novembre 2026",
+   "srcs": [
+    "SoldiOnline.it",
+    "Borsa Italiana"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-12/n-2026-11-12-f1f9b86f.json"
+  },
+  {
+   "id": "n-2026-11-12-aa80ec54",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Guerra Iran: Cosa è successo",
+   "summary": "Un conflitto tra Israele e l'Iran ha iniziato nel febbraio 2026 con attacchi reciproci e tensioni internazionali.",
+   "date": "2026-11-12",
+   "ref": "https://news.google.com/rss/articles/CBMie0FVX3lxTE9YNXNEeG50RGNhZmZCSG9QUUtRc0ZqWGM5NXY4cHktN1ppLU1GdHdVRVFpRVUweGhPWmpmV2ZWTEh2MlMyWUNKb1ViNEw4TndLQkJ6Zk1xd2RpRWE3aUFMV0x4TEhLLUl1RWlQZG1jb0RCVzE0UEwwb29OZw?oc=5",
+   "headline": "Guerra Iran, gabinetto sicurezza Netanyahu ordina a Idf di prepararsi ad attaccare",
+   "srcs": [
+    "Sky TG24",
+    "Il Sole 24 ORE"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-12/n-2026-11-12-aa80ec54.json"
+  },
+  {
+   "id": "n-2026-11-12-1cedf202",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Rotatorie e precedenza: come cambia la regola",
+   "summary": "Il nuovo Codice della Strada modifica la precedenza nelle rotatorie, permettendo a chi è già dentro di passare per primo senza cartelli.",
+   "date": "2026-11-12",
+   "ref": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxQRDZENGl0d0xIN3haaHY1clpXSy1KSy1rVUUzMVNVRFA1bXl1bnpESk9XaWJGM3ZQQk9SVVg0Mmg1YmJoZzZyMmNoUVBuQUszOHp2UW5sZUw0dkRHRzhvQWJlenVuUHFRQWNjb1JCcy1JM29GTWYxcTRKZ1p0aVBxbzlHaHNVOE01WGx1RzJYRFNxOVN5aXNiY2JSVEJzMEZLdUloRnNBRk1YaUdFcjRSRVJjY01NRlpudEhURmFiOVdUMkVlNnlRRFRzaEp5RE5wMUZlLWkwbUpKUzBic0oyTjUzaHBFcV8z?oc=5",
+   "headline": "Rotatorie, cambia la precedenza con il nuovo Codice della Strada: chi è già dentro passerà per primo anche senza cartelli",
+   "srcs": [
+    "Automoto.it",
+    "Virgilio"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-12/n-2026-11-12-1cedf202.json"
+  },
+  {
+   "id": "n-2026-11-12-d6bccc8b",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Un ufficiale russo morto a San Pietroburgo: cosa sta succedendo",
+   "summary": "Un ufficiale russo è morto in un’esplosione d’auto a San Pietroburgo, un episodio che aggiunge tensione al conflitto tra Russia e Ucraina.",
+   "date": "2026-11-12",
+   "ref": "https://news.google.com/rss/articles/CBMi-AFBVV95cUxQanBlaXhuYm1MUWJfRzBPU2dpd1kxSVY3aUlQRmU5Yks0dHVnSHVKY0djbEdvVFhXcGxDd2E3aktselVIWW9RY1hNTWxOcVEtOXpsWWZvZVRSc3RjYUhlNEVQbGd5XzJWaDV4TERSbnpwcms2VmsyVzc4NlhuV0xfb1FsUVdJVkZhU3prbkdyamdfSkZZT2NTWEUxcDJ4eWVGSXQxdXNhTi1rYmdLYWFKcWNVa0EtbWdRcjBsRjRhSjhiQUxxb1RQd1Z1aThwcEdJVFdGbm9zNmhUSFYwV1JXaDRIaTBKdVFYb0preC05dnRzVTlTNWotZg?oc=5",
+   "headline": "Guerra Ucraina - Russia, le news. San Pietroburgo, ufficiale russo morto in una esplosione d’auto",
+   "srcs": [
+    "la Repubblica"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-12/n-2026-11-12-d6bccc8b.json"
+  },
+  {
+   "id": "n-2026-11-12-a7d75143",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "L'accordo tra sindacati e imprese su contratti e salari",
+   "summary": "Sindacati e imprese hanno firmato un accordo per migliorare contratti, salari e la rappresentanza dei lavoratori.",
+   "date": "2026-11-12",
+   "ref": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQXzFVejFFYTM4djBVTXBYSFM1ZVlVWEJPNW0tWU11dlJ5eXkyX2xnREExQklSbXI2eWxBQWt6eDR1VnFYV3gySS11NFBfcERPX2ZtOFg3QmRmR3haVTU2S1p0aTBhYlBDdmRoNlpNOVJJSnB0U1BUNWxuMjRQTVBSM1FvaWMybjhlRlhJU3R5NjZGdUlGQWVhWGNiVTFBbnhhbWk0ZHg4aw?oc=5",
+   "headline": "Rappresentanza, contratti e salari: firmato l’accordo tra imprese e sindacati",
+   "srcs": [
+    "Il Sole 24 ORE",
+    "la Repubblica"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-12/n-2026-11-12-a7d75143.json"
+  },
+  {
+   "id": "n-2026-11-12-1bba7e8c",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Allarmi nelle scuole e il vertice per l'unità",
+   "summary": "Gli allarmi per bombe nelle scuole hanno spinto il governo a incontrare le opposizioni per cercare un accordo sull'unità.",
+   "date": "2026-11-12",
+   "ref": "https://www.ansa.it/sito/notizie/cronaca/2026/11/12/si-rientra-in-classe-dopo-gli-allarmi-nelle-scuole-oggi-il-vertice-a-palazzo_cd319cf3-a1cf-4b88-b35a-77a0eaa9c9fc.html",
+   "headline": "Si rientra in classe dopo gli allarmi nelle scuole, vertice a Palazzo Chigi: Meloni incontra le opposizioni e fa appello all'unità",
+   "srcs": [
+    "ANSA"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-12/n-2026-11-12-1bba7e8c.json"
+  },
+  {
+   "id": "n-2026-11-12-a47b416d",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Maltempo in Toscana: Allerta rossa, fiumi esondati e sfollati",
+   "summary": "Un maltempo estremo ha causato allerta rossa in Toscana, con fiumi esondati, scuole chiuse e centinaia di sfollati.",
+   "date": "2026-11-12",
+   "ref": "https://news.google.com/rss/articles/CBMif0FVX3lxTFB5WWJmdzkyczhUc0tVVGdhSjZ0RmpvZXpsOENLSnl4akhFNkZfRU1vbHBaUnJhNUNLOG9rVXAtTWt6MWlVLXlHWktuT1ZNTWQyaGV6QmRLbDFISEZ6c3NmaFlyMURnY1h5OGZNU09MblhUWnNyNFREMGRpVW0tc2s?oc=5",
+   "headline": "Maltempo, allerta rossa in Toscana: fiumi esondati, scuole chiuse e sfollati. DIRETTA",
+   "srcs": [
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-12/n-2026-11-12-a47b416d.json"
+  },
+  {
+   "id": "n-2026-11-12-1311c522",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Moretti fuori dal carcere dopo la strage di Viareggio",
+   "summary": "Mauro Moretti, l’ex amministratore delegato delle Ferrovie, è uscito dal carcere dopo 4 mesi per scontare la pena ai domiciliari per la strage di Viareggio.",
+   "date": "2026-11-12",
+   "ref": "https://www.ansa.it/sito/notizie/cronaca/2026/11/11/strage-di-viareggio-moretti-esce-dal-carcere-scontera-la-condanna-a-casa_18081359-f478-46ae-82c6-bff622bb5011.html",
+   "headline": "La strage di Viareggio, Moretti fuori dal carcere dopo 4 mesi",
+   "srcs": [
+    "ANSA"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-12/n-2026-11-12-1311c522.json"
+  },
+  {
+   "id": "n-2026-11-12-b570c32e",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Le raccomandazioni del 12 novembre 2026",
+   "summary": "Il 12 novembre 2026, diversi media hanno dato spazio alle raccomandazioni di investimento e di preparazione per emergenze, segnando un momento di attenzione verso la gestione delle risorse personali e collettive.",
+   "date": "2026-11-12",
+   "ref": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNLTE5ODNPTTd6ZWJybzhIbjhFZmhWT3lMMHUyOVJJZnBMYjlOZk9Hdk1sUC1oY0x4VHIwOFk2ZjVWYlY5d1FJYW1tZjg1T09LTzdCSGs5OXVod0pvQlg2dXB1R19EbmVTZkFWNmUwSV9UX3BJSFNDd2stWmkxQkRsbVU0RE9LOUp2MWdGZ3Y0VnFiQQ?oc=5",
+   "headline": "Le raccomandazioni del 12 novembre 2026",
+   "srcs": [
+    "SoldiOnline.it"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-12/n-2026-11-12-b570c32e.json"
+  },
+  {
+   "id": "n-2026-11-12-24c4f45d",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Toni Capuozzo: un giornalista che ha raccontato la guerra",
+   "summary": "Toni Capuozzo, giornalista e inviato di guerra, è morto a 77 anni dopo aver annunciato di avere un tumore.",
+   "date": "2026-11-12",
+   "ref": "https://www.ansa.it/sito/notizie/cultura/2026/11/12/e-morto-toni-capuozzo-pochi-giorni-fa-lannuncio-del-tumore_d91e7c63-c965-4b50-b4d9-931c2a6fd56f.html",
+   "headline": "È morto Toni Capuozzo, poco tempo fa aveva annunciato di avere un tumore",
+   "srcs": [
+    "Corriere della Sera",
+    "la Repubblica"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-12/n-2026-11-12-24c4f45d.json"
+  },
+  {
+   "id": "n-2026-11-12-c91c9bb5",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Allarmi bomba nelle scuole: un'ondata di panico",
+   "summary": "Nel 2026 sono state inviate email false con minacce di bombe a 3.788 scuole, ma il governo ha detto che non c'è pericolo concreto.",
+   "date": "2026-11-12",
+   "ref": "https://www.ansa.it/sito/notizie/cronaca/2026/11/12/nuovo-allarme-bomba-nelle-scuole-indagano-i-pm-dellantiterrorismo-liveblog_97a3c6b7-93f4-44a2-940b-dd33198f2f91.html",
+   "headline": "Nuovi allarmi bomba nelle scuole, palazzo Chigi: 'Coinvolti 3.788 istituti, solo 77 evacuati'",
+   "srcs": [
+    "LIVEBLOG",
+    "ANSA"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-12/n-2026-11-12-c91c9bb5.json"
+  },
+  {
+   "id": "n-2026-11-12-54fc7229",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Allarme bomba: quando una mail fa tremare le scuole",
+   "summary": "Una mail finta con firma di Andropov ha messo in allerta le scuole italiane, ma si tratta di un allarme finto.",
+   "date": "2026-11-12",
+   "ref": "https://news.google.com/rss/articles/CBMiekFVX3lxTE1CSU5xUXhLYVphSUp2eXEyV1B1MzJjVnJaNEF5c1E0TEZuMTg4WWhSbW05SU5lSnpXZzAyY2tNSmZfM05JSEtjTHJhM0cxbi1acHRBVUh0UndwemE3N1hGWXhJYXFhanZOd1N5cHk2ZWRtYVdlY3lhV2JR?oc=5",
+   "headline": "Allarme bomba a scuola, il testo della nuova mail inviata da Andropov",
+   "srcs": [
+    "Sky TG24",
+    "la Repubblica"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-12/n-2026-11-12-54fc7229.json"
+  },
+  {
+   "id": "n-2026-11-12-c8fafe7f",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Scuole chiuse per maltempo: perché e dove",
+   "summary": "Le scuole sono chiuse in diverse regioni per l'allerta meteo, ma non tutti i comuni si sono mossi nello stesso modo.",
+   "date": "2026-11-12",
+   "ref": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOMlJZbTE5THllSlYtVUxkY3BySHNGSXhVV2pOQW9PSWw4SVZwTTJkMGlISGdoWDg0cURoazdxUTR0dS1YLWtCRW50VVM0VWlnaTFDa09yRzZOVUxZcy1DZVdKa24zbjJNc2pfTFJLb2pkVEhvTnZ3cDlPSlZHRWJrUmgtQnctTGIzekRPenQ4YWtnVUVUYVlSVEhKZGdKR1hERUR3V2RZSURGNVk?oc=5",
+   "headline": "Scuole chiuse venerdì 13 novembre, l'elenco completo è in continuo aggiornamento",
+   "srcs": [
+    "Virgilio Sapere",
+    "Orizzonte Scuola Notizie"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-12/n-2026-11-12-c8fafe7f.json"
+  },
+  {
+   "id": "n-2026-11-12-6f25921f",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Kemet e la fine del lavoro",
+   "summary": "La chiusura di un'azienda ha lasciato lavoratori con salari bassi e futuro incerto, mentre i manager si preparano a andarsene.",
+   "date": "2026-11-12",
+   "ref": "https://news.google.com/rss/articles/CBMi2AJBVV95cUxOZlU5eHltaU1SdFJQajB6c3M5VmxkQmktakVBdHZ1WVpNc0huaEhlU0hESDNqbWtlcl9lcTg5U2NmR2YxQjhGemlnM24xbWZiRGt4WU1RbkxUTHdqUzY4MG5wYTBYRktvUFFoY0g0WHNidUY5MlVqZ1JUdG5EbHpiNkNPMXdLRXJRT2NmU2NpNlB6c2RKN1lzZUtMckdsbEoxQjdfQWx6NVROZHBaNkh5aTdZWi1TU3FPUEJOejZXell6cjdGWG9oY2d1eXdwb0d2dkwxOGVzbkIyZlpLcHJiRm9zRmlIdHd2bVloQndUb3NXMnhjMEp5ZHB2Qmt3dlhLajlkX1c5THpyaVMzZVJKc18xemRKVlB3WlJEeWt2ZldyMk5fVjItM29iRFg3Uk40ZjlQSmV3YnJTMHoyd2RiQTdmeEZMZlFQWDVfejBpbTZ6aVU5MGt4TNIB3gJBVV95cUxQVG5iUG1aZnVzQ2o5VXg1MGtWRHE5SmVzSmQwU3ZvZ0N0VUZxZzJoX29YUlQ1TFEyRGx2NE5DQTBPdXVmTVpZd0tYWWx6VVprSENtV2I0UmMzczdnTHdiUnRQaDhFQndBQ1hvR3VqMk1aSVdOSk8tTUJ0ZnA1OWR1aXlNa1ZvNHR0VC00UGZ2NVlXUGZPSFg1WWo3b1ZqYkYyR1o3QVRNOC01YnQyZTk4dkdicW5SWDd6LXJmQWt3ZTMzSDFKNVhJY2R5SlBTYnhCdHI5S1ppdUJ0VXh5QzJZSXZLcEJwMEp3MGFrNENSVFlmYk9wSjZLaTF5dEpiYk1FMnVOSTZBRmxRdDdBVU1CZ3g5eE1oZlVYcGhTQmFjT04tZzVYN3lMRXVZRElTeEVVUnFrZThDcUdJcENJb1B5c0hzUEt3bEpzZlAyVEhGTXppSUlkNTNoU3AwTXlJUQ?oc=5",
+   "headline": "La lavoratrice della Kemet: «I manager se ne andranno con la valigetta, a noi resta il cerino. Sono sola con 1.800 euro al mese, a tre anni dalla pensione dovrò usare i risparmi di una vita»",
+   "srcs": [
+    "Corriere di Bologna",
+    "QuiFinanza"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-12/n-2026-11-12-6f25921f.json"
+  },
+  {
+   "id": "n-2026-11-13-bd7fe98a",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Guerra Ucraina-Russia: Cosa sta succedendo oggi",
+   "summary": "La guerra tra Ucraina e Russia continua con nuovi episodi di tensione, colloqui e tensioni diplomatiche tra le potenze mondiali.",
+   "date": "2026-11-13",
+   "ref": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOVkxXUGxCSFZfemhWd29QeTdsak4wczZWVTJXc0VhbVdfUTkyNXBBV2tWbkdyaDV5QndxVjEzeGhwdFZGaWJzSkxBWXlaXzd5bWtFejVrNVBRZnlHZjg0UFdLdWxGdFFWTmlTUFJONF9UelpKX0ZqYnBOLU0tc2M1YWlFQTRWX0N1YjF0eHQ3R0M1Rzh2eDE1U213?oc=5",
+   "headline": "Guerra Ucraina - Russia, le news di oggi",
+   "srcs": [
+    "la Repubblica",
+    "Il Sole 24 ORE",
+    "Corriere della Sera"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-13/n-2026-11-13-bd7fe98a.json"
+  },
+  {
+   "id": "n-2026-11-13-333f8b31",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Maltempo e allerte: Cosa è successo",
+   "summary": "Il 13 novembre 2026, in Italia, è scattata un'allerta meteo arancione in 5 regioni e gialla in 12, con piogge intense, venti forti e rischio idrogeologico.",
+   "date": "2026-11-13",
+   "ref": "https://news.google.com/rss/articles/CBMif0FVX3lxTFBkUmFqOXEwa0FYTE56b3RHLTdVOS1tWExMcnFsMW9QWXh5bmhjbEVvZEVOSE01YVhHSkphYzhrWEdydGlsXzdnREZrenptOXVmamJqMElQVlp4SHFlN2hWRDExc25ITGY3a1V3dERFQlAzZW9EMWxDWHJ2RDA5UjA?oc=5",
+   "headline": "Maltempo, allerta meteo arancione in 5 regioni, gialla in 12. DIRETTA",
+   "srcs": [
+    "Sky TG24",
+    "GenovaToday"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-13/n-2026-11-13-333f8b31.json"
+  },
+  {
+   "id": "n-2026-11-13-7c44db2c",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Come leggere i conti delle aziende",
+   "summary": "I conti di aziende come Enel, Unipol e Terna mostrano un aumento dei profitti nei primi nove mesi del 2026, ma come si interpretano questi numeri?",
+   "date": "2026-11-13",
+   "ref": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPcTNwRlFTSHJkT3Q0LThmckRvaGQteGdueFpZOU9QaS00OVhWLVFESVUyTGdnM3hISEpGbDNTV2JDNFVqRTVYd0k3U2dCY1p6YjNmeklxV3R4OG5idXpoNFhVSlVveXFYTm91WHZGN3l2S2NydGR1Qy1IYnB3YnJmM0V3cDhvNkF0T1Bjdk15NXVleldGbkpPVVdqREJYLW8?oc=5",
+   "headline": "Enel, Unipol, Fincantieri, Terna, in conti dei primi nove mesi",
+   "srcs": [
+    "Websim",
+    "SoldiOnline.it"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-13/n-2026-11-13-7c44db2c.json"
+  },
+  {
+   "id": "n-2026-11-13-f07c13df",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Guerra Iran: cosa è successo",
+   "summary": "L'Iran ha attaccato una stazione radar Usa in Bahrein, segnando un nuovo episodio di tensione nel Medio Oriente.",
+   "date": "2026-11-13",
+   "ref": "https://news.google.com/rss/articles/CBMie0FVX3lxTFBwMDF4MUNRR2lYN2FJdkFSTENJWldsOW9kVUNCTmxocTdUQkJaLW1JMVhfSEdVNklJUVUtSW5namF3elBXMUg0WFl6bEp6UlFuMzZ1Vi1TYXVoNURCd0k0MVh6YWZ1b1hEVERuNnVIV1pDVGtud05BRjI1NA?oc=5",
+   "headline": "Guerra Iran, Pasdaran: colpita stazione radar di allerta Usa in Bahrein. LIVE",
+   "srcs": [
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-13/n-2026-11-13-f07c13df.json"
+  },
+  {
+   "id": "n-2026-11-13-4c78ec64",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Le borse e il petrolio: come si muove l'Europa",
+   "summary": "Le borse europee reagiscono ai cambiamenti del prezzo del petrolio e delle tecnologie, con Milano che guida il rally.",
+   "date": "2026-11-13",
+   "ref": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQci0ydlExRU9ma1E4TllOTjRTa3dfT08tS2FrUU5VR1pySTFQTHE3YVNJY1R0MXlDVHo1WjVHbGwzanZoVlpPaXhwTDU2clVpcU54NHhUMHNxbjdEWDJGRkRLODU2dFgzOWtVb2NocUd3TkJ1c0xCZGRLUmo0Zkd6SVMtTHF5cm1vZU0tbmFUZUFqVERSYlJjQzE3VW15ZVFJeFM0?oc=5",
+   "headline": "Borse, il rapporto Aie sul petrolio riaccende l'Europa. A Milano brilla Bpm",
+   "srcs": [
+    "Il Sole 24 ORE"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-13/n-2026-11-13-4c78ec64.json"
+  },
+  {
+   "id": "n-2026-11-13-2a6d4734",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Maltempo in Toscana: cosa è successo e perché importa",
+   "summary": "Un'ondata di maltempo ha colpito il Centro-Nord Italia, con allerta rossa in Toscana e chiusure di scuole e strade per frane e allagamenti.",
+   "date": "2026-11-13",
+   "ref": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQdkdlNzUzUkNfRk1EWFRpUWFoWGY2R1RwTDlCUXlNSjZJY3o0Rm9mSzFKOHEzRUQ2WFF6UkNZOGVKcUJSRkdrWHQwbUFvZ0QwdEMxQnc5YUdhQ0c0RjdqdHpyME05ZFVobG1TVGJmVmYzYmRkeVh5M2hfclBsd1VpRTZQZG1HZ29wS3ljdDl2azZtRXZnYTJpYk1VVEpnQkctWjVJbjBrdlVkR3VXTzZVSDVEUlBna00?oc=5",
+   "headline": "Maltempo nel Centro-Nord, allerta rossa in Toscana",
+   "srcs": [
+    "Tgcom24",
+    "Corriere Fiorentino"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-13/n-2026-11-13-2a6d4734.json"
+  },
+  {
+   "id": "n-2026-11-13-52e626fd",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Mosca e l'Europa: il dibattito sui negoziati",
+   "summary": "La Russia chiede all'Europa di partecipare ai negoziati solo se intende unire le forze per la pace, mentre l'Ue esita.",
+   "date": "2026-11-13",
+   "ref": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNS19jaWJlQXlLa3VYR1hOZDFNbzN3ekJMUEdvTmZLSENpTjlsOWw5blRHM2RBbU1GX1lZdGtfLW5SMm5GSURuS1hQb2NLcWFEcXZpT1BGZkthX0NKTFlIWmM0dlhQWi1wRW9rNGU1VnkzVTA4ZFdBaDY3MTY5V2UtRnZJbzNYb2Za?oc=5",
+   "headline": "Guerra Ucraina, Mosca: inclusione Ue ai negoziati non discussa con Usa. LIVE",
+   "srcs": [
+    "Sky TG24",
+    "la Repubblica",
+    "Corriere della Sera"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-13/n-2026-11-13-52e626fd.json"
+  },
+  {
+   "id": "n-2026-11-13-ae787dff",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Le migliori destinazioni per sciare al mondo 2026",
+   "summary": "I World Ski Awards 2026 hanno premiato le migliori località per sciare, tra cui Val Thorens in Francia e 3 Zinnen Dolomites in Italia.",
+   "date": "2026-11-13",
+   "ref": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOMFRMRWhrZF9qaDhaUk5LaHFsOGlwLUZJSkJ0azE2YndlQ1dxRFpoeVEwWUxjdzhzUkdDcEZCd2l4R2xLam1MQVA2RVg4YmJlWjd0Q2x6bWVqTXFJNHlDV3p0QjhwcHFNM1VZTGttM0hqZWxreXh0WTlTU2daLTV0M0d2cnMwYTZtSF95MXdiVHllWEFv?oc=5",
+   "headline": "World Ski Awards 2026, le migliori destinazioni per sciare al mondo: la classifica",
+   "srcs": [
+    "Sky TG24",
+    "www.altroconsumo.it"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-13/n-2026-11-13-ae787dff.json"
+  },
+  {
+   "id": "n-2026-11-14-09915cb0",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Colloqui di pace, Russia e Ucraina: cosa sta succedendo",
+   "summary": "L'Italia e alcuni paesi europei partecipano a colloqui di pace tra Russia e Ucraina a Abu Dhabi, ma la Russia sembra mettere trappole e non permette all'Ucraina di scegliere i mediatori.",
+   "date": "2026-11-14",
+   "ref": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOR1VzS2lSN0hiQlpwWWo1MGpDb2NhWm1zZ0RoNXE3UVltRkNaazlwVFJmUkRPcWNVT1ZZOUNMQnJJR2lWLWJiQVctY3FTVUpZRzdTcEVDNW1NcUJZc0l5YkktZnUwNi0wVTFGcldjRU1HVGdXMlJBdEx6MUZtTDBSVEtkRnZxYVptVWZCZ2t6S2toSlhjOFE?oc=5",
+   "headline": "Colloqui di Abu Dhabi, Kallas: la Russia sta mettendo trappole, non può scegliere lei i mediatori",
+   "srcs": [
+    "La Stampa"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-14/n-2026-11-14-09915cb0.json"
+  },
+  {
+   "id": "n-2026-11-14-7ba7b365",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Dietrofront del governo: scuola e manovra",
+   "summary": "Il governo ha annullato tagli previsti per la scuola e ha cambiato idea dopo le proteste dei sindacati.",
+   "date": "2026-11-14",
+   "ref": "https://www.ansa.it/sito/notizie/politica/2026/11/13/manovra-il-governo-apre-alle-modifiche-saltano-i-tagli-alla-scuola-piu_a9e7d8e3-ebe1-4229-a908-26b2f2a973d6.html",
+   "headline": "Manovra: dietrofront del governo sulla scuola. Meloni: 'E' un segnale ma non erano tagli'",
+   "srcs": [
+    "Il Fatto Quotidiano",
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-14/n-2026-11-14-7ba7b365.json"
+  },
+  {
+   "id": "n-2026-11-14-0871957c",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Mine nello Stretto di Hormuz e tensioni al Medio Oriente",
+   "summary": "Tre petroliere sono esplose dopo aver urtato mine nello Stretto di Hormuz, un incidente che ha scatenato tensioni tra Iran e Israele.",
+   "date": "2026-11-14",
+   "ref": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxQaEZuTk00RWtPUS1IaEJEdmQ0Q2NoczNSTnhiX05XWDVKU3djajd5ZFA3OVNqc1VXUEFkZkZncmJyblNXdHVDYnp2ZHJHUzBpSEFSQ2dkUWhERGszc1UtbXhHa1NMbUFFUTFyNWdlRmNaSGRLUERaZjVwNHh2azRZRndpdVZZbEF0SC1CUkVwYXA4SEc3T0RDMWl6eXdFSVZNRkZFdjhzeE1aczFnSFVlZTEzOWZUUE1LUGhaZGg1ZnlpbmNRWXBtY1BKQkVPMmo00gHWAUFVX3lxTE9fWnRxVmU1UXlJY1VfQ0Q1UVBVbnJhNVZkcWVVUWU1SGNBSDBmTE92RV9JVGRpWXFmTzBORE02QTlXOWVjQ0JqVVJGWmFMMWpSdkJUVjlES1RiSkJIeEFGY0Y1a2ItaFpBUjc2c0RpRU5fLW1iemVRYW9WdUd5YVF6bHR2ZS1sQ0toTWR6ZHBTSkdDOTdGNlQyOV9vazJGSnhFalVDQjAyamxNZkdKOV9mUjIwX1BUdG5saFlPaWc3T0lMckpUZTEtczg3b2hURjZrTUxBamc?oc=5",
+   "headline": "Teheran, tre petroliere in fiamme dopo aver urtato mine nello Stretto di Hormuz - Onu, emergenza a Gaza per maltempo e restrizioni Israele",
+   "srcs": [
+    "RaiNews"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-14/n-2026-11-14-0871957c.json"
+  },
+  {
+   "id": "n-2026-11-14-d84e6599",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Sabalenka eliminata: una sconfitta alle WTA Finals",
+   "summary": "Aryna Sabalenka, tennista bielorussa, è stata eliminata alle WTA Finals da Elina Svitolina, dopo un'annosa stagione di risultati deludenti.",
+   "date": "2026-11-14",
+   "ref": "https://www.ansa.it/sito/notizie/sport/tennis/2026/11/14/tennis-sabalenka-eliminata-nella-fase-a-gironi-delle-wta-finals-indian_aa915780-925d-4002-9654-6f679f765731.html",
+   "headline": "Tennis: Sabalenka eliminata nella fase a gironi delle WTA Finals Indian Wells da Svitolina",
+   "srcs": [
+    "ANSA"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-14/n-2026-11-14-d84e6599.json"
+  },
+  {
+   "id": "n-2026-11-14-6b686741",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Gli stipendi degli impiegati pubblici e il desiderio di un lavoro diverso",
+   "summary": "Un impiegato pubblico guadagna 5mila euro al mese, ma si chiede se non avesse dovuto scegliere un lavoro diverso.",
+   "date": "2026-11-14",
+   "ref": "https://news.google.com/rss/articles/CBMipwFBVV95cUxPMXRtN0pBRHNkMk1xRjVMdFJoZzJveVlfODBtX2hJWWs2UmF0eS1aUEp1MXRnS1FkQk1IeE1JckRjNXhJaDBsd2x3Y3dFUUpYV3FUS0lWX2pGVnVCaTZWMTIzdlFXX0FkM21CMk5HSk8teFh4SVh5U0FGb3NiMDc5QWViUkVLczRFVVZrS1pCRThNUkc2cGVpUHhERnJiRFNwX21ZaExZZ9IBrAFBVV95cUxNTU1pSEctNWNHeWJENFFDZjNrU1Q5Rk81Z0hzTEFQcURWZV9CclpxQ3hUS3VJbko5R3I2bzBVbm5RRWdWTTF6Y1o4eGpSQmpZaHlZRTAxWFJPa29ONUVxM0V3NGZTTnY4MTRGTHdMNmdKM1RGdEgzZmItcGFEZVNucmVTWTBwaENZRlNVZFdOTWFJdGE1YWdmSk0zTXgxSjJyalVRS1ZSN1hQZ0E5?oc=5",
+   "headline": "«Guadagno 5mila euro netti al mese come statale: è troppo. A volte mi pento di non aver perseguito il lavoro dei miei sogni»",
+   "srcs": [
+    "Il Messaggero",
+    "Today"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-14/n-2026-11-14-6b686741.json"
+  },
+  {
+   "id": "n-2026-11-14-36516fce",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "La corsa al potere Usa dopo Trump",
+   "summary": "JD Vance e altri repubblicani valutano di non candidarsi alla presidenza del 2028 dopo la sconfitta del partito.",
+   "date": "2026-11-14",
+   "ref": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQUG9GQkc0cFN4clUxUHRuM1hLTUQ5dXI4S2ZUQ3ZLb01sXzlaRnlVTDY2Z2hYQl9rMDNsampwX0JnNl9CRVhWSkZjNm5BUGpmZXltNjBQNlU0a2Jfb1ZRNlRpRnNrWU5BVUtpak1uNzZYWS1wM1NQbGVHTzZDazNFUkVXLVN5VEpqWlk1akR3Sk05SHNUYkNkMHBJZlF5X2tNTm9FcdIBaEFVX3lxTFB3TWJqUFRNOEJfT0JoTnJQNWtZLW9lNmhZRXdNYVhuak4yYVlrR3pCVXlxa1p0ZEdVXzhJU3Jxd1p5ajlNTVkxRlpOSmEzTmc1SnV1d1BCeDZsVWpYV0QyUVBNdk5GNE1H?oc=5",
+   "headline": "Usa, la Cnn: \"Vance valuta di non candidarsi alla presidenza nel 2028\"",
+   "srcs": [
+    "Tgcom24",
+    "Il Post"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-14/n-2026-11-14-36516fce.json"
+  },
+  {
+   "id": "n-2026-11-14-e54619d6",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Zelensky e la proposta Usa sulla Nato",
+   "summary": "Il presidente ucraino ha rivelato che gli Stati Uniti hanno avanzato una proposta per l'adesione alla Nato in cambio della cessione di alcuni territori ucraini.",
+   "date": "2026-11-14",
+   "ref": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNSFNueVpVeFVhOWk0Q0h4MWc3ZlNwQUVQM2p0Qm5QZ3VOLVB1bWxFSC1JOFZiT21aNGdiekM1S0s1OHNBQV9nREladkc5aDhtaENOeHlLSDdjSnFFSkk4eWVRc0hJaXcxOThWSHQ4YjFGbVFFSmlYSHNaWEs0aThldTN3cVZRMU8y?oc=5",
+   "headline": "Zelensky: Usa propongono adesione Nato in cambio dei territori ucraini",
+   "srcs": [
+    "Sky TG24",
+    "la Repubblica"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-14/n-2026-11-14-e54619d6.json"
+  },
+  {
+   "id": "n-2026-11-14-b76afa91",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "La caduta di Jensen Huang e il destino di Nvidia",
+   "summary": "Jensen Huang, ex CEO di Nvidia, ha perso la sua posizione dopo scandali e critiche, suscitando dibattiti sul ruolo dell'IA e del potere aziendale.",
+   "date": "2026-11-14",
+   "ref": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxNUk1hOWE3UklXb2RHRDAzWWJWZ0Yxay1qc1RQdE01aDI4Z2NMNVZTd0Z3RXRDc3NER3RHUTl3elQ0bXZnbGdYcmdOdUwtRVgzdmNnNEVfaFBWbkViMmJKYW1QSTlSRGhZa2FXNG81a0dIazJwendvZTljWU1rYnlXd2pGeTZfNVlJQXZjQUlqNEhadHVIX1ctUnhkdTUtT3ppSXpSUHpPLURGY3dtcGdUczRKSmtGMkJXa2Zqb2lWbjFqUEnSAcgBQVVfeXFMT1RvMjBrVDFRNHlzZ3VYZ2huRV9tOW1pcmFvbE9jVnZNNzNLTUxadGxxSWthbkpfa3k1cW1xR1M1M0FQOVk1bDRRb0FzeURxWGhqV0V3ZlBQS1hrT0o1MEkzSTRRbUYwUkdFVW5ycE5wUHZmaTkwbkhhRlpTMjN3WDBybnRaTklaYXE4WVR3bHQ5R21Ramd0M3lXQXNkVWFkclpBZmwyUlVRMjdWQUtUU1pBYTMtakJTMTNwV3B2QWNVSzZOLXJ4dVM?oc=5",
+   "headline": "Ascesa e caduta del giubbotto di Jensen Huang: dopo gli scandali e le dimissioni, ora anche gli stilisti «condannano» il look dell'ex ceo di Nvidia",
+   "srcs": [
+    "Corriere della Sera",
+    "Yahoo Finanza"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-14/n-2026-11-14-b76afa91.json"
+  },
+  {
+   "id": "n-2026-11-14-e37964cd",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "L'antidoto alla crisi dell'Intelligenza Artificiale",
+   "summary": "La crisi dell'Intelligenza Artificiale potrebbe essere risolta non con la tecnologia, ma con la sorpresa.",
+   "date": "2026-11-14",
+   "ref": "https://news.google.com/rss/articles/CBMizAFBVV95cUxPX29LbGZuNGN3VS1aam5tZDRLcHFKOWdvbloxWU4yNUVvcjFBaDZidWY2WVA2M3hzQmxPc0Y4ZFJKamFlamRtRnJJeEl2cWVUVENWd2dXUkZFUVR3R2NHVnk2YS1lZ25NV2YxdF9RbjJnbjJsTnVTaWxHdFJDQmFrVEtiOWM5MFAxTkEySGpoMHJVbGlrdmJWd2VhZm1LVW1qa2FWYU1MczA0aDF6MkFjQlZZOUJ2OFJhdWZ2TUVUWXJOLUEwdTZNRHowc2o?oc=5",
+   "headline": "Collasso dell’Intelligenza Artificiale: l’antidoto è la \"sorpresa\"",
+   "srcs": [
+    "Le Scienze",
+    "Altalex"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-14/n-2026-11-14-e37964cd.json"
+  },
+  {
+   "id": "n-2026-11-14-e67d4607",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Andrea Sempio, l'intercettazione e il caso Garlasco",
+   "summary": "Un'intercettazione ha rivelato che Andrea Sempio potrebbe aver dato soldi ai carabinieri per ottenere informazioni, ma non si sa se sia vero.",
+   "date": "2026-11-14",
+   "ref": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxQZk9Dbzd0YVRoNWktLW9SWHZnV1pLNGh4NXVIbVhHSEFnZEYwcWZTaElUZDB1S2dJME1McUlLMmp0cXlWMV9LUXB0UlR3REd4TGpEQ0NnQVhuRXpoSjNyT2I3cHF0RVV2YVE4WHYtVTZRRy1mXzNSY25uWUhrRFhiVHRVQzFMR00xVC16Tms0NzRueU9ZSXJydHM5am1QOXpIMUZxdmtPVU9JR2RkOWU3V2k4ejNNZnNHVW1jQ21xSXFCWDdZWk1OY2t4TEtNbWFGOWp0RG1VV1JUUdIB3wFBVV95cUxQWXF3ZE9mQy1tM1VlZXJzY0dFZnZYT0VBT2JIVmZGZDRMZy0xemtENjNlYko0N1VWMzl2YmM1OUdpOGJsd05BV1dMd2ltbVY2aEljMEpyQlZHTlZfbUVJbENoNHZWUXlsVTR4MllUdkt2V2dPMVc5SlBQRHo0VVNUeFM0T2pRRVMxc0dvM2tFV2k4WnQxZU51aHpWc0NaTDJuTmFtbWdrVFF1bmk2MTRqeTNxQU5xalZyX19BLU1aM1pDNE9aZEZybmVaM0xudHJza1dkLXl0Nkc1TXQ2dkFR?oc=5",
+   "headline": "Garlasco, Andrea Sempio e l'intercettazione su Soldani: \"Magari hanno allungato mille euro ai carabinieri\"",
+   "srcs": [
+    "Virgilio",
+    "AGI"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-14/n-2026-11-14-e67d4607.json"
+  },
+  {
+   "id": "n-2026-11-14-7c534809",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Il zeptoverso: tra fisica e futuro",
+   "summary": "Il zeptoverso è un concetto di fisica che apre nuove frontiere nella comprensione dell'universo, ma come e perché è importante?",
+   "date": "2026-11-14",
+   "ref": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOLWI3MWFvZGRlbDNxaTMyYnZDYkFiWV9LcjRzUjJqYTVaMl92c0Y2NFJhSThzazZVaTFjRmlIZ1hvUlg3QVpWMU1DS1lBdG5VYVJKamZ1WF94X1o4M09yNm5kemo4cGdCSGFyU3FoU2pRbDlab2tZMXVCcWdGVGR1c1RGTGpEbTZvTElzem9ZSE5aa0xpZ2c?oc=5",
+   "headline": "Fisica, lo zeptoverso è sempre più vicino: ecco cosa è e perché è importante",
+   "srcs": [
+    "Everyeye Tech"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-14/n-2026-11-14-7c534809.json"
+  },
+  {
+   "id": "n-2026-11-14-0d6e7495",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Giallo sull'aereo di Leone XIV",
+   "summary": "Un incidente aereo ha messo in tensione i giornalisti e la nuova Prefetta della comunicazione, aprendo un caso sospetto.",
+   "date": "2026-11-14",
+   "ref": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxQa2FBZHR1OEVIWHdORExJTjktTkVtUFoxUHotVmw0OUpyZVVzaVFncjk0THV0aUlYRU1YcGpKOGpsaEhVcWRXakk0aGVaLTZFdnRic2RlTFgyZVNMOGVXcVVrVHRudVhEU0tKcTF5dkhjVzdVMFpINnVvb3BzX2hqU1UwRFY2TUh5VnhVQ2pLZGRrNmtONnFzV28xalh3a2pMQVdMZ1NVRVRmTmg4RmMyM0drYVdWLXJfWTdlc1N1blBDbE5hTnYtb29JTjJBOXdwWFpKd01naERfYW5VVkxNWFVFajV3VE1nbHBv?oc=5",
+   "headline": "Giallo sull'aereo di Leone XIV, salta la conferenza stampa e scoppia il caso: tensione tra i giornalisti e la nuova Prefetta della...",
+   "srcs": [
+    "Il Messaggero"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-14/n-2026-11-14-0d6e7495.json"
+  }
+ ],
+ "aggiornato": "2026-11-14T15:05:26.149244Z",
+ "modello": "qwen3:8b"
+}
