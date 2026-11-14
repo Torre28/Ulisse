@@ -272,8 +272,150 @@
    "topic": null,
    "chapters": 5,
    "file": "contenuti/2026-11-13/n-2026-11-13-8df83911.json"
+  },
+  {
+   "id": "n-2026-11-14-333f8b31",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Maltempo e allerte meteo in Italia",
+   "summary": "Un'ondata di maltempo ha colpito diverse regioni italiane, con allerte arancione e gialle che segnalano rischi idrogeologici e disagi.",
+   "date": "2026-11-14",
+   "ref": "https://news.google.com/rss/articles/CBMif0FVX3lxTFBkUmFqOXEwa0FYTE56b3RHLTdVOS1tWExMcnFsMW9QWXh5bmhjbEVvZEVOSE01YVhHSkphYzhrWEdydGlsXzdnREZrenptOXVmamJqMElQVlp4SHFlN2hWRDExc25ITGY3a1V3dERFQlAzZW9EMWxDWHJ2RDA5UjA?oc=5",
+   "headline": "Maltempo, allerta meteo arancione in 5 regioni, gialla in 12",
+   "srcs": [
+    "Sky TG24",
+    "Il Messaggero"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-14/n-2026-11-14-333f8b31.json"
+  },
+  {
+   "id": "n-2026-11-14-7ba7b365",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Il governo cambia idea sui tagli alla scuola",
+   "summary": "Il governo ha annullato alcuni tagli previsti per la scuola, spiegando che non si trattava di licenziamenti, ma di un adeguamento ai numeri degli studenti.",
+   "date": "2026-11-14",
+   "ref": "https://www.ansa.it/sito/notizie/politica/2026/11/13/manovra-il-governo-apre-alle-modifiche-saltano-i-tagli-alla-scuola-piu_a9e7d8e3-ebe1-4229-a908-26b2f2a973d6.html",
+   "headline": "Manovra: dietrofront del governo sulla scuola. Meloni: 'E' un segnale ma non erano tagli'",
+   "srcs": [
+    "Il Sole 24 ORE",
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-14/n-2026-11-14-7ba7b365.json"
+  },
+  {
+   "id": "n-2026-11-14-b167f5ef",
+   "kind": "passione",
+   "mode": "scoperta",
+   "title": "Leggere un bosco: un'indagine tra le foglie",
+   "summary": "Scopri come ogni albero racconta la storia del luogo, il clima e il terreno. Una passeggiata diventa un'indagine naturale.",
+   "date": "2026-11-14",
+   "ref": "topic:bosco:2026-11-14",
+   "headline": null,
+   "srcs": [],
+   "topic": "bosco",
+   "chapters": 4,
+   "file": "contenuti/2026-11-14/n-2026-11-14-b167f5ef.json"
+  },
+  {
+   "id": "n-2026-11-14-fb8aa194",
+   "kind": "fede",
+   "mode": "parola",
+   "title": "La preghiera non si stanca mai",
+   "summary": "Gesù racconta una storia di una vedova che non si arrende, per insegnarci a pregare con speranza e costanza.",
+   "date": "2026-11-14",
+   "ref": "bibbia:Lc 18,1-8:2026-11-14",
+   "headline": "Lc 18,1-8",
+   "srcs": [],
+   "topic": null,
+   "chapters": 5,
+   "file": "contenuti/2026-11-14/n-2026-11-14-fb8aa194.json"
+  },
+  {
+   "id": "n-2026-11-14-9800e15f",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Strade chiuse a Roma: Domenica ecologica e eventi in città",
+   "summary": "A Roma, sabato 14 e domenica 15 novembre 2026, alcune strade sono state chiuse per eventi come la Domenica ecologica e la manifestazione Corri Libera.",
+   "date": "2026-11-14",
+   "ref": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPUWhUNDdZVUxNb3VzYmVDanJEeV9mdjNfYXF4dE5VN1dmdmFFN1Q2bS1kd3RTNDNncFp0NWlLM3VzN3lZRXViRnJ0aVZ1a0ZRTmNRUjl0SGZLcGJyVHpwYVAtNElMVEFab0JuZUVEaGZZTjlsRjZlcEhyX2JDWnFQVEhrZ1ZrSmhYWXUzSVRLWTFvOGJLLXdHUEd3?oc=5",
+   "headline": "Le strade chiuse a Roma sabato 14 e domenica 15 novembre 2026",
+   "srcs": [
+    "RomaToday"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-14/n-2026-11-14-9800e15f.json"
+  },
+  {
+   "id": "n-2026-11-14-ef714b67",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Starship: La sfida del doppio recupero",
+   "summary": "SpaceX prova per la prima volta a recuperare sia il razzo che la navicella nello stesso volo, un passo importante verso il futuro delle missioni spaziali.",
+   "date": "2026-11-14",
+   "ref": "https://news.google.com/rss/articles/CBMiswJBVV95cUxQN1lndVJXeDFEbzNibG5xZHk2R05MQ0V5T2JYcW1nV1VvT1VuOUxjVmp4TW9hRFlUeTJWVmQtb2F6UngzN2w4YU9NTW9lMG5OdGRZbFVZVHBpQl84ZUNwd1hENV9sYVdvWFZvZ3JOTlMwbUxLMHAtNklIdnhrMmdUSGdRRTYyekJsZ3hsaDRFTy1MT0NGczkzZE9FQ2dFeXkxMV9kdjk0azJVRF9td1BQb0dUWkVsR2hIWC1pbmxqdm9pWEVIWnhVQTZpN3doSU5ZN0I0RnNsckg2LTNJUTVKc0N0cjJhamV1eG1BZGlyU1JEOVVhQWtweVBpLTZpSXBiNGYzMFU2U01UeV9PUzluM0tuZ1JoTTQtNzYyRGN5aDhYTUZnTE92Z2R4cVhwb1FMalBZ0gG4AkFVX3lxTE5rUTEyMEZVZFNQVllyMUpoSlJrajFXa3A4X2tBU0JldGZGRUZtZzR1WEF5cXJhdEJjOFotRVRRemd4eDN5OWlXYmJReExrNDk2V2RFbFFSRGtzTmNjNFR5cVg1d1JDWDZoOUt6T212N0lMazJqbXV3ZmxGdWVNODJKbVlzUVdtRDdzbWJ6aVc2NDlKcnA5Z1dCaVJvdXRQYWpUeFNuRE9wb0FHTGxXcmIybHQ4eVM3RGhJcUd0d2dLWG4weG1Kanp5aTBESG8wWHdvZGtmelNjbXotX1FXamVmNTJYUC1mV0I5Rm5EQ0tzWWhmNllYdDF4WUxidlVBZ2dPYU9kN0R3WWRieU5IVXhaVER3WEh4aGR2RWtURVYwVVVrdTZRb3VxSmE1NG14S2NCaDlIMDFBZg?oc=5",
+   "headline": "Starship, stanotte la sfida del doppio recupero: la torre proverà a riprendere al volo sia il booster sia la navicella",
+   "srcs": [
+    "Corriere della Sera"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-14/n-2026-11-14-ef714b67.json"
+  },
+  {
+   "id": "n-2026-11-14-52e626fd",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "L'Europa si schiera per la pace in Ucraina",
+   "summary": "L'Unione europea ha formato un team di negoziatori per cercare una soluzione alla guerra tra Russia e Ucraina, incluso l'Italia.",
+   "date": "2026-11-14",
+   "ref": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNS19jaWJlQXlLa3VYR1hOZDFNbzN3ekJMUEdvTmZLSENpTjlsOWw5blRHM2RBbU1GX1lZdGtfLW5SMm5GSURuS1hQb2NLcWFEcXZpT1BGZkthX0NKTFlIWmM0dlhQWi1wRW9rNGU1VnkzVTA4ZFdBaDY3MTY5V2UtRnZJbzNYb2Za?oc=5",
+   "headline": "Guerra Ucraina, per ora nel team negoziale europeo rappresentanti dell'Ue e dell'E5",
+   "srcs": [
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-14/n-2026-11-14-52e626fd.json"
+  },
+  {
+   "id": "n-2026-11-14-f07c13df",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Petroliere in fiamme nello stretto di Hormuz",
+   "summary": "Nello stretto di Hormuz, un punto strategico del Golfo Persico, due petroliere sono esplose dopo aver urtato una mina, segnando un aumento della tensione tra Iran e Stati Uniti.",
+   "date": "2026-11-14",
+   "ref": "https://news.google.com/rss/articles/CBMie0FVX3lxTFBwMDF4MUNRR2lYN2FJdkFSTENJWldsOW9kVUNCTmxocTdUQkJaLW1JMVhfSEdVNklJUVUtSW5namF3elBXMUg0WFl6bEp6UlFuMzZ1Vi1TYXVoNURCd0k0MVh6YWZ1b1hEVERuNnVIV1pDVGtud05BRjI1NA?oc=5",
+   "headline": "Iran, Pasdaran: 2 petroliere in fiamme dopo urto di una mina a Hormuz",
+   "srcs": [
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-14/n-2026-11-14-f07c13df.json"
+  },
+  {
+   "id": "n-2026-11-14-b019242b",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Infezioni, il test molecolare in 90 minuti: Una frontiera della diagnosi",
+   "summary": "Un nuovo test molecolare permette di identificare in 90 minuti il responsabile di un'infezione, aprendo nuove possibilità per la diagnosi rapida e precisa.",
+   "date": "2026-11-14",
+   "ref": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxQR202YmQ3NjF4MGpTeTZycU4wQWM2TkRlZkxJbTRQcnBRVnhsX0JyZUFKZmZLbjdicmpzNE1iNTI2RXRrU212UWo5YkstVUw5eWczT29OSllOZlAxNXJHSmRVSnlTQ1ZCVll4OHA1TkNfNGFaaVpfNDNPb01mT3djMEh4cWZDZHZhYjdCaTh5dXdfVm5DY2ZmSVlxbGtEcklTODUtNWE1dFd6a3pFcXRIaE9aNTZGS1ltdVFOX2Y2YmNyV0dqM21YQWhXcUlZV281Mmdn?oc=5",
+   "headline": "Infezioni, 90 minuti per cercare il responsabile: la nuova frontiera dei test molecolari",
+   "srcs": [
+    "Mondosanità"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-14/n-2026-11-14-b019242b.json"
   }
  ],
- "aggiornato": "2026-11-13T08:33:03.110033+00:00",
+ "aggiornato": "2026-11-14T04:43:03.586160+00:00",
  "modello": "qwen3:8b"
 }
