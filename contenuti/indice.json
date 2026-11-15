@@ -414,8 +414,60 @@
    "topic": null,
    "chapters": 3,
    "file": "contenuti/2026-11-14/n-2026-11-14-b019242b.json"
+  },
+  {
+   "id": "n-2026-11-15-509e9562",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Zelensky e la proposta Usa: Nato in cambio del Donbass",
+   "summary": "Zelensky dice che gli Stati Uniti gli hanno chiesto di cedere il Donbass per entrare nella Nato, ma la Russia non accetta questa idea.",
+   "date": "2026-11-15",
+   "ref": "https://www.ansa.it/sito/notizie/mondo/2026/11/14/ucraina-zelensky-gli-usa-ci-propongono-la-nato-in-cambio-del-donbass_48c4f0d9-c61c-4d79-8523-64805b2f303f.html",
+   "headline": "Ucraina, Zelensky: 'Gli Usa ci propongono la Nato in cambio del Donbass'",
+   "srcs": [
+    "ANSA",
+    "Corriere della Sera",
+    "Domani"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-15/n-2026-11-15-509e9562.json"
+  },
+  {
+   "id": "n-2026-11-15-cb825aed",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Terremoto al Gruppo San Donato",
+   "summary": "Un gruppo ospedaliero italiano ha visto cambiare i vertici per la seconda volta in poco tempo, con nuove figure al comando e preoccupazioni per le possibili vendite di cliniche.",
+   "date": "2026-11-15",
+   "ref": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQNTl5LWhLYkowZlcyWlVJb0ZyX1dpMDM2MW12VmtrTkVzS2RQRFdzbk4ycERlcjBlMGhQQWg0OEg4S25zUlNWUERKZ0JNXzlTZFRUUU5zZkpIZjhGeDdrclFBNThabHpNdGtuV3dXdk8yZ1VNOUliOW9CS1AySVdtY1l3?oc=5",
+   "headline": "Gruppo San Donato, terremoto ai vertici",
+   "srcs": [
+    "Il Sole 24 ORE",
+    "Corriere Milano"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-15/n-2026-11-15-cb825aed.json"
+  },
+  {
+   "id": "n-2026-11-15-e37964cd",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Collasso dell'Intelligenza Artificiale: perché la sorpresa è l'antidoto",
+   "summary": "Un articolo del 2026 suggerisce che il collasso dell'Intelligenza Artificiale potrebbe essere evitato grazie all'incertezza e alla sorpresa, in un mondo sempre più predittivo.",
+   "date": "2026-11-15",
+   "ref": "https://news.google.com/rss/articles/CBMizAFBVV95cUxPX29LbGZuNGN3VS1aam5tZDRLcHFKOWdvbloxWU4yNUVvcjFBaDZidWY2WVA2M3hzQmxPc0Y4ZFJKamFlamRtRnJJeEl2cWVUVENWd2dXUkZFUVR3R2NHVnk2YS1lZ25NV2YxdF9RbjJnbjJsTnVTaWxHdFJDQmFrVEtiOWM5MFAxTkEySGpoMHJVbGlrdmJWd2VhZm1LVW1qa2FWYU1MczA0aDF6MkFjQlZZOUJ2OFJhdWZ2TUVUWXJOLUEwdTZNRHowc2o?oc=5",
+   "headline": "Collasso dell’Intelligenza Artificiale: l’antidoto è la \"sorpresa\"",
+   "srcs": [
+    "Le Scienze",
+    "Altalex"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-15/n-2026-11-15-e37964cd.json"
   }
  ],
- "aggiornato": "2026-11-14T04:43:03.586160+00:00",
+ "aggiornato": "2026-11-15T07:22:57.527740+00:00",
  "modello": "qwen3:8b"
 }
