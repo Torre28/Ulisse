@@ -644,8 +644,153 @@
    "topic": null,
    "chapters": 7,
    "file": "contenuti/2026-11-17/n-2026-11-17-0fb0a1cd.json"
+  },
+  {
+   "id": "n-2026-11-18-f40a03e2",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Quando la giustizia non è legale: il caso Roggero",
+   "summary": "La Cassazione ha condannato Mario Roggero per aver ucciso due rapinatori, ritenendo che l'azione fosse una «deliberata aggressione» e non legittima difesa.",
+   "date": "2026-11-18",
+   "ref": "https://www.ansa.it/sito/notizie/cronaca/2026/11/17/roggero-condannato-i-giudici-da-parte-sua-una-deliberata-aggressione_6a42fa5e-4664-466d-affb-bfc112233623.html",
+   "headline": "La Cassazione: 'Roggero si è fatto giustizia da sé'",
+   "srcs": [
+    "Open",
+    "Il Sole 24 ORE"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-18/n-2026-11-18-f40a03e2.json"
+  },
+  {
+   "id": "n-2026-11-18-5c18faec",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Gli Usa e l'Iran nel Golfo: un conflitto che ripete la storia",
+   "summary": "Gli Stati Uniti e l'Iran si scagliano l'uno contro l'altro nello Stretto di Hormuz, un punto strategico per il petrolio, con accuse di attacchi e minacce di escalation.",
+   "date": "2026-11-18",
+   "ref": "https://news.google.com/rss/articles/CBMie0FVX3lxTE5JTkszMGkxb05vc1VnM2xLamVfMi1uTjdNTkN0c2ZmeVZWYlp0WFVBdVM4VTllMzdTNGNaUE04R0YyYmlUblJkcTY5MXgzdG16ZlN6b2JRMkwxamNLLUNzTDFmWlBxWUhPcmtyZFZFdWhvN1hwZHNrdVpGbw?oc=5",
+   "headline": "Iran: \"Usa hanno attaccato l'isola di Qeshm, nello Stretto di Hormuz, nessun danno\"",
+   "srcs": [
+    "Sky TG24",
+    "ANSA"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-18/n-2026-11-18-5c18faec.json"
+  },
+  {
+   "id": "n-2026-11-18-52766215",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "La condanna a 16 anni per l'ex fidanzata di Denis Bergamini",
+   "summary": "L'ex fidanzata di Denis Bergamini è stata condannata a 16 anni di carcere per l'omicidio del calciatore, con la sentenza confermata in appello.",
+   "date": "2026-11-18",
+   "ref": "https://www.ansa.it/sito/notizie/cronaca/2026/11/17/omicidio-bergamini-appello-conferma-condanna-a-16-anni-per-interno_d5b78214-b3c5-485e-baca-1ab65c0bf425.html",
+   "headline": "Omicidio Bergamini, confermati 16 anni di reclusione all'ex fidanzata",
+   "srcs": [
+    "Tgcom24",
+    "ANSA"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-18/n-2026-11-18-52766215.json"
+  },
+  {
+   "id": "n-2026-11-18-1a85fd53",
+   "kind": "passione",
+   "mode": "scoperta",
+   "title": "Scopri come ti fanno sentire che hai ragione",
+   "summary": "Impara a riconoscere i trucchi del cervello che ti fanno credere di sapere tutto, anche quando ti sbagli.",
+   "date": "2026-11-18",
+   "ref": "topic:psicologia-cognitiva:2026-11-18",
+   "headline": null,
+   "srcs": [],
+   "topic": "psicologia-cognitiva",
+   "chapters": 4,
+   "file": "contenuti/2026-11-18/n-2026-11-18-1a85fd53.json"
+  },
+  {
+   "id": "n-2026-11-18-af0c58b6",
+   "kind": "fede",
+   "mode": "parola",
+   "title": "La parabola dei talenti: chi è il re e chi è il servo?",
+   "summary": "Gesù racconta una storia per spiegare come usare ciò che abbiamo ricevuto da Dio: rischiare, dare, non nascondersi.",
+   "date": "2026-11-18",
+   "ref": "bibbia:Lc 19,11-28:2026-11-18",
+   "headline": "Lc 19,11-28",
+   "srcs": [],
+   "topic": null,
+   "chapters": 5,
+   "file": "contenuti/2026-11-18/n-2026-11-18-af0c58b6.json"
+  },
+  {
+   "id": "n-2026-11-18-325ce7d8",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Geely Monjaro EM-i: un SUV ibrido arriva in Italia",
+   "summary": "Un nuovo SUV ibrido plug-in di Geely, con 334 CV e autonomia elettrica, arriva in Italia a partire da 41.900 euro.",
+   "date": "2026-11-18",
+   "ref": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE8wVFBIeEo5SHpzUnFIZTV6X3hFNzV4Z0lXMGdJOWxrT05MZ0hDOGMtdFJYVnFWb2dkVmVLY3NKOUdXdndWVVZaRWlCdTZOUThITnlYR251UFNsRklyMGhtLTJ3MzItVXhR?oc=5",
+   "headline": "Geely Monjaro EM-i, il SUV plug-in da 334 CV arriva in Italia: prezzi da 41.900 euro",
+   "srcs": [
+    "HDmotori",
+    "SoldiOnline.it"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-18/n-2026-11-18-325ce7d8.json"
+  },
+  {
+   "id": "n-2026-11-18-28abb804",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Solare, in un anno quasi mille impianti",
+   "summary": "In un anno, in Italia sono stati installati quasi mille impianti solari, segno di un aumento significativo delle fonti rinnovabili.",
+   "date": "2026-11-18",
+   "ref": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNWjhxcVU5YnFLbWxMSFI3ZnM3bG5ycEVVZndJNFkwY0ZRMkJBUWFGak5VUDRmQlhpbjJGa1JiLWhVMmF4d0ttV2JiZ00wQVRkM1FCbVNKcGpLdWpRamg3NWVwdmtaTlFhSzQtdDFmSnItZWxuZmg5aGtTVzRabFFjVFljcGtURGItODFpRTBnYUJzWDc2aFk5eQ?oc=5",
+   "headline": "Solare, in un anno quasi mille impianti",
+   "srcs": [
+    "Polesine24",
+    "Sanremonews"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-18/n-2026-11-18-28abb804.json"
+  },
+  {
+   "id": "n-2026-11-18-0334f9e6",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "L'Ucraina colpisce il ponte di Crimea",
+   "summary": "L'Ucraina ha distrutto una parte del ponte di Kerch, simbolo della presenza russa, e ha chiesto aiuti per continuare la guerra.",
+   "date": "2026-11-18",
+   "ref": "https://news.google.com/rss/articles/CBMingJBVV95cUxNUUt1RVlLcnJzZTJ0eXZLUjhpOEdwRjV2bVdzb3JvSFZCV1cwcmowVnBQdVFkLXRNR1dkVmJiVVRGVUtYQnFXdUQwV3VYQm5vTFdmQm9lX3pPY2I1U292QlQwbGZHYTdteWdiR09NVW5XRlNFaG5CN3IyT29YZkE3SUhNR2h2MmJMOU56NkdCNy1odU1QZ0FVbmw5WjJ1cl9qZHRSalJwU21nckExVXRPMjZCdU9OcGcwWnM2RnNTVlZyeW5saG5PQ1NPU000ekRBbVhQeXBEbzFGd3BCOXRVenpJNS1tYjJua2ZpeldENUNNa3h1VDIzRnlVWGVsRFN6X0ZSRG42a3Vmclc5SmgzblVwTDVVY1RSUWI3STdn0gGjAkFVX3lxTE1hRjJNSVRYZ25vVFgyMkhvVFN1dUZGUlZOaFhXX1ZXWnNiUEJETXpzUC1wb0JTR1BmRWhiWUhTNkhGczBWdGtDTDdTcXRsVkRnZWZnbERuc0xoNDFkcEl4MzRZNFNtWnlNZk8wck9vYk4yaXNJalJWR3dwc1JGT3dDNGI4VG9HZkgzazI3c0dUWi12QWVONEhHTm9KclBRV2drZ1hlREd6UWtENmlfTGIxUmNyWWY2U3JKWjV3T1pKc3c0NnNac0NOYmFLSXlTQ0MtaHZkV2lBZHowcE1sYVRQQ3kwc2IwNlFQQWZuNGsxODUxQ3UwejVucU1RVWRNQ211TjFZX01oVzM0Nm5pOU8zcmJwdTdkRUoweFFnUVAwaHVEYw?oc=5",
+   "headline": "Guerra Ucraina-Russia, le notizie in diretta | L'Ucraina colpisce il ponte della Crimea: «Crollata una delle arcate-simbolo». L'appello di Zelensky agli alleati: «Patriot subito in cambio di nuovi missili»",
+   "srcs": [
+    "Corriere della Sera"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-18/n-2026-11-18-0334f9e6.json"
+  },
+  {
+   "id": "n-2026-11-18-0a906268",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Apple down: problemi tecnici e servizi in tilt",
+   "summary": "Apple ha interrotto alcuni servizi come iCloud, App Store e Music, ma non ci sono stati attacchi hacker.",
+   "date": "2026-11-18",
+   "ref": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQYWgwTlJ6dEtIc0NGYzVhWDBZM05BNWc2aHRmbHRKQ2s4Q0I3bTYzdUlLYnUxS3IzeUJOb2JEd0xRVmNheGM5eWxyWVpiRmJ6Q1g1OHlVd1JzSFY3NkUwRTZnVFBLYTRYczFoZjdlalBMVTJEWGtHUzRCM0hNdl9rcXczNnl2UjZIR2dz?oc=5",
+   "headline": "Apple down, problemi per iCloud, App Store e Music: «Nessun attacco hacker»",
+   "srcs": [
+    "Il Sole 24 ORE"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-18/n-2026-11-18-0a906268.json"
   }
  ],
- "aggiornato": "2026-11-17T07:16:45.072696+00:00",
+ "aggiornato": "2026-11-18T06:55:39.137921+00:00",
  "modello": "qwen3:8b"
 }
