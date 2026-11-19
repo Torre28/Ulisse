@@ -789,8 +789,25 @@
    "topic": null,
    "chapters": 3,
    "file": "contenuti/2026-11-18/n-2026-11-18-0a906268.json"
+  },
+  {
+   "id": "n-2026-11-19-0edd5bc4",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Gaza, nuovi raid israeliani e tensioni con l'Iran",
+   "summary": "Gli israeliani hanno lanciato nuovi attacchi a Gaza e valutano un possibile raid contro l'Iran, in un contesto di guerra e tensioni regionali.",
+   "date": "2026-11-19",
+   "ref": "https://news.google.com/rss/articles/CBMie0FVX3lxTFB3Umx1OFpHVFdPRk5kOUlMLUFiLU03a3ZYV3ZvNGR2bmZDM2xYSlg3N0NIdEg4M1JjSUZ3b3E4TTNJOC1IZi14OTlKMENWSEU4ekVYV09jLWIyeTNEUjBseWFscW81akNsWGxNODFVN2dnX2xnUlVJZWhXbw?oc=5",
+   "headline": "Attacco Idf nel centro di Gaza. Media: Israele valuta raid all'Iran",
+   "srcs": [
+    "Sky TG24",
+    "ANSA"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-19/n-2026-11-19-0edd5bc4.json"
   }
  ],
- "aggiornato": "2026-11-18T06:55:39.137921+00:00",
+ "aggiornato": "2026-11-19T05:36:45.701086+00:00",
  "modello": "qwen3:8b"
 }
