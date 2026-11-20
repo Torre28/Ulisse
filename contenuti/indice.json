@@ -806,8 +806,59 @@
    "topic": null,
    "chapters": 7,
    "file": "contenuti/2026-11-19/n-2026-11-19-0edd5bc4.json"
+  },
+  {
+   "id": "n-2026-11-20-21ef9884",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Kiev attacca Putin, Trump si collega con i Volenterosi",
+   "summary": "Kiev accusa Putin di essere un terrorista, mentre Trump e i Volenterosi discutono l'aiuto all'Ucraina e la possibilità di un dialogo con la Russia.",
+   "date": "2026-11-20",
+   "ref": "https://news.google.com/rss/articles/CBMi7gFBVV95cUxNTXZCWmFlQl9IM1FsQXdzZWJaNlNnLUNza1NTSFlnRlF4RUdxeHd0WlpmYmEycUhycXp4QVpfejU0UVJLRW5OaEZJQVBKblhfMUo4UjFpZ3VUNDk5NGZsYlFFdjZmWm9FSERVVFNxNTBra1dWNkFNR21ZQ1Y3SU0zaGl5MS1rVXNrRF8wa251WHFzbko2NlBLZ3NVc1c4T2NocVJBYXQ1TVlaQXhKOUJXVEsyY3B0VGszR1VWaDEycFNyZ09XV2g4UUR0NDBmWjB4Y2FJT0RpZDVBTUozNE9rUHdHTnVQOVZkeG1IR3NB0gHzAUFVX3lxTE1ldkVlSEZxWTlmdWdNd2lPRGdiS3ZNTEx3X3ZzU0lZZDJpc2hQZmRVc3ZLS01TUTczTWlneWlvQ2hUVjlkVGpUNzdZRHN5cEN4TXlkOF9QMHBtTHh4ME9ObTNBUUNRemVXY2JZRzREVHBjMkFiTGNscnNyVy12YWxmRU9QNzk3QmhydUJxRTNBVjRxVkZRYmExcG1iUFFnc2YxSU5mNDZpZVh5Y3RBSk8tSGpLVVlsQ2ttZzVHSTBzWGZYZFJ0OWZYS190Z3F0cmNRdUphMVVIVFpHWk5yYklNek9IQ3o0dVN4dVZuTGN6cFphQQ?oc=5",
+   "headline": "Guerra Ucraina-Russia, le notizie in diretta | Kiev, duro attacco a Putin: «Va trattato da terrorista». I media: Trump dall'Air Force One si è collegato con i Volenterosi a Berlino. «Perché date altri miliardi di aiuto a Kiev?»",
+   "srcs": [
+    "Corriere della Sera",
+    "la Repubblica"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-20/n-2026-11-20-21ef9884.json"
+  },
+  {
+   "id": "n-2026-11-20-d69013e9",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Droni all’aeroporto di Genova: chiusura per due ore",
+   "summary": "Un allarme per la presenza di droni ha chiuso l’aeroporto di Genova per due ore, scatenando un’ondata di preoccupazione per la sicurezza aerea.",
+   "date": "2026-11-20",
+   "ref": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxPRDdWSE9iWE1zV3JWaU5kOHR5dzE1WnFDN1VnNXNoSm9UNFUzNmtPNVhBQ1RMUmhMMndqcU04SVFmZnI2UlVhMFY2eTZFUXo3NFZfMkZyNVRqM2k1aTkza3Z5Mk1TOG9HUGQ2NXoxclRHbHhpR1N5T0w4cHhrWU13T1lRTjVyUVBJcEpOdlFoR2tHRlNEUkFKT3RMcFBTUGQ4dHh1eDZDeUVLSjB0OWFDUHotcXR3akpiMXh4NmpFS2d2OWtFNzZHd0dCaDVzTHJQNGc1NnlaTVc2d3Fl0gHiAUFVX3lxTE1xM3Z3WHBVYzZ4Y21tNDUwazlQM19fZDZLblZlY0pPQ25aajc1NTVfS0dHZUxGQ0FDUm8zWVg1ZXBRbDJWa0xSWFVCWHVXVlpyX2NNaFdWQmx3b29PNUswbmhfOVlPbzg3TzhhRU04OElET3JTYTRlUV9Kb0N4QXVNRVFncHVvLUc1d0p3ZjlYMUZHTkFjcVYtVDRzQ0dxZlE2bFdUYzRkNjQyRXBZVVZ0anpENnEyeVVHdDdyMHY2YjZsakNZcGppZk56UWRXZHVnaTVTUl94MzNXX3J1QWtzeXc?oc=5",
+   "headline": "Genova, droni nei pressi dell’aeroporto: stop ai voli per due ore",
+   "srcs": [
+    "RaiNews",
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-20/n-2026-11-20-d69013e9.json"
+  },
+  {
+   "id": "n-2026-11-20-2b0ccec5",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Quando l'AI e un videogioco scatenano la speculazione globale",
+   "summary": "Anthropic e GTA VI sono diventati i protagonisti di un evento globale che ha messo in discussione l'economia, la tecnologia e il futuro dei media.",
+   "date": "2026-11-20",
+   "ref": "https://news.google.com/rss/articles/CBMiywJBVV95cUxNWWdudHhvN3IzX1lGZVRHZ0FUZXlLSDB6UEwzbkUwWDNiWGFjT0NEQ1JRYlJHaGNBQUx6TGlwaElDNmxCajJPY1duVTFXb2FhTlB4QTQzc0RaMWpzLUp2UTdNLUdsM19ocTY4NW1DTjhLcXdqMDM4dmJXc0V2eHFQV1BoaGhEYm43RTY5Vlh1bV9nWjN1YUlpWjloQjJPd3NqN1Z0WGZyWldYcmhqYk5qa2VzTUdZeDFJSjhuQ2tITEFTSHNjc01tNHRSNjBVakN0enFNZE9HQWJ5cEpLanRuM2s5ODNPM3IycjMyVmpfUVBOUXN3ZUxwOTYwcWZvc01MNk9GaFJtLXpwOWtaQ3NPQUw1YXNGMFlYcy1BbjZUajR2OU4yTzgzaW5kS2VyUEs4VzZzMTVRbzQtZ1V2VUVCY1I5YzIxNGszcEUw0gHQAkFVX3lxTE9vaWxvZWc0aVF0blI2eUt3ZmNjYXNJTkhQQVpycjh4b1NEVXUxcE8zTW83NkJWdnZIVmJvNjVoZV9EYjh0VkhndEZkY3lyemdLdmVnV1ZCT2dQWWNRYkFoQ2EzYmktc3B4VmlQbVpOblRDQVVvaTFGS2ZHY05pd09UbVgzUGtzQ1Z1M1RHWVZCeVo0WTUtdGZIY0FWb1NxQk9vR0k1NlRsQ0o2ZVhCYXZGc1Q2dGMwbHVrSUFHamdzSnUzamFVUlRHTDJlb3Bpd2JrQUF6UkdVdXJpWUJfbHRCR1dmd01BSENLdENBMFZEU0FpNnZYenFUdFNCaklxeXppSnctZzE0S2JmRnVXZW1Na2FyRjBhZjBHWUljaGp4ZVVpTTJNcEIwSldGRHBsRndpQm80Ui1LeEVFOTdtMTJDaUF3cW1BeVRPMDVHZExLbw?oc=5",
+   "headline": "Anthropic e Gta VI, il doppio lancio dei record: perché l'economia globale guarda alle sorti dell'Ai e di un videogioco (e quali sono i rischi)",
+   "srcs": [
+    "Corriere della Sera",
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-20/n-2026-11-20-2b0ccec5.json"
   }
  ],
- "aggiornato": "2026-11-19T05:36:45.701086+00:00",
+ "aggiornato": "2026-11-20T05:44:06.110665+00:00",
  "modello": "qwen3:8b"
 }
