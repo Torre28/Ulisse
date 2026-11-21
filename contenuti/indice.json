@@ -1,0 +1,366 @@
+{
+ "items": [
+  {
+   "id": "n-2026-11-19-e55bd8eb",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Una bimba dispersa a Lampedusa: il naufragio e le sue conseguenze",
+   "summary": "Un naufragio a Lampedusa ha portato alla morte di una bimba di sei anni e al salvataggio di cinquanta migranti.",
+   "date": "2026-11-19",
+   "ref": "https://www.ansa.it/sito/notizie/cronaca/2026/11/19/si-ribalta-barca-con-migranti-a-lampedusa-dispersa-bimba-di-6-anni_51f568ca-d4cd-48b4-ab1b-8a71222fe119.html",
+   "headline": "Si ribalta barca con migranti a Lampedusa, dispersa una bimba di 6 anni",
+   "srcs": [
+    "Corriere della Sera"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-19/n-2026-11-19-e55bd8eb.json"
+  },
+  {
+   "id": "n-2026-11-19-b2ea471a",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Un Van Gogh da record: storia di un quadro e di un contratto",
+   "summary": "Un dipinto di Van Gogh è stato venduto a New York per 190 milioni di dollari, ma la vendita ha suscitato polemiche per un contenzioso familiare.",
+   "date": "2026-11-19",
+   "ref": "https://www.ansa.it/sito/notizie/cultura/arte/2026/11/19/record-a-new-york-un-van-gogh-aggiudicato-per-190-milioni-di-dollari_b17ddde5-f13e-486f-94a3-77d90e19e875.html",
+   "headline": "Record a New York, un Van Gogh aggiudicato per 190 milioni di dollari",
+   "srcs": [
+    "RaiNews"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-19/n-2026-11-19-b2ea471a.json"
+  },
+  {
+   "id": "n-2026-11-19-a16e2b2c",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Pagamenti a rate: nuove regole per il consumo",
+   "summary": "Da domani cambiano le regole per pagare a rate, con nuovi controlli e limiti per evitare acquisti non sostenibili.",
+   "date": "2026-11-19",
+   "ref": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQVVc1cEZYT3BKVkNMdTZqMjJtRUpOSUhBS2tndFJBeG1UckZNQmYtYzE5dm9rUVhnX1JadVo4aURYSWtPQUlsLVFveTJqZ24tMWxXSmZKaWVrVTg0OHY1S0xLb01HWGZ5Y3FJY2cyc2NvVWJBNnR5VDlYMEtoRzBMczMwVU05bnJfZnpHa05KOUhJMTNnbDNIRkx2clN2cnVGa1BpUnl3SXpsYV9zWlUwTF9OWQ?oc=5",
+   "headline": "Pagamenti a rate, da domani nuove regole: cosa cambia",
+   "srcs": [
+    "la Repubblica",
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-19/n-2026-11-19-a16e2b2c.json"
+  },
+  {
+   "id": "n-2026-11-19-24c714d4",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Guerra nel Golfo Persico: Cosa è successo",
+   "summary": "Nel Golfo Persico si combatte una guerra tra Iran e Stati Uniti, con colpi di proiettili e mine che colpiscono petroliere.",
+   "date": "2026-11-19",
+   "ref": "https://news.google.com/rss/articles/CBMie0FVX3lxTE81ekFtQW55SkM1SnBaRlU2MTBCTnFvekhNVXpfZXJrTi1IZUdNTHdoN2JhM0tpTjNmRkdCUTJvWEs3LVk0TzRRZmQyVElhSnRwQUc2MDJCSVJCRjlkclV2VVY5TUszRkFHN1hrclJBVUpBSk1nSUFqZzNKbw?oc=5",
+   "headline": "Guerra Iran, petroliera colpita da proiettile non identificato a Hormuz. LIVE",
+   "srcs": [
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-19/n-2026-11-19-24c714d4.json"
+  },
+  {
+   "id": "n-2026-11-19-b005b64c",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Antisemitismo e legge: un’arma o uno scudo?",
+   "summary": "Un ddl antisemitismo diventa oggetto di dibattito: chi lo vede come strumento per contrastare l’odio, chi come strumento per limitare il dissenso.",
+   "date": "2026-11-19",
+   "ref": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOOWg1MHlVeTJMR0V2R1g4Q0FwQ21mZ29oYzJJRlRSMHpCZUV6UFlzMjhHcjhrWmotWDJqdFBGdGdoM3RkRXNkMjl3a2ZVTjZLS0R2RWlwUVN1ZUZUcUpoNTU0ZDBaX21QVXJvTmVWWGlEdFJSbVp4SDVrb3d2VzhCdWlQUXBNWFVoNExxckdZOFEtVk1HcnYw?oc=5",
+   "headline": "Ddl antisemitismo, un’arma contro il dissenso e uno scudo per le destre",
+   "srcs": [
+    "il manifesto"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-19/n-2026-11-19-b005b64c.json"
+  },
+  {
+   "id": "n-2026-11-19-ba9ca3bb",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Alcaraz infortunato alle ATP Finals: cosa è successo",
+   "summary": "Carlos Alcaraz, uno dei migliori tennisti del mondo, ha subito un infortunio durante le ATP Finals 2026 e deve affrontare esami per capire la gravità della lesione.",
+   "date": "2026-11-19",
+   "ref": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxPUTgxYmgzTnpBMmh6QU5XRjFwcUhFamtOM2o3WHozcmt4amZ3aXdMQXVESVBHVkR5OURqdjNEbkFJbjhjaXphY0w3U0tjZ1c5TExpN1ZHVzhnYmItdDlnQ1pMMWpZdWJIMS00X0xkUWxtMzlzZjBMMXdTNEp4VTE0QjQ5ZlhuNnVK?oc=5",
+   "headline": "Infortunio Alcaraz alle Atp Finals: l'esito degli esami alla coscia e le news LIVE",
+   "srcs": [
+    "Sky Sport"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-19/n-2026-11-19-ba9ca3bb.json"
+  },
+  {
+   "id": "n-2026-11-19-252764d1",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "La Chiesa di Gaza e la speranza cristiana",
+   "summary": "Il prefetto delle Chiese Orientali in Terra Santa, monsignor Gugerotti, ha definito la Chiesa di Gaza un tabernacolo della cristianità, simbolo di speranza in un contesto di conflitto.",
+   "date": "2026-11-19",
+   "ref": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNTkRoaXZOVFo5a00tZ0xwOVB5UzBoYzNqa1VNYWs1dlJSYnFaSHFEM1NsYjVEV1o5a1BzNGFVYWtDTUVkTVdRemQ1bkdScXplcnJabzFfMENGeFZ3dF92LVZnX1pkNUdNMDI3Rmh5bGRleTd5YnhQTzdaWFplRkNiV2hrZkdBMVBoOTdpaDZOaEpIckxSRkpoVURDR1ZYUUxseU02Q3NJaHhxa3hOVUlJaS1aMGFGLU9GNzNN?oc=5",
+   "headline": "Gugerotti: la Chiesa di Gaza tabernacolo della cristianità",
+   "srcs": [
+    "Vatican News"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-19/n-2026-11-19-252764d1.json"
+  },
+  {
+   "id": "n-2026-11-19-d30199f5",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Meret si ferma: un infortunio che cambia la stagione",
+   "summary": "Alex Meret, portiere del Napoli, si è infortunato e dovrà stare fuori per mesi, mettendo in discussione la sua stagione e l'assetto della squadra.",
+   "date": "2026-11-19",
+   "ref": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOd0ZzdkQ3Q21MSlR4MHVnMU0wbE0wczhjNkFkMEc5d0VjRHlsQ3pGQzFKTjJnWjRueDdaSFh6b1F2Qm8wb21mdktORGx0MEdHdV93a2hua3FtdVFaODgxOWZENXBKRGZic0I4YWtEdnUtMXNQSUJHSGU2TUZHaTdiYno5OVVFTmJzWE5UeHY4T25JdWgwYkdKa19Pc0YxeFhvQk96VVJaTGxfTm9GU0xxOEY4LWk1ZmNkX3Bv0gHAAUFVX3lxTFBQV1BnS1RUemhaN1k3WkJFdWFuc1QzeTdEYkw4Ti1yR0FZeVZKcFJyRFo4U2tTbUZFVmpuOGM5ZUNUU051WXRCQTlqMV9BLXU3cjktRnBFQUx4VjlDNEhQNVEzVkdPVW9Na0pGMDBaRFNTM1phd3NVQk85TVU5a2FhOFNiZ2h0U0JMSHc1dUF3cHJSSjRfTld6bFpydGZacl9VblV4U0JualItZjJMVkNKUGhremJfb2tFNVRMdHh6dg?oc=5",
+   "headline": "Napoli, frattura della quinta vertebra lombare per Meret",
+   "srcs": [
+    "Fantacalcio"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-19/n-2026-11-19-d30199f5.json"
+  },
+  {
+   "id": "n-2026-11-19-6c9e34cb",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Corrado Augias: una voce che raccontava la vita",
+   "summary": "Corrado Augias, giornalista e scrittore italiano, è morto a 91 anni, lasciando un'eredità di cultura e giornalismo in Italia.",
+   "date": "2026-11-19",
+   "ref": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOMHd4VUVKc2tvbjBUOW42dElPRUcxWldTZmlGVzhGajB2aXhoWW5VRzEwOHhkMGlNcm85cWVpaUNqUTlISmR2UngyMHNWQldoajdMbmRLYk1ZZzRIS1dpeEFGc25lcDlLUy1wNlNMYVF4T2dXNmhrTzBCUHVoc0ljUEVWcDBxVXdOaUNIQ19iR0x6MjZOT2RZMQ?oc=5",
+   "headline": "Morto Corrado Augias, voce storica del giornalismo italiano: aveva 91 anni",
+   "srcs": [
+    "Il Fatto Quotidiano"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-19/n-2026-11-19-6c9e34cb.json"
+  },
+  {
+   "id": "n-2026-11-20-47a44fca",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Maltempo in Toscana: Allerta arancione e conseguenze",
+   "summary": "In Toscana è scattata un'allerta meteo arancione per vento forte e mareggiate, con scuole chiuse e rischio di danni.",
+   "date": "2026-11-20",
+   "ref": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQNllLWjNYYjR3RjJtcXNwSW0zTm9KZENHUFR0aGg2aHQ2T1NyczM5VVZuVDIwR2N6bUtRcmFpUHlISzhzLVl1RGRxeHZ4S0hUR0VlU1hkeEl1eGlWOFNUYUxoNXF3cDlMRmFwejlHNHU4eGN0cEI1NFJGXzMtbU9DN0NZeDlWVFF6WGlBa0EtWXRGeGdWMGFXWlk1Mmxuejd3LTRxa0lSQVhCT1FUanZGcjRkLWhja3g3?oc=5",
+   "headline": "Nuova allerta meteo arancione in Toscana: in arrivo vento forte e mareggiate",
+   "srcs": [
+    "La Nazione",
+    "Corriere di Bologna",
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-20/n-2026-11-20-47a44fca.json"
+  },
+  {
+   "id": "n-2026-11-20-d3f399ce",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "La guerra nel Golfo Persico e la Striscia di Gaza",
+   "summary": "Nella Striscia di Gaza e nel Golfo Persico si sono verificati due episodi distinti: un'operazione israeliana e un incidente navale iraniano.",
+   "date": "2026-11-20",
+   "ref": "https://news.google.com/rss/articles/CBMi_gFBVV95cUxQcWt4bXN5WHZwUmpYbEpZdDBpeTNKMlgxWndiUm15WE9Lb1EwUGRBcnB2dnBiNjZ6RVAwMnBzaklXZFJteXFHS1dzdi1LM05CNkFJR180cTNKOWVhOTI1eTQzSEFobkpzcEF1RVFyTHNSZzNzNE9oV0xYQlNzdmp4UWtqTmo0UzZRX1Q0amFKaDBTdWpYdmpDeEJPbG9MVVFSREF6dTFScXh4bnNnclJPem9ieEp2TnlESEJ6NWRnQjIxa3JXaldEY01oVjNzNVJtRTZKQTM3Z1R4V2VZTU9LSHJKYXp4RWVMR2VaY3JVU3NrWXJZckVCb00wdkFZQdIBgwJBVV95cUxQU1RTakNRWWJpNS1wSzRkSW1RVmZaVWlXTjI3TVRnaEY2M1p6QWdBaW1wMm91bzAzQTZmUFpURHJLX1dWTjdoUmdnazVXN3ZZYVFYMkIxQ2V5d2VWWjhKUlN4WVlrSWpvVGVYUjlncnFPOHpaWUpsQU9ZVExTNWJnOVg1aGthWjdVakMtazVYNFRUTGR1eExWS1RNRkJoMzVnXzJzQ3oyMWRyeXlHZTB3NFN4Z1lER2k2VEx2X0YxTmlZUDNYV28zTnZqLVU3OHE1X2tZUEs0b2xwTmUzUFlndk5LaldyTVp2UHhRNW5vb05VeGI5U2VLaF9ETlI3d2tvREhR?oc=5",
+   "headline": "Conclusa l'operazione nella Striscia. Lapid: \"Un rischio per Israele non cacciare Netanyahu\" - Media Iran, 'nave a Hormuz urta mina, scoppiato incendio'",
+   "srcs": [
+    "RaiNews",
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-20/n-2026-11-20-d3f399ce.json"
+  },
+  {
+   "id": "n-2026-11-20-2e860124",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Cobolli al top del ranking: un successo italiano",
+   "summary": "Cobolli è entrato al sesto posto al mondo nel ranking ATP, e Schiavone lo ha celebrato come un successo nazionale.",
+   "date": "2026-11-20",
+   "ref": "https://news.google.com/rss/articles/CBMizgFBVV95cUxQZ0RTM1lsN1VKOVc5bVJtMEFXYWVBTDVnRFNfU2V5bTRlcnZpd3BNWFBodk1zWWVBd0VPaFJ6WWJBamVoWmtLOG5PUkF1amlRbVJuYmZyS0JadldNUVRuS2l4SHpoQmsyTHdrM29rRGtKeFFaYmVaMTRkcUtLVjEwMEc0Tlg4aGpqR1lrdzAyckZsTmhkS2dYQnRIb05kSDNidTBrMWxNVndUOUhEWF9PRDZYQzhCTWtvcENuRlk2SEtXaGRLNWRndWZNblFVUdIB0wFBVV95cUxPdTM5c1phVDBCbkNEYWJYY2F1ZWl5T081YzB2a1FVejZvbUVrbUlFcDF3Zjh6THV4NW5UVE1oWFRvR0RObFVodFhtVzJtR0dTczVjT0tFWEUzTXJRdFBZUnk1eDRwdnRFNUZMTmVMZEtQZW9CWDY4Q2RpR3FoUGFxaVNQeVJORk1WUnk4OEY0a2Jxbnc2bFp4bUp2bjlCcTctQUFwRjYyYUdJZDViVVVTZnZ0dDF1WnBkMHFwRi1TbWtLRDY4ZllpRXNSZURIWWtSWnRj?oc=5",
+   "headline": "Schiavone: \"Finals? Complimenti a Cobolli, è il n.6 al mondo. Italia, devi essere orgogliosa di lui\"",
+   "srcs": [
+    "La Gazzetta dello Sport"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-20/n-2026-11-20-2e860124.json"
+  },
+  {
+   "id": "n-2026-11-20-6cee0372",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Kiev colpita: un attacco e le sue conseguenze",
+   "summary": "Un attacco su Kiev ha causato tre morti e danni ai ponti, segnando un nuovo episodio di tensioni nella regione.",
+   "date": "2026-11-20",
+   "ref": "https://www.ansa.it/sito/notizie/topnews/2026/11/20/attacco-missilistico-su-kiev-incendi-in-piu-quartieri_6104402c-305d-441e-a983-2c8dfb41bd5e.html",
+   "headline": "Attacco su Kiev, tre morti e colpiti i ponti cittadini",
+   "srcs": [
+    "ANSA"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-20/n-2026-11-20-6cee0372.json"
+  },
+  {
+   "id": "n-2026-11-20-d9963fd4",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Le 10 Alfa Romeo vendute: un'edizione speciale",
+   "summary": "Un'edizione limitata di 10 Alfa Romeo Giulia Quadrifoglio Luna Rossa è stata venduta in pochi giorni, mostrando la passione per la marca.",
+   "date": "2026-11-20",
+   "ref": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxObWR0ZWgybGkySXI3dEU4ZWlCWEVleDhGZXJrdUpPSEtQM0Z6eS1Wd1I4MFNrVE12VG9QUklERV9GZnFBQlJWNHdROGZIQTloVXdpRGI2LVVCTEdLWDljdjNndGxtVmlJUHhWQW9LbWRTcXliWUJpU0pBSGwxbWtzblJMeGhPY0tQeWVmTTQxMWpnSnl3OVAzRHJLQmVqczZGd3ByY0U0MkJhZw?oc=5",
+   "headline": "Alfa Romeo, ne esistono solo 10: sono già tutte vendute",
+   "srcs": [
+    "Virgilio"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-20/n-2026-11-20-d9963fd4.json"
+  },
+  {
+   "id": "n-2026-11-20-c68b940a",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Sicurezza e degrado in centro: un questionario per capire",
+   "summary": "Un questionario cerca di capire come vivono i residenti e i commercianti del centro, mentre un centro commerciale si espande.",
+   "date": "2026-11-20",
+   "ref": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxNTHJMc1NzaDdlajh2UWF6ZllWV0VHd3FNcUNTSnpBOVFFdUhKR05QMmRXSDFONk9ldXN1aGJSM2NTMjRCVW0wQkRkRnVISTNhUUNoVTdxZFVUaFBhUTlxMGIzUVA0bk9FTEIzbUU3dmZhYXRoY2t1cjFoQ1pDbVQ0Zk9RYy14TkxpQmFxNXV4ZElTMWtHajUzM2lwYXZJQWVma2pUS1R0LWdWZlNVc05HNnptc2VDaDdPT2Fkdkw4cWZUV3hiZVJ0ak1ndGhudTBuUlh2cGQ0QVFvRnhNNHk2dFptOHRjRmM?oc=5",
+   "headline": "Sicurezza e degrado in centro, un questionario per raccogliere le opinioni di residenti e commercianti",
+   "srcs": [
+    "Latina Oggi",
+    "La Prealpina"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-20/n-2026-11-20-c68b940a.json"
+  },
+  {
+   "id": "n-2026-11-20-c2ca4b18",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Un insegnante senza laurea: Cosa è successo",
+   "summary": "Un ex campione di 'Chi vuol essere milionario' è stato condannato per insegnare matematica senza aver terminato gli studi.",
+   "date": "2026-11-20",
+   "ref": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOZUROczFCZUFod3p4b1ZySlpJWklhTG84QkdzYXpkNF9idEpRU1A1RTZRY0c0M25hbTNJOHZ2ZWgyZWd1enZCbGV5am43a3d0S1V0VTE4cUxXX3FWUVZ1a2RRNzZfNzVHUktUWXJiWG9kZXdsLXlDS2FMcHdhNW44OXY3b1B3d3pNbGhzMFBSRzZmTEpHd2V6SzJWSnI1VDVzYUhlMHdtbjdPcHhQZHRFcnpocm_SAbQBQVVfeXFMTUM1aGhUZDdocjdNb1VLXy1pWC10YXJtczdhYlc1ZnlBTDY2LWltMnFuWWo3M3c0MkhBd3BWaHZBY2tyS3dEa0FFQUNFWjN5RlNKZEM3RFFlREtNOFo3RkllcG9tS1NPQmg4R3dRVGlUUENVLWNIX2JCMlJyOVQ0WHhLLUs5Q0pHeVhLUjkyMmVOSFYzZWVCRTRhakJXQXFlX05ibUluOXBILUJrX3ZiYWZ5NHRm?oc=5",
+   "headline": "Il campione di Chi vuol essere milionario \"insegnava matematica senza laurea\"",
+   "srcs": [
+    "Today",
+    "Open"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-20/n-2026-11-20-c2ca4b18.json"
+  },
+  {
+   "id": "n-2026-11-20-0426a0b5",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Guerra Ucraina: nuove mosse. Trump e l'accordo di pace",
+   "summary": "Trump dice di voler un accordo di pace in Ucraina entro gennaio 2027, ma la guerra continua e i leader si incontrano a Shenzhen e Berlino.",
+   "date": "2026-11-20",
+   "ref": "https://news.google.com/rss/articles/CBMikAFBVV95cUxQSFdKdENTQnd0MktvdXFPNlpqVnhFcFBpMU8yc19wTzEyVVNpZ3BlVUhjd0RqZUljU1ZmbW1UTm0tMXd6OHZwLTdUZFhaNkFFTXZnV2xBZkd4RnJ4YWZGck5PVG4wTC1tSkMxelI1M1V0R3VoQk9XdnNUVWZ1ZmZEekJuTDZjWjdqUVpWTlEwSkI?oc=5",
+   "headline": "Guerra Ucraina ultime notizie. Ft: «Trump ha detto a europei e ucraini che vuole accordo di pace entro inizio gennaio",
+   "srcs": [
+    "Il Sole 24 ORE"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-20/n-2026-11-20-0426a0b5.json"
+  },
+  {
+   "id": "n-2026-11-20-c9a64862",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Pizzaballa in Terra Santa: Un cardinale tra speranza e conflitti",
+   "summary": "Un cardinale italiano, Pierbattista Pizzaballa, si muove in Terra Santa per parlare di speranza e di come la Chiesa aiuta i cristiani in un contesto di tensioni.",
+   "date": "2026-11-20",
+   "ref": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPaHNOX2FtWGdxQ3VjbWRPRHJGMnllZ3dPeFE4R09hYkM0VmY0OWpyN3MwZlRtVV9FTExieEFPaGVXMXFVQnJWejhfN1lwb0JtWWZtWTJvTXRFWGY4NFJLOVhkQVZjUU91OE14aTA3ZjI1eDdwT093S3EtX2FEV2dfUWRub3FIOThTalJEUmVWaFAtVndiV09TRVRBQ1k3VHNGdHV6MGZiTS1iMlBhc2l3RHpPekFUNEk?oc=5",
+   "headline": "Pizzaballa: “In Terra Santa la Chiesa porta speranza dove la politica non arriva\"",
+   "srcs": [
+    "Vatican News"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-20/n-2026-11-20-c9a64862.json"
+  },
+  {
+   "id": "n-2026-11-20-09ab5e7d",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Missili in Polonia: un incidente che scatena tensioni",
+   "summary": "Due missili e un drone russi sono caduti in Polonia, scatenando tensioni con la NATO e suscitando accuse di provocazione da parte di Tusk.",
+   "date": "2026-11-20",
+   "ref": "https://www.ansa.it/sito/notizie/mondo/2026/11/20/due-missili-e-un-drone-cadono-in-polonia.-tusk-una-provocazione-intenzionale-russa_6104402c-305d-441e-a983-2c8dfb41bd5e.html",
+   "headline": "Due missili e un drone cadono in Polonia. Tusk: 'Una provocazione intenzionale russa'",
+   "srcs": [
+    "RaiNews"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-20/n-2026-11-20-09ab5e7d.json"
+  },
+  {
+   "id": "n-2026-11-21-3295d291",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "L'AI ha risolto il problema più famoso della matematica?",
+   "summary": "Un ricercatore ha annunciato di aver usato un'intelligenza artificiale per dimostrare l'ipotesi di Riemann, un enigma matematico che ha sfidato i cervelli più brillanti per oltre un secolo.",
+   "date": "2026-11-21",
+   "ref": "https://news.google.com/rss/articles/CBMisAJBVV95cUxOM1VLUXhMUVhQTkFwMEJ5aWFCbEktTGhodDZDZnVWVldhQ2ZDc3Eybm1ZUzdaeTZxR1dadHhCZWY4RGVjV082Qk5xRWhIMWNvWm5zY2hYRXNlbHJZakVVRFBCVXhZa093MzY3M3lRZ0QyNnMwZkNROF9WYVY1RFpSakZKU252OUdHdzN3dFkzWGtyV3ZxSGs2dy1FQ0hYcEVkWC1RemNYNzA2Rk1BRDNDTnF4djNVaEt4MTJNcGF1ZjQ3U0RyWmpzX2ZULWpsUFlDNU0xeER3Y0U3S25tV0ZyN3Nuck51aWFLWktFZXlwM0N3Rk5fZnVuVklDZkZmVFZaVWZKWnV5b3pBVUY0ZERMV3BfeTNucVJOTTc5VFVkVzZRdWlkcUgwMEVtS3REdUJn0gG2AkFVX3lxTE11amZRbWtlMFdSOGNBRFBQdUFPbHd6M1Jib29Zb3BJcEhTQWVvZlNfZVR0OVNqZzE5SDJiYVdWTTZJZ2k2NldGdWJSdEtMdzU5aHJTNXR5Qk5USUF0OU1ZQnhjVmFjcklCZi1yS2MzcElWajJ3a1Y1Vms4THlXR2pDcTBGMHFTdms4N1dRSnc2TU9KSEJ1VElSRlZmSVFDZjV5aDFOb3hBZFZOV0FiRHZzSXRLcmc2dWFtbm01c2lwcWd4cEtkS3ZlVFRQT2U2d0Zldncyb1BKemR3YVh4NWYzZXUxZ3g5NnZjRWZjdVNDa2dFQUpmZFRpa0pZb1JPcV9sZTdPQUxIY05ZQmRhQ1o0Q25QWno3aWRkSEZZdDZpVDZOOEN2b1E0bFZaQTI4cnpybFB4S0E?oc=5",
+   "headline": "Uno scienziato dice con l'AI di Anthropic ha dimostrato l'ipotesi di Riemann, «il sacro Graal della matematica»",
+   "srcs": [
+    "Corriere della Sera",
+    "Il Sole 24 ORE"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-21/n-2026-11-21-3295d291.json"
+  },
+  {
+   "id": "n-2026-11-21-3f497bb8",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Morte di De Gennaro: un suicidio e un caso di depistaggio",
+   "summary": "L'ex capo della Polizia Gianni De Gennaro si è tolto la vita dopo accuse di depistaggio per la strage di via D'Amelio, un caso che ha scosso l'opinione pubblica.",
+   "date": "2026-11-21",
+   "ref": "https://www.ansa.it/sito/notizie/cronaca/2026/11/21/lex-capo-della-polizia-de-gennaro-si-e-ucciso-sparandosi.-il-legale-conseguenze-di-accuse_5bcb2e78-76a6-4c7d-b2ba-61000e349ee9.html",
+   "headline": "L'ex capo della Polizia De Gennaro si è ucciso sparandosi. Il legale: 'Conseguenze di accuse infamanti'",
+   "srcs": [
+    "Il Sole 24 ORE"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-21/n-2026-11-21-3f497bb8.json"
+  },
+  {
+   "id": "n-2026-11-21-84b17f18",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Trump e le tasse sui data center",
+   "summary": "Trump minaccia di tassare pesantemente le aziende che costruiscono data center fuori dagli Stati Uniti.",
+   "date": "2026-11-21",
+   "ref": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQem4zc21UdUJLSlJ4SzM3UDJnWXJzazVoZjIzcmd6SkVLRGhfNFhXb0NEdWNKY01laUJYY0w3UmJiU0tHV0FETEpGVEFERFBwVGN6NGMyMDRzQ3kxWld5UnNjcHBrb3NXNkJwY3k5VDBvaGV6SlJZRGRnc1ktdi1MeEw5b3FvWWhjd1M3M3htLUhvTkk2TWI5OGhOTVZ5MW5FSUVKR3hEcmd2UXlx?oc=5",
+   "headline": "Trump: «Tasseremo molto» le aziende se costruiscono data center fuori dagli Usa",
+   "srcs": [
+    "Il Sole 24 ORE",
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-21/n-2026-11-21-84b17f18.json"
+  }
+ ],
+ "aggiornato": "2026-11-21T13:57:54.040280Z",
+ "modello": "qwen3:8b"
+}
