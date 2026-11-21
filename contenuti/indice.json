@@ -857,8 +857,42 @@
    "topic": null,
    "chapters": 7,
    "file": "contenuti/2026-11-20/n-2026-11-20-2b0ccec5.json"
+  },
+  {
+   "id": "n-2026-11-21-0cf2f78e",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Mps e Intesa Sanpaolo: un accordo e una protesta",
+   "summary": "Un accordo tra due banche italiane è andato a finire in una protesta e una dimissione, per un prezzo che non convince tutti.",
+   "date": "2026-11-21",
+   "ref": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNRkJZOTJTR2hrcEc5Q283RE95YUhyMVE5UXZlVWNtQzM0SFNuazZOYjZFSG4zX1BoQ1E3dUNIVlUyNVpGRXVVbWRnVk5VWmEteEZjVDRjZ2ZwZDNWWkMySWtma3RrUE1xRzZocDllNjY5b1hFcEZrUnpDRkNEbWdiaTRYSmNaSlFYcjF3ZFU1aHBWbWJT?oc=5",
+   "headline": "Mps: il prezzo di Intesa Sanpaolo è giusto. Ma Passera protesta e si dimette",
+   "srcs": [
+    "la Repubblica",
+    "Il Sole 24 ORE"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-21/n-2026-11-21-0cf2f78e.json"
+  },
+  {
+   "id": "n-2026-11-21-130179d7",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Black Friday 2026: Quando e perché si compra tanto",
+   "summary": "Il Black Friday 2026 è iniziato e si tratta di una grande promozione online, ma non è solo un evento commerciale: ha radici storiche e influenze economiche.",
+   "date": "2026-11-21",
+   "ref": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxOeHo2M1NCVE0tTDBaTDNaRUlERnotX1gxLUNVWHBTY3o1Skg4R2tVNWpqUTk0ME9HeE16Z01UaDhra0M2R2ZzejFIaUI0LU1mSkFCUm5lYWxxV1BJeENva0M0NG41RXJBb1FNRVVLTWI1R1lsTFBLNGZNclMwTEFtZUxNa1dWWVg3WEtJNkNIZ2NPV1l0d2hFNkJpeUtDMk1RZ3N2WWcwbnlobWtMTXV0ZDBQYUdFYVpCV05aZExYNXVIVkx4djQyMjFLX0ZZVzBrODhqWDZR0gHbAUFVX3lxTFBObEtWcU94dU9SV2JFSDJHakItVnVNdVNwZHZ1R085R2dMVGJDTV9qYVdjSGU0VFR2a1k0ZmRqZTFjb05hTnhQYXlPOTV6Vkx1Ujc3MWdQNExxdnVWVnpHalBzakFYU3BKeE1sR2Nta2poVmJwcDgwRUlrS05FQWM4LXRWVWljSTVIRnlySWpsc2NTMWMyUnlkbW5PNUJuOWMzV0ZxN1AwU1U2aUxyWENlUHZzX2RrbGpvNUVRTndEZ0VkajVvLXExaS1LajZBcWRqUWxmVGlFNmdNNA?oc=5",
+   "headline": "È iniziato il Black Friday Amazon 2026, quando finisce e cosa conviene comprare",
+   "srcs": [
+    "Idealista",
+    "www.altroconsumo.it"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-21/n-2026-11-21-130179d7.json"
   }
  ],
- "aggiornato": "2026-11-20T05:44:06.110665+00:00",
+ "aggiornato": "2026-11-21T07:55:11.765534+00:00",
  "modello": "qwen3:8b"
 }
