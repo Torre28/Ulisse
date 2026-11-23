@@ -1,40 +1,6 @@
 {
  "items": [
   {
-   "id": "n-2026-11-12-a7d75143",
-   "kind": "notizia",
-   "mode": "full",
-   "title": "L’accordo tra imprese e sindacati: come si fanno i contratti",
-   "summary": "Un accordo tra sindacati e imprese ha deciso come calcolare i salari e gestire i contratti in Italia.",
-   "date": "2026-11-12",
-   "ref": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQXzFVejFFYTM4djBVTXBYSFM1ZVlVWEJPNW0tWU11dlJ5eXkyX2xnREExQklSbXI2eWxBQWt6eDR1VnFYV3gySS11NFBfcERPX2ZtOFg3QmRmR3haVTU2S1p0aTBhYlBDdmRoNlpNOVJJSnB0U1BUNWxuMjRQTVBSM1FvaWMybjhlRlhJU3R5NjZGdUlGQWVhWGNiVTFBbnhhbWk0ZHg4aw?oc=5",
-   "headline": "Rappresentanza, contratti e salari: firmato l’accordo tra imprese e sindacati",
-   "srcs": [
-    "Il Sole 24 ORE",
-    "la Repubblica"
-   ],
-   "topic": null,
-   "chapters": 7,
-   "file": "contenuti/2026-11-12/n-2026-11-12-a7d75143.json"
-  },
-  {
-   "id": "n-2026-11-12-f1f9b86f",
-   "kind": "notizia",
-   "mode": "full",
-   "title": "L'agenda economica e i nodi del momento",
-   "summary": "L'agenda economica del 12 novembre 2026 racchiude eventi e decisioni chiave che influenzano l'economia italiana e globale.",
-   "date": "2026-11-12",
-   "ref": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNTENwWnNkVWQxYjRzTnRaNnRHeW1qZFFqeWN6NDlEbktaVzhPbVBDQ0NZMWxSaVY2UEJ0cEF0clFqcy1GN3U4YlBrYy1EVW5Dd3g0UXRoQ0dMM1BjVVpwdkpwNEFuRXVDZE1FRmZkclI0LXEyTGtTeXRTalduektmeTZMT0VNSVpKRHFFYUFjY1pOQkV1?oc=5",
-   "headline": "Agenda economica del 12 novembre 2026",
-   "srcs": [
-    "SoldiOnline.it",
-    "Borsa Italiana"
-   ],
-   "topic": null,
-   "chapters": 7,
-   "file": "contenuti/2026-11-12/n-2026-11-12-f1f9b86f.json"
-  },
-  {
    "id": "n-2026-11-13-2a6d4734",
    "kind": "notizia",
    "mode": "full",
@@ -798,8 +764,42 @@
    "topic": "retorica",
    "chapters": 4,
    "file": "contenuti/2026-11-22/n-2026-11-22-37fdb2a0.json"
+  },
+  {
+   "id": "n-2026-11-23-eac4ad6b",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Greta Thunberg e la crisi dell'ambientalismo",
+   "summary": "Greta Thunberg, simbolo del movimento climatico, ha scatenato una discussione su come l'ambientalismo si confronta con le sue stesse idee.",
+   "date": "2026-11-23",
+   "ref": "https://news.google.com/rss/articles/CBMiiwJBVV95cUxPZkdHcmd0RVVoODI2M0V6YmhTaGtia3VvWHJJM1lTUTNIa1hPNGxOMHBCaUZySnVkaUdmN2tmQkhRVDY0Nldxb295TVlOYlZqNWNMZlNsTGxha0k4ZkoyYUlEdWdGQ0JIcVNnTTExdUJZdFl3NElFQ0xzUU4xNWRlRVNCMGZUWUlDUllQMXQ1bFQ0WktQd1FnQWlleGFXVXZ0N241S2tGMHJIdTlkTnJlcFp1U2pUR3czV0VCOE1FQ3VIWXdBZnFBbUNCLTAtekVsWmI5UF9WMUY4YUZ5SVUya2NrTHJlUEFfNS1WRUhzRGg0RjExVlM2TEFxUTIwWGY4Yk1CdVV2M3JUaUE?oc=5",
+   "headline": "Greta Thunberg voleva salvare il pianeta, invece ha insegnato all’ambientalismo a diffidare di ciò che potrebbe salvarlo",
+   "srcs": [
+    "Il Foglio",
+    "RaiNews"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-23/n-2026-11-23-eac4ad6b.json"
+  },
+  {
+   "id": "n-2026-11-23-41491e2f",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "L'ipotesi di Riemann e l'intelligenza artificiale",
+   "summary": "Un'intelligenza artificiale ha potuto dimostrare un problema matematico secolare: l'ipotesi di Riemann.",
+   "date": "2026-11-23",
+   "ref": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNbmUxZHd1SFpsX2laLVRqRUlaOXdDdGc3VHhFaFQwaG5PbkFJSE1nSmM1bDVZY3dEQzAyMlBBT3dBTElOVUJfaHY2dGo1Y19aTlVxbURKQ0M3RXFMWXd6WVJrTTcyeWE1dXZoSjhQamszdl80VEs5V214YmZjTXdycWdjbHVfQVU?oc=5",
+   "headline": "Claude sfida la matematica: dimostrata l’«ipotesi di Riemann»",
+   "srcs": [
+    "il manifesto",
+    "Corriere della Sera"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-23/n-2026-11-23-41491e2f.json"
   }
  ],
- "aggiornato": "2026-11-22T05:04:50.982667+00:00",
+ "aggiornato": "2026-11-23T06:56:51.656640+00:00",
  "modello": "qwen3:8b"
 }
