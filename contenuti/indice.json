@@ -1,86 +1,6 @@
 {
  "items": [
   {
-   "id": "n-2026-11-13-2a6d4734",
-   "kind": "notizia",
-   "mode": "full",
-   "title": "Maltempo in Toscana: allerta rossa e scuole chiuse",
-   "summary": "Un'ondata di maltempo ha colpito il Centro-Nord Italia, con allerta rossa in Toscana e chiusura di scuole e infrastrutture.",
-   "date": "2026-11-13",
-   "ref": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQdkdlNzUzUkNfRk1EWFRpUWFoWGY2R1RwTDlCUXlNSjZJY3o0Rm9mSzFKOHEzRUQ2WFF6UkNZOGVKcUJSRkdrWHQwbUFvZ0QwdEMxQnc5YUdhQ0c0RjdqdHpyME05ZFVobG1TVGJmVmYzYmRkeVh5M2hfclBsd1VpRTZQZG1HZ29wS3ljdDl2azZtRXZnYTJpYk1VVEpnQkctWjVJbjBrdlVkR3VXTzZVSDVEUlBna00?oc=5",
-   "headline": "Maltempo nel Centro-Nord, allerta rossa in Toscana",
-   "srcs": [
-    "Tgcom24",
-    "Corriere Fiorentino",
-    "Sky TG24"
-   ],
-   "topic": null,
-   "chapters": 7,
-   "file": "contenuti/2026-11-13/n-2026-11-13-2a6d4734.json"
-  },
-  {
-   "id": "n-2026-11-13-33447309",
-   "kind": "notizia",
-   "mode": "full",
-   "title": "Allerta meteo in Marche: vento, piogge e mareggiate",
-   "summary": "In Marche c'è un allerta meteo per vento forte, piogge e mareggiate che potrebbero causare disagi e interventi di soccorso.",
-   "date": "2026-11-13",
-   "ref": "https://news.google.com/rss/articles/CBMivAFBVV95cUxQSk9ZYmFWNWpMYnB0SHNTRHl6WXZqVUFPZGt6YlhtZU1NV3VZYnI2cFNSam9nM1pyNHVOa0VTUFlxX01lamtrdmEzYUZKXzdMWHpiYlFxT3dqNENqa2V3NDVwTUF4bmhxZERQM3JhZTJRaDlvdFVVM2JSREYzNmd5UjJEd0dnbTNMVEpjN1c0Wm10bklfcTAtRFRWYUdYZFJ6WkxuVzZ5TlFiRGg3U1pnLVJFWVB3LVlJcGhXVtIBwgFBVV95cUxNOXBZWjhCcmJjcnBubmJIWnBLU1FvUm9LeUw2SWdqTHJOUk95OHE5VDBwcFY3bzFpXzIteUcxaEJrbnhLY2xsUVUySTd3T1hXMFlybW1uYktPZU05eDIzOFdNeUVONDJUUlJIUVF2TXNVN2U0c1YzX0hVNzh6cHFOTGduRFE4Qk9yelRXNWhlR0dMeXc1UU5waF9hdm05dk9sbjFxdDM1bF8yVFp0dWZTWFlvLUI1WVRUanBWcDlYQ0lsdw?oc=5",
-   "headline": "Marche, raffiche fino a 100 km orari Nuova allerta meteo per vento fiumi, temporali e mareggiate Avvisi dai Comuni: scattano i divieti",
-   "srcs": [
-    "Corriere Adriatico",
-    "CesenaToday"
-   ],
-   "topic": null,
-   "chapters": 7,
-   "file": "contenuti/2026-11-13/n-2026-11-13-33447309.json"
-  },
-  {
-   "id": "n-2026-11-13-de684235",
-   "kind": "notizia",
-   "mode": "full",
-   "title": "Papa Leone XIV in Perù: il ritorno di un figlio alla sua patria",
-   "summary": "Papa Leone XIV torna in Perù dopo anni, ricevendo un'accoglienza calorosa da parte del popolo.",
-   "date": "2026-11-13",
-   "ref": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE5aZTV5Sm55Q1dGUmFlbE1jT0NVWVE2RnlxYXhLTzlWUDlKY3V0S0Y1XzQ1TGd0dFFXakgwZXpKQUNqQnZLY1hZNi05dDRwM3lsaFJ2ZXJLWlpYd2NyVHJETmFZSWFVZnpZ?oc=5",
-   "headline": "Papa Leone XIV torna in Perù, l'accoglienza a Lima. FOTO",
-   "srcs": [
-    "Sky TG24",
-    "Corriere della Sera"
-   ],
-   "topic": null,
-   "chapters": 7,
-   "file": "contenuti/2026-11-13/n-2026-11-13-de684235.json"
-  },
-  {
-   "id": "n-2026-11-13-e3a89e4f",
-   "kind": "passione",
-   "mode": "scoperta",
-   "title": "Camminare per scoprire: l'escursionismo a portata di passo",
-   "summary": "Scopri perché camminare è un modo per conoscere il mondo, la natura e se stessi, con esempi pratici e consigli per iniziare.",
-   "date": "2026-11-13",
-   "ref": "topic:escursionismo:2026-11-13",
-   "headline": null,
-   "srcs": [],
-   "topic": "escursionismo",
-   "chapters": 4,
-   "file": "contenuti/2026-11-13/n-2026-11-13-e3a89e4f.json"
-  },
-  {
-   "id": "n-2026-11-13-8df83911",
-   "kind": "fede",
-   "mode": "parola",
-   "title": "Quando il Signore viene nelle cose di ogni giorno",
-   "summary": "Gesù ci dice che il Figlio dell’uomo verrà come nei giorni di Noè e di Lot, quando nessuno si aspettava niente. Ci avverte di stare svegli e di non perdere tempo a cercare di salvare la vita, perché la vera vita è in lui.",
-   "date": "2026-11-13",
-   "ref": "bibbia:Lc 17,26-37:2026-11-13",
-   "headline": "Lc 17,26-37",
-   "srcs": [],
-   "topic": null,
-   "chapters": 5,
-   "file": "contenuti/2026-11-13/n-2026-11-13-8df83911.json"
-  },
-  {
    "id": "n-2026-11-14-333f8b31",
    "kind": "notizia",
    "mode": "full",
@@ -798,8 +718,59 @@
    "topic": null,
    "chapters": 7,
    "file": "contenuti/2026-11-23/n-2026-11-23-41491e2f.json"
+  },
+  {
+   "id": "n-2026-11-24-7c111b2e",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "La guerra al largo dello Stretto di Hormuz",
+   "summary": "Tre petroliere sono esplose nello Stretto di Hormuz, mentre Teheran abbatte un drone Usa, segnando un nuovo episodio di tensione tra Iran, Usa e Israele.",
+   "date": "2026-11-24",
+   "ref": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPMjlmbEhNNldjQmJETm1yaHVWT3EwRWlBdE9mUGVrcEpXQktaTkRWVXB6Qy1sZ1k3cHc0eU9uMlE2VmtQWmNCQ3RGbzJGME9tYXAtOUx4X2toekpDVUFGSFhCOXF6QTU5LWJ6UXNaM3REdXZySFJ1cDIxU09BSzZ0UUNWLXBKdkJEREZJS0syUTM3VXJWdUx4ZGN1eHVqUF9ESEptam42d1VDTzNiMGFqQzRn?oc=5",
+   "headline": "Iran, tre petroliere in fiamme nello Stretto di Hormuz | Teheran abbatte drone Usa",
+   "srcs": [
+    "Tgcom24",
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-24/n-2026-11-24-7c111b2e.json"
+  },
+  {
+   "id": "n-2026-11-24-2e415871",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Delitto del trapano: dopo 31 anni, la verità arriva",
+   "summary": "Dopo 31 anni, un uomo è stato condannato per l'omicidio di Luigia Borrelli grazie all'analisi del Dna.",
+   "date": "2026-11-24",
+   "ref": "https://www.ansa.it/sito/notizie/cronaca/2026/11/23/delitto-del-trapano-a-genova-carrozziere-condannato-a-30-anni_99601785-2511-4b8f-9944-35f6580afbc2.html",
+   "headline": "Delitto del trapano, dopo 31 anni arriva una condanna grazie al Dna",
+   "srcs": [
+    "la Repubblica",
+    "Primocanale"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-24/n-2026-11-24-2e415871.json"
+  },
+  {
+   "id": "n-2026-11-24-918d52ef",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Il Ponte sullo Stretto e i miliardi del Pil",
+   "summary": "Il Ponte sullo Stretto potrebbe generare 146 miliardi di Pil in 30 anni, un numero enorme che spinge a chiedersi se valga la pena costruirlo.",
+   "date": "2026-11-24",
+   "ref": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxON0hIdXpBN1dZWm9VbnZJMHpfcXpGQWl2c2xWd2JnZGt3dFZyNjd0T2ZTZzNhanFJZXA1c0VrTlNxaUxSeEt5VFo2T0xIQk5zdE9ZdnRSVkVrS0ZoVTFpeXdEVHFVcDZSbjdMLU9GdUxnaWNLNVZRNjJzM25SNmp0YXQ5MDcxTEotWV82T1lOZ2J0NkdNQm41VU9EWk9KMFlwQlhvcVBKWVBBbnBfb3FINEk4Wk42aHNCQ2loTkN4dDFtMTlCclVEam9aMldlNUFpaUN6cDNB?oc=5",
+   "headline": "Il Ponte sullo Stretto vale 146 miliardi di Pil in 30 anni",
+   "srcs": [
+    "Giornale di Sicilia",
+    "Today"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-24/n-2026-11-24-918d52ef.json"
   }
  ],
- "aggiornato": "2026-11-23T06:56:51.656640+00:00",
+ "aggiornato": "2026-11-24T11:06:14.462189+00:00",
  "modello": "qwen3:8b"
 }
