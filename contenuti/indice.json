@@ -1,148 +1,6 @@
 {
  "items": [
   {
-   "id": "n-2026-11-14-333f8b31",
-   "kind": "notizia",
-   "mode": "full",
-   "title": "Maltempo e allerte meteo in Italia",
-   "summary": "Un'ondata di maltempo ha colpito diverse regioni italiane, con allerte arancione e gialle che segnalano rischi idrogeologici e disagi.",
-   "date": "2026-11-14",
-   "ref": "https://news.google.com/rss/articles/CBMif0FVX3lxTFBkUmFqOXEwa0FYTE56b3RHLTdVOS1tWExMcnFsMW9QWXh5bmhjbEVvZEVOSE01YVhHSkphYzhrWEdydGlsXzdnREZrenptOXVmamJqMElQVlp4SHFlN2hWRDExc25ITGY3a1V3dERFQlAzZW9EMWxDWHJ2RDA5UjA?oc=5",
-   "headline": "Maltempo, allerta meteo arancione in 5 regioni, gialla in 12",
-   "srcs": [
-    "Sky TG24",
-    "Il Messaggero"
-   ],
-   "topic": null,
-   "chapters": 7,
-   "file": "contenuti/2026-11-14/n-2026-11-14-333f8b31.json"
-  },
-  {
-   "id": "n-2026-11-14-7ba7b365",
-   "kind": "notizia",
-   "mode": "full",
-   "title": "Il governo cambia idea sui tagli alla scuola",
-   "summary": "Il governo ha annullato alcuni tagli previsti per la scuola, spiegando che non si trattava di licenziamenti, ma di un adeguamento ai numeri degli studenti.",
-   "date": "2026-11-14",
-   "ref": "https://www.ansa.it/sito/notizie/politica/2026/11/13/manovra-il-governo-apre-alle-modifiche-saltano-i-tagli-alla-scuola-piu_a9e7d8e3-ebe1-4229-a908-26b2f2a973d6.html",
-   "headline": "Manovra: dietrofront del governo sulla scuola. Meloni: 'E' un segnale ma non erano tagli'",
-   "srcs": [
-    "Il Sole 24 ORE",
-    "Sky TG24"
-   ],
-   "topic": null,
-   "chapters": 7,
-   "file": "contenuti/2026-11-14/n-2026-11-14-7ba7b365.json"
-  },
-  {
-   "id": "n-2026-11-14-b167f5ef",
-   "kind": "passione",
-   "mode": "scoperta",
-   "title": "Leggere un bosco: un'indagine tra le foglie",
-   "summary": "Scopri come ogni albero racconta la storia del luogo, il clima e il terreno. Una passeggiata diventa un'indagine naturale.",
-   "date": "2026-11-14",
-   "ref": "topic:bosco:2026-11-14",
-   "headline": null,
-   "srcs": [],
-   "topic": "bosco",
-   "chapters": 4,
-   "file": "contenuti/2026-11-14/n-2026-11-14-b167f5ef.json"
-  },
-  {
-   "id": "n-2026-11-14-fb8aa194",
-   "kind": "fede",
-   "mode": "parola",
-   "title": "La preghiera non si stanca mai",
-   "summary": "Gesù racconta una storia di una vedova che non si arrende, per insegnarci a pregare con speranza e costanza.",
-   "date": "2026-11-14",
-   "ref": "bibbia:Lc 18,1-8:2026-11-14",
-   "headline": "Lc 18,1-8",
-   "srcs": [],
-   "topic": null,
-   "chapters": 5,
-   "file": "contenuti/2026-11-14/n-2026-11-14-fb8aa194.json"
-  },
-  {
-   "id": "n-2026-11-14-9800e15f",
-   "kind": "notizia",
-   "mode": "quick",
-   "title": "Strade chiuse a Roma: Domenica ecologica e eventi in città",
-   "summary": "A Roma, sabato 14 e domenica 15 novembre 2026, alcune strade sono state chiuse per eventi come la Domenica ecologica e la manifestazione Corri Libera.",
-   "date": "2026-11-14",
-   "ref": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPUWhUNDdZVUxNb3VzYmVDanJEeV9mdjNfYXF4dE5VN1dmdmFFN1Q2bS1kd3RTNDNncFp0NWlLM3VzN3lZRXViRnJ0aVZ1a0ZRTmNRUjl0SGZLcGJyVHpwYVAtNElMVEFab0JuZUVEaGZZTjlsRjZlcEhyX2JDWnFQVEhrZ1ZrSmhYWXUzSVRLWTFvOGJLLXdHUEd3?oc=5",
-   "headline": "Le strade chiuse a Roma sabato 14 e domenica 15 novembre 2026",
-   "srcs": [
-    "RomaToday"
-   ],
-   "topic": null,
-   "chapters": 3,
-   "file": "contenuti/2026-11-14/n-2026-11-14-9800e15f.json"
-  },
-  {
-   "id": "n-2026-11-14-ef714b67",
-   "kind": "notizia",
-   "mode": "quick",
-   "title": "Starship: La sfida del doppio recupero",
-   "summary": "SpaceX prova per la prima volta a recuperare sia il razzo che la navicella nello stesso volo, un passo importante verso il futuro delle missioni spaziali.",
-   "date": "2026-11-14",
-   "ref": "https://news.google.com/rss/articles/CBMiswJBVV95cUxQN1lndVJXeDFEbzNibG5xZHk2R05MQ0V5T2JYcW1nV1VvT1VuOUxjVmp4TW9hRFlUeTJWVmQtb2F6UngzN2w4YU9NTW9lMG5OdGRZbFVZVHBpQl84ZUNwd1hENV9sYVdvWFZvZ3JOTlMwbUxLMHAtNklIdnhrMmdUSGdRRTYyekJsZ3hsaDRFTy1MT0NGczkzZE9FQ2dFeXkxMV9kdjk0azJVRF9td1BQb0dUWkVsR2hIWC1pbmxqdm9pWEVIWnhVQTZpN3doSU5ZN0I0RnNsckg2LTNJUTVKc0N0cjJhamV1eG1BZGlyU1JEOVVhQWtweVBpLTZpSXBiNGYzMFU2U01UeV9PUzluM0tuZ1JoTTQtNzYyRGN5aDhYTUZnTE92Z2R4cVhwb1FMalBZ0gG4AkFVX3lxTE5rUTEyMEZVZFNQVllyMUpoSlJrajFXa3A4X2tBU0JldGZGRUZtZzR1WEF5cXJhdEJjOFotRVRRemd4eDN5OWlXYmJReExrNDk2V2RFbFFSRGtzTmNjNFR5cVg1d1JDWDZoOUt6T212N0lMazJqbXV3ZmxGdWVNODJKbVlzUVdtRDdzbWJ6aVc2NDlKcnA5Z1dCaVJvdXRQYWpUeFNuRE9wb0FHTGxXcmIybHQ4eVM3RGhJcUd0d2dLWG4weG1Kanp5aTBESG8wWHdvZGtmelNjbXotX1FXamVmNTJYUC1mV0I5Rm5EQ0tzWWhmNllYdDF4WUxidlVBZ2dPYU9kN0R3WWRieU5IVXhaVER3WEh4aGR2RWtURVYwVVVrdTZRb3VxSmE1NG14S2NCaDlIMDFBZg?oc=5",
-   "headline": "Starship, stanotte la sfida del doppio recupero: la torre proverà a riprendere al volo sia il booster sia la navicella",
-   "srcs": [
-    "Corriere della Sera"
-   ],
-   "topic": null,
-   "chapters": 3,
-   "file": "contenuti/2026-11-14/n-2026-11-14-ef714b67.json"
-  },
-  {
-   "id": "n-2026-11-14-52e626fd",
-   "kind": "notizia",
-   "mode": "quick",
-   "title": "L'Europa si schiera per la pace in Ucraina",
-   "summary": "L'Unione europea ha formato un team di negoziatori per cercare una soluzione alla guerra tra Russia e Ucraina, incluso l'Italia.",
-   "date": "2026-11-14",
-   "ref": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNS19jaWJlQXlLa3VYR1hOZDFNbzN3ekJMUEdvTmZLSENpTjlsOWw5blRHM2RBbU1GX1lZdGtfLW5SMm5GSURuS1hQb2NLcWFEcXZpT1BGZkthX0NKTFlIWmM0dlhQWi1wRW9rNGU1VnkzVTA4ZFdBaDY3MTY5V2UtRnZJbzNYb2Za?oc=5",
-   "headline": "Guerra Ucraina, per ora nel team negoziale europeo rappresentanti dell'Ue e dell'E5",
-   "srcs": [
-    "Sky TG24"
-   ],
-   "topic": null,
-   "chapters": 3,
-   "file": "contenuti/2026-11-14/n-2026-11-14-52e626fd.json"
-  },
-  {
-   "id": "n-2026-11-14-f07c13df",
-   "kind": "notizia",
-   "mode": "quick",
-   "title": "Petroliere in fiamme nello stretto di Hormuz",
-   "summary": "Nello stretto di Hormuz, un punto strategico del Golfo Persico, due petroliere sono esplose dopo aver urtato una mina, segnando un aumento della tensione tra Iran e Stati Uniti.",
-   "date": "2026-11-14",
-   "ref": "https://news.google.com/rss/articles/CBMie0FVX3lxTFBwMDF4MUNRR2lYN2FJdkFSTENJWldsOW9kVUNCTmxocTdUQkJaLW1JMVhfSEdVNklJUVUtSW5namF3elBXMUg0WFl6bEp6UlFuMzZ1Vi1TYXVoNURCd0k0MVh6YWZ1b1hEVERuNnVIV1pDVGtud05BRjI1NA?oc=5",
-   "headline": "Iran, Pasdaran: 2 petroliere in fiamme dopo urto di una mina a Hormuz",
-   "srcs": [
-    "Sky TG24"
-   ],
-   "topic": null,
-   "chapters": 3,
-   "file": "contenuti/2026-11-14/n-2026-11-14-f07c13df.json"
-  },
-  {
-   "id": "n-2026-11-14-b019242b",
-   "kind": "notizia",
-   "mode": "quick",
-   "title": "Infezioni, il test molecolare in 90 minuti: Una frontiera della diagnosi",
-   "summary": "Un nuovo test molecolare permette di identificare in 90 minuti il responsabile di un'infezione, aprendo nuove possibilità per la diagnosi rapida e precisa.",
-   "date": "2026-11-14",
-   "ref": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxQR202YmQ3NjF4MGpTeTZycU4wQWM2TkRlZkxJbTRQcnBRVnhsX0JyZUFKZmZLbjdicmpzNE1iNTI2RXRrU212UWo5YkstVUw5eWczT29OSllOZlAxNXJHSmRVSnlTQ1ZCVll4OHA1TkNfNGFaaVpfNDNPb01mT3djMEh4cWZDZHZhYjdCaTh5dXdfVm5DY2ZmSVlxbGtEcklTODUtNWE1dFd6a3pFcXRIaE9aNTZGS1ltdVFOX2Y2YmNyV0dqM21YQWhXcUlZV281Mmdn?oc=5",
-   "headline": "Infezioni, 90 minuti per cercare il responsabile: la nuova frontiera dei test molecolari",
-   "srcs": [
-    "Mondosanità"
-   ],
-   "topic": null,
-   "chapters": 3,
-   "file": "contenuti/2026-11-14/n-2026-11-14-b019242b.json"
-  },
-  {
    "id": "n-2026-11-15-509e9562",
    "kind": "notizia",
    "mode": "full",
@@ -769,8 +627,152 @@
    "topic": null,
    "chapters": 7,
    "file": "contenuti/2026-11-24/n-2026-11-24-918d52ef.json"
+  },
+  {
+   "id": "n-2026-11-25-7f8749f2",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Exit tax e la manovra del 2027",
+   "summary": "La manovra del 2027 ha riammesso 100 emendamenti, tra cui quello sull'exit tax per redditi fino a 2 milioni di euro.",
+   "date": "2026-11-25",
+   "ref": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPN0pvYTdVNTdVSkdvb0pOc1pNM2sxaFk3cmk2Q1V0LUJGVU9Jb0gyZFJSVUZwZFVvbm53SVI5VE1yRHUyTHVnMlU3S19PUlVMbVAzNHNoMTdyYWJpbVYyOFJmQ3gyTWNmb1ZsU3MwcDBFZVRMTVkyQ3FsX2t6YmhfQzJWM2ZBVFVEM0xDNkVBcWJuOWo3X2g2a21YaU5BbGdUbV9iRkt1dnBncXp3TnVrM2lXTk9LUdIBuwFBVV95cUxQVTExSVFsdlVxWTBoejhiaUZwRk9KenNUVHRQNUJOMzBYSGFpTzlzSThwQU1TWno0anowM1lGU1VmamZIX1lvY0hRSDBvcmdMZzhOTDRsUUZMQXBNU0E5VDMxN2VqaWtEZE85d1VIeHdoQUkxSk5zZk5uclltLS1iZmUxWGpCQ2tsWVMxLWpUX1hMcE9JVE9KcFRacEtDV1VtY2E3Sl9vZmNlM0F4cDRoMld0ZzdmcmNUdU9n?oc=5",
+   "headline": "Manovra, riammessi 100 emendamenti: anche quello su \"exit tax\" con redditi fino a 2 milioni",
+   "srcs": [
+    "RaiNews",
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-25/n-2026-11-25-7f8749f2.json"
+  },
+  {
+   "id": "n-2026-11-25-711fff27",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Bonus mobili 2027: Cosa cambia e perché",
+   "summary": "Il bonus mobili 2027 cambia le regole per acquistare arredi e elettrodomestici, con detrazioni fino a 2.500 euro.",
+   "date": "2026-11-25",
+   "ref": "https://news.google.com/rss/articles/CBMingFBVV95cUxQRU11bWN2QlF0NXZ2dU5PYnM4TmRIbmJVcTc4YzFnWVFMWGZDSmtTS0RMQURCUHFLRE9ZT2plakVyaHFYaWtiVWtydXZtS2ZPem9zeHF4QmNENWc3MllzRmxtZkRkYmF3WGlFUkRQWXZqc3RLeEZfWmc0QWRibmlWR1lqSFo3d3ZrMmFScVJ2OXFVUnMzeFZaUE1PdUlWUdIBowFBVV95cUxPMkdSR25xUEJ3b2dOLWxyNlhFWExlZlhGWjNoTk5aQVhtLWRQVEFEVmM4Q1BlQ0hYRTVUcW5rVDdSUThRc2ZYOFI2X3VmcmJtM3BINmJyMzNDaUd5cHpHaTJ0VmFNT0htRnRGcElUS0J1S0wwWm95Z2VwY1ZMbjhRdEU1bkp3a190VEViT3RFSnljWGgxZnVQbllLNHRWVkNRb1dZ?oc=5",
+   "headline": "Bonus mobili 2027, cosa cambia con Manovra 2027: detrazione fino a 2.500 euro",
+   "srcs": [
+    "QuiFinanza",
+    "Ipsoa"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-25/n-2026-11-25-711fff27.json"
+  },
+  {
+   "id": "n-2026-11-25-a78c822d",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Violenza sulle donne: un problema che non finisce mai",
+   "summary": "Nel Bresciano, in dieci mesi sono state 55 le persone arrestate per violenza contro le donne, con numeri che salgono a oltre mille denunce.",
+   "date": "2026-11-25",
+   "ref": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9yaW9rcGtNU21zajFjVU9kaVJia25yNWxEWkpVNnc4eFNubkd0QXBnOUhCbWtBcGl4N0JyZmg3MjVUdnhIMGpQT3VqckNiMGFmaDdIMTJFbl81OUdvaEg2OVpHYnI1ZFdNZFRvQld1dzVJWGVQSjRnTEdaRFBlZw?oc=5",
+   "headline": "1.417 denunce e 84 arresti: i numeri della violenza sulle donne nel Bresciano",
+   "srcs": [
+    "BresciaToday",
+    "La Nuova Sardegna"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-25/n-2026-11-25-a78c822d.json"
+  },
+  {
+   "id": "n-2026-11-25-6f8d2f84",
+   "kind": "passione",
+   "mode": "scoperta",
+   "title": "Scacchi: il gioco che fa pensare",
+   "summary": "I scacchi sono un gioco antico che insegna a pensare in anticipo e a gestire il rischio.",
+   "date": "2026-11-25",
+   "ref": "topic:scacchi:2026-11-25",
+   "headline": null,
+   "srcs": [],
+   "topic": "scacchi",
+   "chapters": 4,
+   "file": "contenuti/2026-11-25/n-2026-11-25-6f8d2f84.json"
+  },
+  {
+   "id": "n-2026-11-25-162cee2f",
+   "kind": "fede",
+   "mode": "parola",
+   "title": "La perseveranza nella fede",
+   "summary": "Gesù annuncia che i suoi discepoli saranno perseguitati, ma li incoraggia a restare fedeli e a non temere nulla.",
+   "date": "2026-11-25",
+   "ref": "bibbia:Lc 21,12-19:2026-11-25",
+   "headline": "Lc 21,12-19",
+   "srcs": [],
+   "topic": null,
+   "chapters": 5,
+   "file": "contenuti/2026-11-25/n-2026-11-25-162cee2f.json"
+  },
+  {
+   "id": "n-2026-11-25-71aee882",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Furti nei supermercati: la banda del carrello e i raid",
+   "summary": "Una banda proveniente dall'Est Europa sta compiendo raid in supermercati, rubando migliaia di euro in pochi minuti con tecniche sorprendenti.",
+   "date": "2026-11-25",
+   "ref": "https://news.google.com/rss/articles/CBMixwFBVV95cUxQN09TQlQ3eExRMkE3Y2ozVmNxc1dkMEk1UWRhcldMYUVwdS02ZnVNTlhockVOc1ltdEd4cFpJWEhFcmJHWFZvQVZHelkzcUhONWVheXl3bmRoUV8yU0NGUlRoa202UTlpdTZZVFRPSjhvR01VNWFVamQySnZPVXViYmF1VjB0NkluNTRPSjNKVUtWQXZoaDVhYWVyUC1jYVBhb2h5TkxIUHBoSHpDOGRra21VTC04Ry1GS2hWSHlIU0dKVk5YaGxv0gGqAUFVX3lxTE9hY3FWbDNMMi1QaHVlV29DamFEZDFMSTdzQm9KVERqRnRkNG1FS01YSURyYllFaGdpb01SVHNORUlaWllYZHI0WmQ4N1Y0dDNHVjJKeFJLNXNzS1hfN2hYLTRhZDhXdnJiR3pveTBPU1YtWnc0TVFyQmpKZmNzU0FCQUZYY0puZlp3OGlpUm5rNlZ3bUpYb1VFOVg5OGJkbEZROFdoTWtBVzJn?oc=5",
+   "headline": "Furti nei supermercati, arriva la banda del carrello dall'Est Europa: raid da 5.000 euro a colpo, la tecnica a sorpresa e cosa rubano",
+   "srcs": [
+    "Leggo.it",
+    "Il Gazzettino"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-25/n-2026-11-25-71aee882.json"
+  },
+  {
+   "id": "n-2026-11-25-c94a3e66",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "L'asta BoT del 26 novembre: cos'è successo e perché conta",
+   "summary": "L'asta BoT del 26 novembre è un evento finanziario che ha visto la vendita di titoli di stato, con effetti sull'economia e sui mercati.",
+   "date": "2026-11-25",
+   "ref": "https://news.google.com/rss/articles/CBMikwFBVV95cUxORnZiOVQycGVlbW1hWUw2ckwyQmtEMnRHbWhoTWh0aXpIOERtYWtteGFOX0h4ODBqVFlkaW5hZzBRVlhIUDZDLUtXUjhJRWEzdVo2b0pvRXB6NEJmc2dEWUdpUGZxOElmTkJCZFZmT1MxUVpZMVdrc29wU2YtaGViSzRyaExOV2RndEhpRnRUVWdZMEU?oc=5",
+   "headline": "Asta BoT 26 novembre: dettagli del titolo e consiglio",
+   "srcs": [
+    "www.altroconsumo.it"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-25/n-2026-11-25-c94a3e66.json"
+  },
+  {
+   "id": "n-2026-11-25-6d0dc79d",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "CEI e Zuppi: la Chiesa nel cuore della gente",
+   "summary": "La Chiesa italiana si prepara a un nuovo statuto, con il cardinale Zuppi che chiede di essere più vicina ai poveri e alla gente.",
+   "date": "2026-11-25",
+   "ref": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQQjBHa29zNjFBQ0dyQlZEZHd6aFVOVzg2RFY2eGt6SXF6djFiSVFqeTQ3UlBYOWlOQm1VcmVpZDktYnYzQlJDY1pYbG41VjlNdkVLaDZCUDFmSjFzWHZQSkYtZTN6YVZlYXJLTVlZVXBVOUtaV2g0MHpOU0gzVWtqQW9GQkhlTmhiaUl6RWlobGd3LTRxeGpN?oc=5",
+   "headline": "Al via l'Assemblea generale della CEI, Zuppi: la Chiesa sia \"dentro la vita della gente\"",
+   "srcs": [
+    "Vatican News"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-25/n-2026-11-25-6d0dc79d.json"
+  },
+  {
+   "id": "n-2026-11-25-faa68844",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Monia e il farmaco che potrebbe salvare la vita",
+   "summary": "Monia, una donna con un tumore al pancreas, chiede alla Regione l'accesso gratuito al farmaco Daraxonrasib, che potrebbe estendere la sua vita.",
+   "date": "2026-11-25",
+   "ref": "https://news.google.com/rss/articles/CBMioAFBVV95cUxOZVFxY0JMVl9RZG5OVjRVN2ItR3FpbmpiYzVkUmd1LTdyNUt4OWlMeW84OVhFZkJ5cjhrVW5SRmZRMFp6RmRHSVU4WnBuT3dRU2kxZnJuVHJxcVZhU3Z3RGc3U0RXTE4wYTVqMzZZdWdBYmJDbmhWbjhSZU1oZlBERXZJN0dkNVRucExBTFo3NjJianZXdXdrTk1uWHU3TGpC?oc=5",
+   "headline": "Tumore al pancreas, la battaglia di Monia arriva in Regione: \"Subito il farmaco Daraxonrasib\"",
+   "srcs": [
+    "ForlìToday"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-25/n-2026-11-25-faa68844.json"
   }
  ],
- "aggiornato": "2026-11-24T11:06:14.462189+00:00",
+ "aggiornato": "2026-11-25T07:18:03.056689+00:00",
  "modello": "qwen3:8b"
 }
