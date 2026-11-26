@@ -1,58 +1,6 @@
 {
  "items": [
   {
-   "id": "n-2026-11-15-509e9562",
-   "kind": "notizia",
-   "mode": "full",
-   "title": "Zelensky e la proposta Usa: Nato in cambio del Donbass",
-   "summary": "Zelensky dice che gli Stati Uniti gli hanno chiesto di cedere il Donbass per entrare nella Nato, ma la Russia non accetta questa idea.",
-   "date": "2026-11-15",
-   "ref": "https://www.ansa.it/sito/notizie/mondo/2026/11/14/ucraina-zelensky-gli-usa-ci-propongono-la-nato-in-cambio-del-donbass_48c4f0d9-c61c-4d79-8523-64805b2f303f.html",
-   "headline": "Ucraina, Zelensky: 'Gli Usa ci propongono la Nato in cambio del Donbass'",
-   "srcs": [
-    "ANSA",
-    "Corriere della Sera",
-    "Domani"
-   ],
-   "topic": null,
-   "chapters": 7,
-   "file": "contenuti/2026-11-15/n-2026-11-15-509e9562.json"
-  },
-  {
-   "id": "n-2026-11-15-cb825aed",
-   "kind": "notizia",
-   "mode": "full",
-   "title": "Terremoto al Gruppo San Donato",
-   "summary": "Un gruppo ospedaliero italiano ha visto cambiare i vertici per la seconda volta in poco tempo, con nuove figure al comando e preoccupazioni per le possibili vendite di cliniche.",
-   "date": "2026-11-15",
-   "ref": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQNTl5LWhLYkowZlcyWlVJb0ZyX1dpMDM2MW12VmtrTkVzS2RQRFdzbk4ycERlcjBlMGhQQWg0OEg4S25zUlNWUERKZ0JNXzlTZFRUUU5zZkpIZjhGeDdrclFBNThabHpNdGtuV3dXdk8yZ1VNOUliOW9CS1AySVdtY1l3?oc=5",
-   "headline": "Gruppo San Donato, terremoto ai vertici",
-   "srcs": [
-    "Il Sole 24 ORE",
-    "Corriere Milano"
-   ],
-   "topic": null,
-   "chapters": 7,
-   "file": "contenuti/2026-11-15/n-2026-11-15-cb825aed.json"
-  },
-  {
-   "id": "n-2026-11-15-e37964cd",
-   "kind": "notizia",
-   "mode": "full",
-   "title": "Collasso dell'Intelligenza Artificiale: perché la sorpresa è l'antidoto",
-   "summary": "Un articolo del 2026 suggerisce che il collasso dell'Intelligenza Artificiale potrebbe essere evitato grazie all'incertezza e alla sorpresa, in un mondo sempre più predittivo.",
-   "date": "2026-11-15",
-   "ref": "https://news.google.com/rss/articles/CBMizAFBVV95cUxPX29LbGZuNGN3VS1aam5tZDRLcHFKOWdvbloxWU4yNUVvcjFBaDZidWY2WVA2M3hzQmxPc0Y4ZFJKamFlamRtRnJJeEl2cWVUVENWd2dXUkZFUVR3R2NHVnk2YS1lZ25NV2YxdF9RbjJnbjJsTnVTaWxHdFJDQmFrVEtiOWM5MFAxTkEySGpoMHJVbGlrdmJWd2VhZm1LVW1qa2FWYU1MczA0aDF6MkFjQlZZOUJ2OFJhdWZ2TUVUWXJOLUEwdTZNRHowc2o?oc=5",
-   "headline": "Collasso dell’Intelligenza Artificiale: l’antidoto è la \"sorpresa\"",
-   "srcs": [
-    "Le Scienze",
-    "Altalex"
-   ],
-   "topic": null,
-   "chapters": 7,
-   "file": "contenuti/2026-11-15/n-2026-11-15-e37964cd.json"
-  },
-  {
    "id": "n-2026-11-16-54c33ddc",
    "kind": "notizia",
    "mode": "full",
@@ -771,8 +719,168 @@
    "topic": null,
    "chapters": 3,
    "file": "contenuti/2026-11-25/n-2026-11-25-faa68844.json"
+  },
+  {
+   "id": "n-2026-11-26-cb474a35",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Quando un giornalista diventa parte civile",
+   "summary": "Un giornalista è stato accusato di un attentato e decide di partecipare attivamente al processo come parte civile.",
+   "date": "2026-11-26",
+   "ref": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxQN3NVc2tBcnpISzlkZEY4Zm9MOEZVcHlZSmlpaElhTGV4QWJKOXlUN1o3cjRYSlZUd0U5Q3U5SnRkNjBQcVAzVTkwOGdNbUYzRnI1dVJ5T3ZoZjcwd0NTY0RLT3dlQ3RDYU82RE4wcUVkT2d5Z3RtM1dQd29NcTloYXZFa0puTXNSMUo1R1R0MlZMdFdRMWVSWVVmWGRzbEJYU25RcENCWF9LQ2FkbVBJenlwMzA1eEVJUzhLUmZQd3pPV2xNdHBqQm9VNXFJbE9zOGZHMHRoUDZESlJkN0RwMmpKME9jN0M2TzV6M0Z2MWlRSGVHR3fSAfsBQVVfeXFMUDdVNlRQa1paLWViX2F4Zy1qd3hNMnJ6cHMyOXV0SWEwT3V3OU0yRjM3ZWdzNE1uWmhEXzdPeUpjWVhxbXBTdEJzY200eXJKVTJyVmtNNU45WlRXazBQbkx2OUJwSU44LWtXd3hvNGZpRjNMV3BSXzdTSDJtYlZva0NSU3UyQXg2MHE1QUdidTIzUkduSXE2SElQU2VIWTB5TkcxV1JBSGctem1VcUdpa28yaHlVVjFOV3B5MzBRT3pscHZ5SG9hZDV3dWROZUlnaVNNekZSNTQ4SUVLcWQzZV81dE1YWEV4WDduczk4akJqb1MyRHI4ckk3aDQ?oc=5",
+   "headline": "Ranucci 5 ore dai pm e scarica Lavitola: «Io al processo come parte civile»",
+   "srcs": [
+    "Corriere della Sera",
+    "Virgilio"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-26/n-2026-11-26-cb474a35.json"
+  },
+  {
+   "id": "n-2026-11-26-10f393dc",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "L'asteroide deviato e il cratere grande come uno stadio",
+   "summary": "La NASA ha deviato un asteroide per la prima volta nella storia, creando un cratere enorme come uno stadio, grazie a una missione che ha cambiato il corso di un oggetto celeste.",
+   "date": "2026-11-26",
+   "ref": "https://news.google.com/rss/articles/CBMie0FVX3lxTFBZY2VhSFpMa3hkcGdHSUZwN1Z3MGxLV1Fha1lQODluVW5NMVc3Z1h2NjlIdnE2SFgtTWxEZnlaTk1MVXZaSFhaNmdLUTJzcThXSXdUQ0RyZ3hreXBCU2c0U1EwNlR1Z0NaRGl2N000M0xpVW5ac0Y0S0Z5VQ?oc=5",
+   "headline": "Le immagini del primo asteroide deviato in una missione Nasa. FOTO",
+   "srcs": [
+    "Sky TG24",
+    "ANSA"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-26/n-2026-11-26-10f393dc.json"
+  },
+  {
+   "id": "n-2026-11-26-1883865f",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "La protezione del pentito Contorno",
+   "summary": "Il Viminale valuta se riattivare la protezione per un ex collaboratore di giustizia, Totuccio Contorno, dopo un trasferimento per motivi di sicurezza.",
+   "date": "2026-11-26",
+   "ref": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxPWTFVUXk0aFB5WWRTZDd1U2xob0RLVDRvNHd5Y2R5cENPWXc1ajM0NUpUckh0bDZIX2JVTEI1THVvelhxNmNwYW1wUGZxMGp5VXU2V1dXaUgyYkdyTUJkU1VZcXIwWXVva0d3LVN0MGJZRjg1dnV4cEs1b1p0a2g4VGUxTEs1ZXdlWVdabUNlbVJpbkVEQWpHWUdLQzNPZkZtVHhOaE9oTFpDMXh5WE1GNWc1OWpSS05GeVRUT0tnREpva3lnNGxvZUZaZ2YwRjZwUE5mQ3NIVGlORkNBZzU4NEo2R1RDdmRIS0JBaUo0eTR6Qjhk0gH6AUFVX3lxTFBwU0VnaHhDUHFkRHM0YVNrSnBlZ2gyeVJRRjlZM29rbTVNZG12OHZSdy1Gd2MyUHExZzctWWVRTUxtQjJMUk1GdVNiSFMtbDZCV1ROZTZkUlpDSVZVbVlzUy16WUNoLVRyM3NrdGRZdVpFWUM5a0llUVZQMmZLYnZLLTI3aU00by1OcmNwNl9HdlBvcnZ4N21tazZienotZUxoNllybzVrbTB4WDRwX2xLZmhnUkpUcjZtaDR0RmpXN1pLTmpVMG12MUJ4QldxSDVBOU9NTHA5R29waXE4VkZPclF1bEg5VXUxeFlxLUw1Y01TNUNtcDhYQ3c?oc=5",
+   "headline": "Il Viminale valuterà se riattivare la protezione al pentito Contorno",
+   "srcs": [
+    "ANSA",
+    "la Repubblica"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-26/n-2026-11-26-1883865f.json"
+  },
+  {
+   "id": "n-2026-11-26-d9aa6e2f",
+   "kind": "passione",
+   "mode": "scoperta",
+   "title": "Le mappe che hanno cambiato il mondo",
+   "summary": "Le mappe non sono solo disegni: sono strumenti potenti che guidano, insegnano e plasmano la nostra visione del mondo.",
+   "date": "2026-11-26",
+   "ref": "topic:cartografia:2026-11-26",
+   "headline": null,
+   "srcs": [],
+   "topic": "cartografia",
+   "chapters": 4,
+   "file": "contenuti/2026-11-26/n-2026-11-26-d9aa6e2f.json"
+  },
+  {
+   "id": "n-2026-11-26-f0abc7a8",
+   "kind": "fede",
+   "mode": "parola",
+   "title": "La fine del mondo? No, la liberazione",
+   "summary": "Gesù parla di un tempo di sofferenza e di speranza, invitando a guardare al cielo per capire la vita.",
+   "date": "2026-11-26",
+   "ref": "bibbia:Lc 21,20-28:2026-11-26",
+   "headline": "Lc 21,20-28",
+   "srcs": [],
+   "topic": null,
+   "chapters": 5,
+   "file": "contenuti/2026-11-26/n-2026-11-26-f0abc7a8.json"
+  },
+  {
+   "id": "n-2026-11-26-aecbb64f",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Auto elettriche, GPL e il futuro del motore",
+   "summary": "Nel 2027, le auto elettriche e quelle a GPL competono per il mercato, mentre i produttori si preparano a nuovi modelli e a nuove tecnologie.",
+   "date": "2026-11-26",
+   "ref": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNbDBJUURWTG1YbVBUMWhlYk1aRG54TlhjUmI5c2xzYzMyd2JvMFJEWnY4RmJjWENmRWlWTnRjR3EzS24zYnQ0OVB2Mk16TmtvVkgwaWxaVDlrVjNwTmp6S3lZMXMxS2wyVG0yMEgzeWdnZk1kZmZ2T2NTRnJXOWxNNzVJa0l1dFJKX0N2Q2p2VjlmS3piMTRpelZEZkh2YjVjOThaWFJCUUxLTjFW?oc=5",
+   "headline": "Migliori auto GPL 2027, la Top 10 dei modelli sul mercato",
+   "srcs": [
+    "Auto.it",
+    "Quattroruote"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-26/n-2026-11-26-aecbb64f.json"
+  },
+  {
+   "id": "n-2026-11-26-295d0865",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Andy Taylor: il chitarrista che ha reso pop il rock",
+   "summary": "Andy Taylor, chitarrista dei Duran Duran, è morto a 65 anni dopo una battaglia contro il cancro alla prostata.",
+   "date": "2026-11-26",
+   "ref": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxQRzhZMVFNQVgwbFZwMElxdG5ha1J0dkRWcVYwekpEY3Rra1NGLVZVWTNuM2lYbHZPQU1fc3QzSFY3bEVRUXZQQ0tnSDIyUkU5eTFzZkxhUXI4aHlCRnhXTDB6ZGFWbktPaU01MU9hcVJCQkozV2YzZDlCZ2lEaGRiZ19ac21ZbGNSalJHaTBzMmlhNnRjM251cm9GWUJtSy1zeWZlQU9FYU1Udi1HdURrQzdkTi0weGxBUjI2N0xITzQ1UDNuZHBSSkVnU21lMmYtR3U0eU1sZzR0QTB6U09GM2RWOXFTY2ZwRmpR0gHwAUFVX3lxTFBqRjB1TU1rVmp6X3NWZmdodTVIa0tpMEdnTmYycF9CVmFzd2VxWEhDdjFudDNyZnlCZVc4dk5FYzUxclRaNmNWQ1JFREdTOWVaOHZRQ3BRRGwtd0xBTlJQOEVyakl6OG4zQW9HeHNlMmZFcmstaGh4MUpfdDlvekRIWHZwaUZ4UW9iX2Z4X1J6YlhDZnpOYTFOdW02LTZJZmw4dEItSXRCdkJVVGpsbUREZzBacUNIVmhET0tGN0s5R051SndDSlJsRG1CMElRUU5zNDJfUGpBcEhHZDNEdWxteHVnbGJIbFhndGg0NXhNTw?oc=5",
+   "headline": "È morto Andy Taylor: il chitarrista dei Duran Duran aveva 65 anni. La band: «Ha portato un fuoco e una spavalderia indelebili nella nostra musica»",
+   "srcs": [
+    "Corriere della Sera"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-26/n-2026-11-26-295d0865.json"
+  },
+  {
+   "id": "n-2026-11-26-db6298ff",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Italia-Corea del Sud, la vittoria azzurra in Coppa Davis",
+   "summary": "L'Italia ha vinto la Coppa Davis contro la Corea del Sud grazie al doppio di Berrettini e Vavassori, qualificandosi per le semifinali.",
+   "date": "2026-11-26",
+   "ref": "https://news.google.com/rss/articles/CBMisgFBVV95cUxORExzQU1BbzZqZ3ItZFNQdUdtTDFQWmxsQ0VyeEJwdXo2SDZJYmU5ZXFPRmZBQkZpQktMbmFHSnZqUXlrSl9WSnZzSUJQZnd6SUFpcFVNVG84N04wclhhTGticWJmbFg0WnJLZkJDZFBIQ1I0Ykxvek5HdkpocGdFSUdyQ09MYkhmdHVtQjBSYXJPNEItOHhqWWJtdzNLQVpIMk4yUTd3ZTFOeUxVMmRudTdB?oc=5",
+   "headline": "Coppa Davis, Italia-Corea del Sud 2-1 in diretta: Musetti supera Hong, Cobolli si fa beffare. Berrettini e Vavassori regalano il successo agli azzurri",
+   "srcs": [
+    "Corriere della Sera"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-26/n-2026-11-26-db6298ff.json"
+  },
+  {
+   "id": "n-2026-11-26-5fede722",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Trump e la cittadinanza per nascita: un giudice blocca una decisione",
+   "summary": "Un giudice statunitense ha bloccato una decisione di Trump che avrebbe limitato la cittadinanza per nascita, scatenando un dibattito su diritti e leggi.",
+   "date": "2026-11-26",
+   "ref": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxOYmNQWG5Pa0tCNkxWV3NUY1dYQjg3QVM0bS1uU2xCS1h5TVFCelQxUXJoVXJ5QzVXRllabG1fN0VmU2txaUszdE9RYnIxQk1kOEpPOHpyZ1NPYVFUTjBRcE9JRFRtdzJmT1c1V2FOT2FPWlZQRFVidWVySzY0RkZnckhjQWpqbmIxUnRFWUM4ak9kLVB0b09zXzVYblZvdE9tQUo2V0VrMHYtVmRBQnZ0U3ZHUVpHdWFR0gFoQVVfeXFMTkcwejZQRkZBOE1DRGRDMkFKTngxdjhhTXRLTlJvVUk4aXFEQUgzMnN4b00wU2ZldXlibjZ2SjNGcHZfRnpObHJQc2Q5TDlaY3hpc3R5eFNHLWdBdGVWZFYyNlFVRTBwRms?oc=5",
+   "headline": "Giudice Usa blocca Trump sulla cittadinanza per nascita",
+   "srcs": [
+    "Tgcom24"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-26/n-2026-11-26-5fede722.json"
+  },
+  {
+   "id": "n-2026-11-26-4dc8b95a",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "L'Inter vince e Lautaro torna: un momento di orgoglio",
+   "summary": "L'Inter ha vinto in Champions League grazie a Lautaro, che ha segnato un gol importante dopo un infortunio.",
+   "date": "2026-11-26",
+   "ref": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNaHhJT1d0RERtbklDLVd3LWR1TFp3VG1TbkJPc3BPWUdBdklyRHB4YVpHUHBWNmVKWlJtZUVubHpLTWlNWkQ5STlEdzZpU3JGNm9hWk1NbTRKQ2ZObVJOdGIzeWw2OUZTemFPZTFfU3lvcWpfUlM4eU02eEFnSzlySEZDUndZWFg0b05BN1NJNmJrSUw1ZE13V3AwMzNncWEwaDQ00gGoAUFVX3lxTFB5Sm1FelZIdkdGNkIwVnFtbFN6Rzhvd2M2MjNYdGp0aVhtNHRZOHYxUTZveW9UZVlpeWJ6a1dQandCRXpjM3hPQzl2SGJ1cU9TN0NPWmR4ektuUll4X0ZLNm1oc3FGc3dJMVg5TFFCeVNDczZpZmtHdGszTlpGWWp1d0FfNlo4NmdhaHJVM1VVVWhPWFRCbnd0RzBKb3hXaWdlM19BTVRFLQ?oc=5",
+   "headline": "Chivu: \"Non la miglior Inter di sempre, ma contavano i punti. Lautaro, un gol che dà autostima\"",
+   "srcs": [
+    "La Gazzetta dello Sport"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-26/n-2026-11-26-4dc8b95a.json"
   }
  ],
- "aggiornato": "2026-11-25T07:18:03.056689+00:00",
+ "aggiornato": "2026-11-26T08:12:15.413553+00:00",
  "modello": "qwen3:8b"
 }
