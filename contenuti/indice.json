@@ -1,150 +1,6 @@
 {
  "items": [
   {
-   "id": "n-2026-11-16-54c33ddc",
-   "kind": "notizia",
-   "mode": "full",
-   "title": "Mosca minaccia l'Europa, l'Estonia chiude i confini",
-   "summary": "La Russia minaccia di usare la forza se non si raggiungerà un accordo con l'Europa, mentre l'Estonia chiude i confini con la Russia a partire dal 1° dicembre.",
-   "date": "2026-11-16",
-   "ref": "https://news.google.com/rss/articles/CBMimgJBVV95cUxNZ25OdGZPZkREU0tRUTJHNFJBZ0l3WGp1UTJCNHJ6V19CWkZuWlBDSC10RDhPMFhvY2NTNTlBbXVlX3pIS1JrZkJrLUhXMnZwYWVobE9xamZIeDZHNlpxaUZKV1U3V3hJeVJ1QjRxcV8zUndGMG43cVU5c3o4SkNUR1gwOTdhQm9jcEs1M3JLc1R2Z3h0clVvZnE3YjdHb1lPcWh0cVk3SWRFV2hLLWZFQUlXOUxtZjZGSXA2YkNzY2tJVlBDYmRwZTFjR1Fad1hKYzloZjljelRRZlRjaXhEWk5WajB1aDN5U3RQcF9JTE1LU2YzTHplMmJzMGNCaE5nUUlkZXdqQW9ndnFoQks0WlA3NGN4QnlGNmfSAZ8CQVVfeXFMTm1leGNJc2c5UXdKbzBqR2VEQ1pRYjhEQTZvVmZoWkJsakFqeENzR0pja1ZfaTlKWTFzRDkzemM0QXdyWFljbFpHX2daX2stdzFLTGQ3V2Fkc3ZvOGFyZ01qOFhGT25yR2pVYXBmbGdtRTZOcTdDT1RCQno5ci1QeUtpMXdoS2thZ3BiNmxOQVp6Z3MxdHBURUtLZ1JLdTJ5QW5VM0VoNDltclpIb0M0N1RyYVdVWHRGUDJEV2VjMC1oNVRkWFc0cXdCQ3pjcUFTS3ZHQjJraGJsRWhXczFjWVhsdnRxMTdUZENiWFREZXNodDNiVkhjcTk4QkFZR1d0TnJXRzN1YmtCWk91eGRLMTBmeXZGQmNiOFhCOTg5ZEk?oc=5",
-   "headline": "Guerra Ucraina-Russia, le notizie in diretta | Il Cremlino: «Se non ci sarà un accordo con l'Europa useremo la forza». L'Estonia chiude i confini con la Russia dal primo dicembre",
-   "srcs": [
-    "Corriere della Sera",
-    "Sky TG24",
-    "AGI"
-   ],
-   "topic": null,
-   "chapters": 7,
-   "file": "contenuti/2026-11-16/n-2026-11-16-54c33ddc.json"
-  },
-  {
-   "id": "n-2026-11-16-1a5c5f6a",
-   "kind": "notizia",
-   "mode": "full",
-   "title": "La portaerei Roosevelt e la guerra nel Medio Oriente",
-   "summary": "La portaerei Usa Roosevelt è in rotta verso il Medio Oriente, un segnale di tensione tra gli Stati Uniti e l'Iran, con gli Houthi che avanzano verso Aden.",
-   "date": "2026-11-16",
-   "ref": "https://news.google.com/rss/articles/CBMi_wFBVV95cUxNcUd6OFdPRmxHNmVYeTA5dFhqSGgxSDlSb1V3QkxVSXFWd0tpa2lkVks5M1c3dGpobGYyUlIzWTlRcjZyS19UQk9qeS1zcGdmVjNSQXZVeWs4ZFZ0QWR1YnZSYlhzb1o4TEp4RE12NmxFaFdpM1M0N2k5SFVORlVUSzZLa3F6SDNMV3VuamtaeDZ0ek1ZQ2NqTEJ6UThDV0hnTEZTelRDdGZlRVRXbGM4SGNKQlQzbU5VMzYtQzVkUFEwWmEwTDlackcycldTcmNoRFR6Zm1Ud0xwc0MwTEtCcXZuSkljS2Y5bklwZWJCdEtXWUFweUYzQVNPYlNKc28?oc=5",
-   "headline": "Nyt, 'entro 24 ore la portaerei Roosevelt in Medio Oriente, è la terza nell'area'",
-   "srcs": [
-    "ANSA",
-    "Corriere della Sera"
-   ],
-   "topic": null,
-   "chapters": 7,
-   "file": "contenuti/2026-11-16/n-2026-11-16-1a5c5f6a.json"
-  },
-  {
-   "id": "n-2026-11-16-62702085",
-   "kind": "notizia",
-   "mode": "full",
-   "title": "SpaceX fa la storia: recupera per la prima volta un veicolo spaziale",
-   "summary": "SpaceX ha realizzato un'impresa storica recuperando al volo un veicolo spaziale per la prima volta, aprendo la strada a un futuro più sostenibile e economico per le missioni spaziali.",
-   "date": "2026-11-16",
-   "ref": "https://www.ansa.it/sito/notizie/mondo/2026/11/14/spacex-recupera-per-la-prima-volta-nella-storia-un-veicolo-spaziale_d061a5b5-9f2d-4539-9b90-45189df72084.html",
-   "headline": "SpaceX fa la storia, recupera per la prima volta un veicolo spaziale",
-   "srcs": [
-    "Il Sole 24 ORE",
-    "La Stampa"
-   ],
-   "topic": null,
-   "chapters": 7,
-   "file": "contenuti/2026-11-16/n-2026-11-16-62702085.json"
-  },
-  {
-   "id": "n-2026-11-16-d672826f",
-   "kind": "passione",
-   "mode": "scoperta",
-   "title": "Monaci, libri e una vita lenta",
-   "summary": "I monaci hanno custodito libri, saperi e un ritmo di vita diverso da quello del mondo esterno.",
-   "date": "2026-11-16",
-   "ref": "topic:monachesimo:2026-11-16",
-   "headline": null,
-   "srcs": [],
-   "topic": "monachesimo",
-   "chapters": 4,
-   "file": "contenuti/2026-11-16/n-2026-11-16-d672826f.json"
-  },
-  {
-   "id": "n-2026-11-16-be3003a3",
-   "kind": "fede",
-   "mode": "parola",
-   "title": "Un cieco che vede con la fede",
-   "summary": "Un cieco che invoca Gesù con fede ottiene la vista, mostrando come la fede possa superare le limitazioni e aprire la strada alla salvezza.",
-   "date": "2026-11-16",
-   "ref": "bibbia:Lc 18,35-43:2026-11-16",
-   "headline": "Lc 18,35-43",
-   "srcs": [],
-   "topic": null,
-   "chapters": 5,
-   "file": "contenuti/2026-11-16/n-2026-11-16-be3003a3.json"
-  },
-  {
-   "id": "n-2026-11-16-caa7bde9",
-   "kind": "notizia",
-   "mode": "quick",
-   "title": "Da un articolo a un documentario parlato",
-   "summary": "Un articolo può diventare un documentario parlato grazie a un programma chiamato ArtCraft, che trasforma il testo in un video con un'audio letto da un clone della voce dell'autore.",
-   "date": "2026-11-16",
-   "ref": "https://news.google.com/rss/articles/CBMihAJBVV95cUxNbjZPRDNuc05nLTB6ZWtPN3Q2Q0U5R2VIR1lSdXBZc0o4anpzeWNVQVlzUVNXWURxdjlOQndHT3d0UFVpVlBQb0V4VG0wbC0tSGdudDBfWUpydUxNZzRtdkxtUGhqQzA0M2p1aWlGcThDWTA3eFpzZlBodE1KMmNiS0dmdGsxQTR0VDZqYjZWcUMxZEdENUxnMlZjbVVuR0dmSEhTTzZBbndtcjJhNzQtVngtX3JvYlZPN0tLUWZ0SDlzdTdPeXBqdzdoanlycks5d2dhS2VzZDJ3TWZDOWxBZjRNRFZGNVkwQ2hmVzJqZEluMDZsRnRJMkgyaUdpdUFQLUlCag?oc=5",
-   "headline": "Ho usato ArtCraft per trasformare un mio articolo in un documentario, facendolo leggere ad un clone della mia voce",
-   "srcs": [
-    "Hardware Upgrade"
-   ],
-   "topic": null,
-   "chapters": 3,
-   "file": "contenuti/2026-11-16/n-2026-11-16-caa7bde9.json"
-  },
-  {
-   "id": "n-2026-11-16-94730f67",
-   "kind": "notizia",
-   "mode": "quick",
-   "title": "La finale delle azzurre: Errani e Paolini alle WTA Finals 2026",
-   "summary": "Sara Errani e Jasmine Paolini hanno raggiunto la finale delle WTA Finals 2026, ma hanno perso contro Siniakova e Townsend.",
-   "date": "2026-11-16",
-   "ref": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPNjN0cWE0MHJiWGV0c3ZBREhIOUlRdzVxcjlSUldNb1RkN3Ixd0VCdXgwblZZNTVEZUw3V2Y0WmsxT3dmZkNLNTctNkFJM0ZmOHkteHNuYVhVTW5McmhNYjJWSVpkamw1VmJtVHhzOWNzRjR3a0NnS1k2MEtzVklVQkhWaE94VUxNX0hCNHlHbw?oc=5",
-   "headline": "Errani/Paolini in finale alle Wta Finals, il risultato LIVE del match",
-   "srcs": [
-    "Sky Sport"
-   ],
-   "topic": null,
-   "chapters": 3,
-   "file": "contenuti/2026-11-16/n-2026-11-16-94730f67.json"
-  },
-  {
-   "id": "n-2026-11-16-72568d6c",
-   "kind": "notizia",
-   "mode": "quick",
-   "title": "Lo spazio si fa più denso: la scoperta di Voyager 2",
-   "summary": "Voyager 2 ha rivelato che lo spazio interstellare si sta rendendo più denso di quanto si pensasse, aprendo nuove domande sulla struttura dell'universo.",
-   "date": "2026-11-16",
-   "ref": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNYVFBbG5xZkxoNUdjU3hlcmpVekVUNi1Sd0hqU3RPcm5XSkhtTFlpZXBqN01QZUJQN2diUFpqcGtKbkhVemdlci05NS01MWRQQTFNeTg3WklmZHFFV2RXcnItTnBxU3hHeDRpQ00zbnkyQ0J4OGptaVVhdWlLbWx0YU1tOWlYdW9lSVlFRjVNRWoyWkN6ZlNGUGxJQmxYNGZPci1kcw?oc=5",
-   "headline": "Lo spazio interstellare si fa più denso: l'inaspettata scoperta di Voyager 2",
-   "srcs": [
-    "Everyeye Tech"
-   ],
-   "topic": null,
-   "chapters": 3,
-   "file": "contenuti/2026-11-16/n-2026-11-16-72568d6c.json"
-  },
-  {
-   "id": "n-2026-11-16-78315193",
-   "kind": "notizia",
-   "mode": "quick",
-   "title": "Italia eliminata dalla Nations League",
-   "summary": "L'Italia è uscita dalla Nations League perdendo 4-1 contro il Belgio, un colpo che ha lasciato sorpresi e delusi tifosi e allenatori.",
-   "date": "2026-11-16",
-   "ref": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQaEZvNjM5R3hSNURtNmZHdE5uNFVRVEJQWVYtN0c0MHdxRDREZG5VNlg5MWVkQ09QRzMyUjE3dEY2V01SUThwSFdCN3pRVXdaQUpsNG85OGZjTkxvOGJ3b2ZNd0plQUM2c3I4V1pneWp2eTR3SG9XczBQdlV6bVQySDl2M29BVVpuR3VSZ2Y4UWI0cW1vQXdBLWQ2dDlobnRlQllOOUEtNjJSbUR4Z1FWQ19oS3J2Qzg0?oc=5",
-   "headline": "Belgio-Italia di Nations League 4-1: gli azzurri tornano sulla terra, Pio Esposito segna e poi sbaglia il rigore. Mancini non si qualifica per i quarti di finale",
-   "srcs": [
-    "Corriere della Sera"
-   ],
-   "topic": null,
-   "chapters": 3,
-   "file": "contenuti/2026-11-16/n-2026-11-16-78315193.json"
-  },
-  {
    "id": "n-2026-11-17-2df7619b",
    "kind": "notizia",
    "mode": "full",
@@ -879,8 +735,73 @@
    "topic": null,
    "chapters": 3,
    "file": "contenuti/2026-11-26/n-2026-11-26-4dc8b95a.json"
+  },
+  {
+   "id": "n-2026-11-27-902075b5",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Due tecnici italiani morti in Kuwait: un dramma tra guerra e diplomazia",
+   "summary": "Due tecnici italiani della Rheinmetall sono morti in un attacco con droni in Kuwait, aprendo un dibattito su responsabilità, sicurezza e relazioni internazionali.",
+   "date": "2026-11-27",
+   "ref": "https://news.google.com/rss/articles/CBMie0FVX3lxTE9xUnkzYi1xbmZ0WXdRcE1MLVAtYW80YUpyVDd2QjlQQ3RJX0xyTm42YndjbldTczlrcS1fVUNaSmowM19aZzBfV3ppNWphd2lMa082MDA1ZXNmRXdETDd0NnA3bVNTY1N6YXhUMXMzX1FtSHdyOVFwVkkzWQ?oc=5",
+   "headline": "Iran, due tecnici italiani della Rheinmetall morti in attacco in Kuwait",
+   "srcs": [
+    "Sky TG24",
+    "RaiNews"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-27/n-2026-11-27-902075b5.json"
+  },
+  {
+   "id": "n-2026-11-27-f6e06ae5",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Kiev non vuole estendere la guerra alla Libia",
+   "summary": "L'Ucraina ha chiarito di non voler estendere la guerra russa-ucraina alla Libia, mentre la Russia e l'Europa discutono su pace e energie.",
+   "date": "2026-11-27",
+   "ref": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxPNjZkTGtzSlhTdUdSbUNaNFJEOFF1LXltNmtCeGE3NEdlWkFsQzhIUkhtU0EwRXlCQ0MtSU05WG1jTl9ucGg5UnZtX1BweDlwSU1HZnoyaGo5V0J5cEVHMjR2MFRtZzJQd2hhSmxJZnRuMTFSMlhzU2lwTDg3SUhLb3N1T185QkdV?oc=5",
+   "headline": "Kiev: non abbiamo alcuna intenzione di estendere la guerra alla Libia",
+   "srcs": [
+    "Sky TG24",
+    "Tgcom24"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-27/n-2026-11-27-f6e06ae5.json"
+  },
+  {
+   "id": "n-2026-11-27-82984785",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Scuola, il decreto è legge",
+   "summary": "Un decreto sulla scuola è diventato legge, con regole nuove su chi entra in classe, multe ai genitori e sconti sugli e-book.",
+   "date": "2026-11-27",
+   "ref": "https://news.google.com/rss/articles/CBMioAFBVV95cUxOVEFwNnoyZFhJZTZJVHlweHdaa0U1QmlZb3hSRzd0LV93VHRsR0RTYlRoaFBZMXlTc3ZVcEp1ejFybkxZbnROaElvckktSlN4R1RWQ09rellPcDB0RW9saEdnTHpZZzVKVzJUMTBoU3VPckdpLXVkb291dVhlbGV3YjYweGtISEFRaUpLbWVwMlgzV3ppWjR1bUVZTmswWEVH?oc=5",
+   "headline": "Il decreto scuola è legge: tetto stranieri, divieto burqa e multe ai genitori",
+   "srcs": [
+    "Il Fatto Quotidiano",
+    "Il Sole 24 ORE"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-27/n-2026-11-27-82984785.json"
+  },
+  {
+   "id": "n-2026-11-27-cab228ca",
+   "kind": "passione",
+   "mode": "scoperta",
+   "title": "Prima di Roma: gli Etruschi e il loro mistero",
+   "summary": "Gli Etruschi furono un popolo antico che abitò la Toscana e altre regioni, con una civiltà affascinante e una lingua ancora non completamente compresa.",
+   "date": "2026-11-27",
+   "ref": "topic:etruschi:2026-11-27",
+   "headline": null,
+   "srcs": [],
+   "topic": "etruschi",
+   "chapters": 4,
+   "file": "contenuti/2026-11-27/n-2026-11-27-cab228ca.json"
   }
  ],
- "aggiornato": "2026-11-26T08:12:15.413553+00:00",
+ "aggiornato": "2026-11-27T09:43:52.746014+00:00",
  "modello": "qwen3:8b"
 }
