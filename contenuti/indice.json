@@ -1,40 +1,6 @@
 {
  "items": [
   {
-   "id": "n-2026-11-17-2df7619b",
-   "kind": "notizia",
-   "mode": "full",
-   "title": "Rimpatri in Ruanda: un accordo tra Ue e Ruanda",
-   "summary": "Cinque Paesi europei e il Ruanda hanno firmato un accordo per creare un hub di rimpatri in Ruanda, un cambiamento significativo nella gestione dei migranti.",
-   "date": "2026-11-17",
-   "ref": "https://www.ansa.it/sito/notizie/mondo/2026/11/16/vienna-ufficializza-primo-centro-di-rimpatrio-di-5-paesi-ue-in-ruanda-nel-2027_34aad0c9-e340-4983-85e8-8063402f1b4d.html",
-   "headline": "La svolta dei return hub, accordo del Ruanda con cinque paesi Ue",
-   "srcs": [
-    "la Repubblica",
-    "Europa Today"
-   ],
-   "topic": null,
-   "chapters": 7,
-   "file": "contenuti/2026-11-17/n-2026-11-17-2df7619b.json"
-  },
-  {
-   "id": "n-2026-11-17-0fb0a1cd",
-   "kind": "notizia",
-   "mode": "full",
-   "title": "Sanzioni Ue contro gli hacker russi",
-   "summary": "L'Unione Europea ha sanzionato un'agenzia russa accusata di disinformazione e attacchi informatici, tra cui un gruppo noto come NoName057.",
-   "date": "2026-11-17",
-   "ref": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxONnZaYXA0bHNZcjJtbDhZTjRPVThNd2V5Z2lKVkdKYWZ6a0FQejVQYmU3UWxHRjlhY2k1cXpaSldScnJqS1lfcHp5MDk0QV9GZE8waGtoM0p2cmtSbnRMQU1jdjVLYm9PTHdTZC01UUw3Wm5DTFVYa1hydjN3aFpheFFCVkx6MVU1NWlIRGh2LVh2Qmg0MnhGdmhQUHU5N3dfSU82NjZMSmk5X0NxSTd3SGtNeXNaUHdXcEZoT3d6clB1MFpTUDZrNWltZzN2ZGdZZEVzVlpZcWNvRXlHVVJxUy16QURhMkItXy05QlZGY3VteXVkRkHSAfsBQVVfeXFMTml4UURjb2tuV0ZWWHZjRE1nU1NJWllWYkg0TjFVUmRpeWxMOU9VbUMySmRSV1NWdll3cWVheXUtcHJ5V091Ym5VVk5hWmNQQVVhQ2VvS3pZNGRheUN6TTlwY3RVR2dqbFNzV0R5XzdFQm1WR3FSRHNtNlY0ZTA0WmhNdWpsVDJmbU9MSzh6V3ZIR0J2X2FyUkJlMkpWOXRuRm12VldTdHdiVWlTLW5VaXZkQUFSS2dHNkFGVDVHZEN1emZIeDVGX2x6TXFubDdvX2g2X0taek04TGVyU0RYQU9FY0JsbVJYYTNLZ2x4RXlSR2U1T2lMSVF2RWc?oc=5",
-   "headline": "Scure dell'Ue contro gli hacker russi, sanzioni anche a NoName057",
-   "srcs": [
-    "ANSA",
-    "Il Fatto Quotidiano"
-   ],
-   "topic": null,
-   "chapters": 7,
-   "file": "contenuti/2026-11-17/n-2026-11-17-0fb0a1cd.json"
-  },
-  {
    "id": "n-2026-11-18-f40a03e2",
    "kind": "notizia",
    "mode": "full",
@@ -800,8 +766,101 @@
    "topic": "etruschi",
    "chapters": 4,
    "file": "contenuti/2026-11-27/n-2026-11-27-cab228ca.json"
+  },
+  {
+   "id": "n-2026-11-28-34678253",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Zelensky e l'attacco in Libia: un dietrofront e le conseguenze",
+   "summary": "Zelensky ha ritrattato un'operazione in Libia, dicendo di non aver coordinato l'azione con i partner europei, suscitando reazioni in Italia.",
+   "date": "2026-11-28",
+   "ref": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxPdDFMMlA1MlI0U0VyS1Y2MVZtNzZwWXZUVjRRVkJTTU95cUE0bU9GbGxxU0V1RXZCUU03WjVldnhVcm55VVRTS2lYRllhUzkzbjZzUTB4VUVsTk84d193NG5JQ0hEMllZYkNkZlBhQ3NDZElVcDB6cW8xbVRtSUVYNXRTRXh4b2lG?oc=5",
+   "headline": "Zelensky fa dietrofront su attacco Libia: “Non coordinato con partner'",
+   "srcs": [
+    "Sky TG24",
+    "AGI"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-28/n-2026-11-28-34678253.json"
+  },
+  {
+   "id": "n-2026-11-28-c720c558",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Marte: una roccia che parla",
+   "summary": "La NASA ha scoperto qualcosa di inaspettato rompendo una roccia su Marte, aprendo nuove domande su cosa possa significare.",
+   "date": "2026-11-28",
+   "ref": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPeHVVNW9lNG4yUWhhN3pNOFo2aGFiQmdfQ3ZGSl9qTlA1UmJCLVZ3UEVVNEs2MnhIcWJwbjRZeExnSUY1WENqWGxYNlpsdkRZaXpSODhIR3V6THkwamdBamQ4MVVhWDRxaXpRa21JTmQtRWlKYW14Y2lycURONFFfdUpIYnN1YzRSLUxORw?oc=5",
+   "headline": "Su Marte la NASA rompe una roccia e trova qualcosa che nessuno si aspettava",
+   "srcs": [
+    "Everyeye Tech"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-28/n-2026-11-28-c720c558.json"
+  },
+  {
+   "id": "n-2026-11-28-8bd8147a",
+   "kind": "notizia",
+   "mode": "full",
+   "title": "Una giovane fisica premiata: il ruolo delle donne nella scienza",
+   "summary": "Una giovane fisica di 23 anni ha vinto un premio per il suo lavoro, aprendo un dibattito su come le donne siano state escluse per secoli dalla scienza.",
+   "date": "2026-11-28",
+   "ref": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxOaUJGVVdBX3gtTU0yMUpmUGhWeE5BcHdmYVZIRmJEN28tdmQ0aTVYckhlbDVGR1R2V2RRVXMyb1dVNm50WHBoMmJmb2k1RGtsczVtdk9tZE93elcxQ1lpaDF6UTJfaG5uazFCUXJlWllMQ2dUbXh5a3RhZHgybDJaM3dvN25lQnRXXzJhWnFNZkxOQWNjZldvSWVJZmRORGxrdkVPS0k3WC1yaHdBVzNQc1Rqa3BSTnFTbDFRSWVxb0RCNVBicFJlUzdCLWZrRXhyR0JkSHpRYWozX216MGc?oc=5",
+   "headline": "A 23 anni premiata tra le giovani promesse della fisica: «Per secoli la scienza ha fatto a meno delle donne»",
+   "srcs": [
+    "IlPiacenza"
+   ],
+   "topic": null,
+   "chapters": 7,
+   "file": "contenuti/2026-11-28/n-2026-11-28-8bd8147a.json"
+  },
+  {
+   "id": "n-2026-11-28-2b7a16d8",
+   "kind": "passione",
+   "mode": "scoperta",
+   "title": "Perché l'Europa si è unita? La storia di un'idea strana",
+   "summary": "Dalla guerra alla pace, dall'acciaio al denaro: scopri come l'Europa si è fusa in una grande famiglia.",
+   "date": "2026-11-28",
+   "ref": "topic:storia-ue:2026-11-28",
+   "headline": null,
+   "srcs": [],
+   "topic": "storia-ue",
+   "chapters": 4,
+   "file": "contenuti/2026-11-28/n-2026-11-28-2b7a16d8.json"
+  },
+  {
+   "id": "n-2026-11-28-2db2654e",
+   "kind": "fede",
+   "mode": "parola",
+   "title": "Vigilanza e preghiera: il segreto per non essere inghiottiti",
+   "summary": "Gesù invita i discepoli a stare attenti e pregare per non essere sorpresi da un evento imprevisto, come un laccio che cade su tutti.",
+   "date": "2026-11-28",
+   "ref": "bibbia:Lc 21,34-36:2026-11-28",
+   "headline": "Lc 21,34-36",
+   "srcs": [],
+   "topic": null,
+   "chapters": 5,
+   "file": "contenuti/2026-11-28/n-2026-11-28-2db2654e.json"
+  },
+  {
+   "id": "n-2026-11-28-7f470cbe",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "L’attacco in Libia e la telefonata tra Meloni e Zelensky",
+   "summary": "L’Ucraina ha condotto un raid in Libia senza informare gli alleati, causando tensioni con l’Italia, che ha espresso preoccupazione per i rischi per la sicurezza nazionale.",
+   "date": "2026-11-28",
+   "ref": "https://news.google.com/rss/articles/CBMie0FVX3lxTFBLVWxOMjVvbExORHBDQ3R1RTcxMGpFeTQxUGE5VG40a3RFT3A3MzNqalh6WmozOTAyc3JjRUtCdmVRNFpTLVhqQXEtdHlYelktWEh4LUxEclR6emVMLVEyT0JGVEp3NmxXZjJsOGE0NFNOWWFGR3VHWFQyRQ?oc=5",
+   "headline": "Telefonata Meloni-Zelensky, il presidente ucraino: «Operazione in acque libiche condotta senza coordinamento con gli alleati",
+   "srcs": [
+    "Il Sole 24 ORE"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-28/n-2026-11-28-7f470cbe.json"
   }
  ],
- "aggiornato": "2026-11-27T09:43:52.746014+00:00",
+ "aggiornato": "2026-11-28T10:02:04.546947+00:00",
  "modello": "qwen3:8b"
 }
