@@ -1,0 +1,323 @@
+{
+ "items": [
+  {
+   "id": "n-2026-11-26-8d8eb293",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Intelligenza artificiale e neuroscienze: un incontro tra scienziati e il futuro",
+   "summary": "Un incontro tra due professori, Antonello Bonci e Alessio Avenanti, ha parlato di come l'intelligenza artificiale possa influenzare la nostra comprensione del cervello e del comportamento umano.",
+   "date": "2026-11-26",
+   "ref": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxQSklDS05VLUMtZnRyY1RzblhHdlkxdzd0Q2xmNXhjQVJjUEJRODVJV2E5NWNtN19sQTFKR0RUUGJtT3ctR2MwbmxGRFlnN0JFRVlpZ0c4Q1NiY0cxZEdGV1JiUmRJa1hYaHFBUEtzUllyRlNjN2c0YnNHODFxMU1GRVZRcVEtbDFZTktLT0FYa013cGxjQ0lzRjJud3k0Y2gwOWxVREZiUzJzUkl5dUw3SWRHZFdEWGppNG9ETFRqMFg2eTVmcHJjQVVsZTZUUnFoTUdxUk1R?oc=5",
+   "headline": "Intelligenza artificiale e neuroscienze: incontro con i professori Antonello Bonci e Alessio Avenanti",
+   "srcs": [
+    "CesenaToday",
+    "il manifesto"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-26/n-2026-11-26-8d8eb293.json"
+  },
+  {
+   "id": "n-2026-11-26-4dfb64ff",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Femminicidio e violenza: quando la violenza si ripete",
+   "summary": "Un uomo ha ucciso la sua compagna e poi si è suicidato sullo stesso viadotto dove morì Lorena Isceri, un caso di femminicidio noto negli anni precedenti.",
+   "date": "2026-11-26",
+   "ref": "https://www.ansa.it/sito/notizie/cronaca/2026/11/26/uccide-compagna-poi-si-getta-dal-viadotto-lo-stesso-cavalcavia-di-lorena-isceri_6f905f2b-8704-4a58-90da-00838cbf4689.html",
+   "headline": "Uccide la compagna poi si getta dal viadotto, lo stesso cavalcavia di Lorena Isceri",
+   "srcs": [
+    "RaiNews",
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-26/n-2026-11-26-4dfb64ff.json"
+  },
+  {
+   "id": "n-2026-11-26-2a3dc006",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Un incidente stradale a Firenze",
+   "summary": "Un incidente mortale tra un'auto e uno scooter ha causato la morte di un giovane a Firenze, mettendo in luce i rischi della strada e la necessità di una maggiore attenzione.",
+   "date": "2026-11-26",
+   "ref": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxPVDRmUnQ4X0FjczZRZE15VmtuSnFld09oaDBhajl0VFNjQkdDcHE4ZEFIMElHcWpTbzFIcU1rbmgzQmg2aDQxOHA3SE4zLUExWlVCSUtvQnl4VE5YWktSMjhGT1JhWUljNHNYclk5VXhYbUNQTXdUVzRNWVRjbllPZUoxbEtCT0RoLUNSRGtiQ1dVN0tuVFo5cG9ZWVVQZEJtcWNhVy1nVmN6WlZfM194QklPcWEtU0NnLVRhZlV0aS00VkNSWHVmelg4V2tLeWhLQVNMMjBIOHHSAd4BQVVfeXFMTWZPNFZES2VWREZkX2xoeHJpWFdxYlA5SWJIYXY2cHFHME56c0Q0T3RFUFhZZ1Z3Ujh6cjdVdWREMUJXd1A5ZXNPT25HaUVmZHAxcnFIWEhvVkk3RjVMOVRrd3ZOdTVxWFBNc05zRDF6ZHFZcmg3XzBjSTNBXzhXUThRWnNWMnhNWEdBaTZpMEl4QlRTcmVLV1E5UFNnY1JtRm9OMlRJQnZOUm5ibUZBTVJwR2lxcEpJakxWdGl3eTBZQXdEWXJrYkFSeXd5VU9kOUc0bUdHWGpTbURRUzh3?oc=5",
+   "headline": "Scontro tra auto nel sottopasso della tangenziale: auto ribaltata, traffico e code",
+   "srcs": [
+    "L'Arena",
+    "ArezzoNotizie"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-26/n-2026-11-26-2a3dc006.json"
+  },
+  {
+   "id": "n-2026-11-26-902075b5",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Due italiani feriti da droni in Kuwait",
+   "summary": "Due italiani sono rimasti feriti in un attacco di droni iraniani in Kuwait, un episodio che mette in luce la complessità delle relazioni tra potenze regionali e la presenza straniera nel Medio Oriente.",
+   "date": "2026-11-26",
+   "ref": "https://news.google.com/rss/articles/CBMie0FVX3lxTE9xUnkzYi1xbmZ0WXdRcE1MLVAtYW80YUpyVDd2QjlQQ3RJX0xyTm42YndjbldTczlrcS1fVUNaSmowM19aZzBfV3ppNWphd2lMa082MDA1ZXNmRXdETDd0NnA3bVNTY1N6YXhUMXMzX1FtSHdyOVFwVkkzWQ?oc=5",
+   "headline": "Iran, in gravi condizioni due italiani feriti da droni in Kuwait. LIVE",
+   "srcs": [
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-26/n-2026-11-26-902075b5.json"
+  },
+  {
+   "id": "n-2026-11-26-f8b32cb8",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "De Gennaro e i funerali: chi è, cosa è successo e perché conta",
+   "summary": "Gianni De Gennaro, un magistrato italiano, è morto per suicidio dopo anni di accuse e contestazioni, e il presidente Mattarella parteciperà ai suoi funerali.",
+   "date": "2026-11-26",
+   "ref": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQcHRCOTk1TWFqMUh5VDVVbUZscXpJR0dyMjEtaDFFVUNCWWFJcFhXLVBFNFR1MjZnTmhTdFZ0ZVpBMWI2ZDVpa0NuS2hQNjlMZWhQODhMa0JxcWJMSy0xTlRNUkR1d25oMkpZc2E2c0ZHTmM2MTBQVGVLcXFNSHF3U2NxT1htWDRMc01DTVRTWXdWd3daZlFkSTB1dGhDSkE?oc=5",
+   "headline": "Il presidente Mattarella parteciperà lunedì ai funerali di De Gennaro. Meloni: “Non so se andrò, ma ci sarà Mantovano”",
+   "srcs": [
+    "Il Fatto Quotidiano",
+    "Corriere Roma"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-26/n-2026-11-26-f8b32cb8.json"
+  },
+  {
+   "id": "n-2026-11-26-d0c2ded4",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Chi è il telefonista di Emanuela Orlandi?",
+   "summary": "Un ex agente segreto potrebbe essere il telefonista anonimo che ha contattato la famiglia di Emanuela Orlandi nel 1987, ma le prove non sono definitive.",
+   "date": "2026-11-26",
+   "ref": "https://www.ansa.it/sito/notizie/cronaca/2026/11/26/chi-lha-visto-e-di-un-ex-007-la-voce-del-telefonista-di-emanuela-orlandi_a12a4e85-6eb9-4eac-bada-c410e3a9955c.html",
+   "headline": "Il telefonista di Emanuela Orlandi sarebbe un ex 007",
+   "srcs": [
+    "la Repubblica",
+    "ANSA"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-26/n-2026-11-26-d0c2ded4.json"
+  },
+  {
+   "id": "n-2026-11-26-f818cec6",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Scioperi di dicembre: quando si fermano treni, bus e aerei",
+   "summary": "Nel dicembre 2026 si prevedono diversi scioperi dei trasporti, con fermate di treni, bus, aerei e taxi in molte città.",
+   "date": "2026-11-26",
+   "ref": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxNWTY3Zjlsa3R6NFRuYm1qcEVBU3hwbEJCM19zVUxxV3RENC1Dbk5BVW9HV1VpSUJBS1I2LUVnS004T1FCMGljNkxFYnJZVV9VS183c2pfVnNTR3duWFowbUs1ZWdkcmlxQ1BfaW8xSm1XZTk1RE01dmVrWi1TR2hGTVN1S1RMeFR5enM2bXpBaFJRZ2dIa3Q0ZDNUdkM2dHFlanJGcW9nbzZTU3VTdWRlVmlzWlpLZktlQWRSVm5WZTRxQ1k?oc=5",
+   "headline": "Scioperi trasporti dicembre, il calendario: bus, metro, treni e aerei, tutte le date, orari e chi aderisce città per città",
+   "srcs": [
+    "Il Messaggero"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-26/n-2026-11-26-f818cec6.json"
+  },
+  {
+   "id": "n-2026-11-26-29fdcc64",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Una neonata morta in un incidente stradale",
+   "summary": "Una neonata è morta dopo un incidente stradale in cui l'auto in cui era viaggiava è stata speronata da un'auto in fuga.",
+   "date": "2026-11-26",
+   "ref": "https://news.google.com/rss/articles/CBMiygFBVV95cUxPMU5lMG5JRG1UYnVGSWdWTERnd1M2bVkyMXpmZDMxeVFha1MwWXp2eVlHck5EQmt6QzZmNElPRjFkSVg2cHkwT3NGWVp0dFJua3AzbUhMdVFqT2tHQmRrblFQX2VUR1JmRG0zS1I2V256Q3pMSUtKTlBCblpZZG5SUDBRY2RqZ2llTHY1WUl5RHpDZkxIcEE4YmFfYU9WZm9XZnJuRm9XQW9pVmhkRHR0bFR2ME41VGtuWTdzblhfOENwNUhNbi1ucDBB0gHPAUFVX3lxTFA3b3dzNV9BSWNEYjlqR3IwMjdPYy1lcWlNWld6YmdESEstQ1BWczd2TTBNSjNRSlJCeTJGV09YTkctOVVCR2hpTHNqYVhXbUFRVHRDeEc4RE1qaFlOWjRCbXNSbWRPckl0WG05aXFCQ1J5Tlh1aEhTZkpfQ3llZTdkQVZkcHZMVWdNT3FiV041OU1BU3VHQ2pfeTBrR1RPUDhNMkpxS1hVZTl0QXFHUVpJYUtYd1BwbVA3SV9mcVU0R0VIUzhQSUFJSVlMRHZ6cw?oc=5",
+   "headline": "Auto speronata dai banditi in fuga, morta la neonata venuta alla luce con il cesareo d'urgenza",
+   "srcs": [
+    "Il Giornale di Vicenza",
+    "Tgcom24"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-26/n-2026-11-26-29fdcc64.json"
+  },
+  {
+   "id": "n-2026-11-27-b0dd6451",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Un incidente stradale a Torino",
+   "summary": "Un uomo di 64 anni è morto in un incidente stradale a Torino, dove un'auto ha collidido con un carro attrezzi.",
+   "date": "2026-11-27",
+   "ref": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNbXRqQXhJT0tjVzlJOU1rYVZOd3pvcUZEREE1Z0loX1doMGlJX0ZJTUpDWjZ2c3RUdDNLVFFiX3Y3NE9vd2FBZldDcjBULWhLVTdzS3VnbEFOTDNDWjRNdlFnUEUxY3VIcllEcF9FX3Y3Rk81WmFuTWUxUnJUMEc0WjNPQzdlZ2lWSnBZakFWaW9TTFNnRU5FSmFseXF5VEN2SGV2WnhRTUVaWExwVmc?oc=5",
+   "headline": "Incidente stradale a Torino, scontro tra auto e carroattrezzi: morto Dario Acquadro",
+   "srcs": [
+    "TorinoToday",
+    "RomaToday",
+    "MessinaToday"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-27/n-2026-11-27-b0dd6451.json"
+  },
+  {
+   "id": "n-2026-11-27-34678253",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "La guerra si sposta in Libia",
+   "summary": "Zelensky e Tajani si contendono la verità su un raid ucraino in Libia, accendendo un dibattito politico e diplomatico.",
+   "date": "2026-11-27",
+   "ref": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxPdDFMMlA1MlI0U0VyS1Y2MVZtNzZwWXZUVjRRVkJTTU95cUE0bU9GbGxxU0V1RXZCUU03WjVldnhVcm55VVRTS2lYRllhUzkzbjZzUTB4VUVsTk84d193NG5JQ0hEMllZYkNkZlBhQ3NDZElVcDB6cW8xbVRtSUVYNXRTRXh4b2lG?oc=5",
+   "headline": "Guerra Ucraina, Tajani: \"Sulla Libia non è vero quanto detto da Zelensky\". LIVE",
+   "srcs": [
+    "Sky TG24"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-27/n-2026-11-27-34678253.json"
+  },
+  {
+   "id": "n-2026-11-27-a101cbb7",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Il dominio sulla natura e sull'intelligenza artificiale",
+   "summary": "L'intelligenza artificiale e il controllo sulla natura stanno cambiando il modo in cui umani e macchine interagiscono con il mondo.",
+   "date": "2026-11-27",
+   "ref": "https://news.google.com/rss/articles/CBMif0FVX3lxTE4yRDZDa2VHZ2hXNDV6MVFEVW1HdGFZdlE3aWJOZnNjLVE5WnVoaFpuRFZXTnZwajNqWkY4cnFtdWJRT2xTbk80OWpqcXhLTERqaUowWTlpWHhSb1hTcDFLaHlFTXZIQjhGT2RORWJXV24xN3B2Tmt5SGhXM0JpWHM?oc=5",
+   "headline": "Il dominio sulla natura e l’intelligenza artificiale",
+   "srcs": [
+    "il manifesto",
+    "Mondosanità"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-27/n-2026-11-27-a101cbb7.json"
+  },
+  {
+   "id": "n-2026-11-27-5191a802",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Due casi che parlano di mistero e verità",
+   "summary": "Due casi, De Gennaro e Orlandi, ci mostrano come la verità si svela piano piano, con autopsie, indagini e misteri che coinvolgono persone, luoghi e fatti.",
+   "date": "2026-11-27",
+   "ref": "https://news.google.com/rss/articles/CBMigwFBVV95cUxQNFVhMW1OeC1TbUJEQUwtM0c1MnlocW4wTkFweGhWbTgxZmxlUHFTMVNjd1JTQ0xGRE1Id2MzQVpXNXBOX09mYVlCT2RKd01PNjN2eG94SFotbG05TFVSQXJTZEVvOHVQaVB5ckdZdno4Tlh6SGVCZXJja2I0d0lLV3lHMNIBgwFBVV95cUxQeHdQVDFDcVlZM3N1ZWVLNEh1c002RnNFWkZONkNyVEJteV9INHp2QnkwZUg5a05GNzR6VnpvRlhkWEZGU3BVM1p1Z0tEMkRIc2xLbklUOWpWNkQwZloxS1Mwa0tQWGtmUEVvZnlwNFVDM3o2RHdhYkticnZYMm0tU3A2aw?oc=5",
+   "headline": "L'autopsia su De Gennaro, italiani uccisi in Kuwait, svolta su Emanuela Orlandi e le altre notizie da sapere per iniziare la giornata",
+   "srcs": [
+    "Today",
+    "ANSA"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-27/n-2026-11-27-5191a802.json"
+  },
+  {
+   "id": "n-2026-11-27-67268f8b",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Bruno Vitale e la scienza che non è solo guerra",
+   "summary": "Bruno Vitale si batte per una scienza libera e aperta, non usata solo per la difesa ma per il bene di tutti.",
+   "date": "2026-11-27",
+   "ref": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPME9ULTdueGNDRTJTbjV3ZG54VUFVc214cGllVzNoOEF1VXVnUnoxLTlxMXNrRWlrN3E3ejdpeFIzVUkydTFnY0YyRTV5WkZMY3hzR1NYaEZQdW5HdU1YUE9BWjU3YmVqVFNuUnY4M0pyRXpselBSQU5LX2hpeHdsYVBVdlJ1cFVJM0Q5UlhBRVBTa0k1b2NDYnNQX2p0MGhPNktSdA?oc=5",
+   "headline": "Bruno Vitale e l’impegno transnazionale contro la militarizzazione della scienza",
+   "srcs": [
+    "il manifesto"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-27/n-2026-11-27-67268f8b.json"
+  },
+  {
+   "id": "n-2026-11-27-421cd9f1",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Omicidio a Trieste: Un figlio uccide il padre nella notte",
+   "summary": "Un uomo di 35 anni ha ucciso il padre a Trieste, tagliandogli la gola, e poi ha chiamato la polizia e confessato.",
+   "date": "2026-11-27",
+   "ref": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxQQ1pvRXBUcW56cW1rRGI0WmRWaTUwYnBiaVVVNXE3aEF4WlJkQkswRElBWk9vQm5oazhieVNLaGU4RGhaVWVDVTZrQ3ZwVHdDcGM5OHpvMEdnSlhBYXlRb2ZIbWxHWF9LYWk1TWVqQU9lbDR4T2s5elFqTlB4Q29MWGxoNmF1U3ZGUWJWSFNNakl4VkhtOTIzUF8tMklMR2dXSDJlbXQ5cUpPWHNQZFI5OXZ5ZUMtSGZ5SGdQNmVqeWFpaW9UN2NJSEttRXo0SG40TXJydNIB2gFBVV95cUxPYzNGQWVBSDZFYVNlMzBIZFFyUVNIVW42ZkhweWltS3Y5VVg2VW5EeHV3OUhJN1FRZHJkY0lVN1pJUjdoUUpiVGFFX2EySDNrNS1pcklCNHFHem56eHRsU3dWaVJMcnJKM0xLek5iZFZuZ2Z5LTRURlY0TDhuNi1jc0JnNU1pUnFydnFUMS00c25ieVJIVl9YcEo0aGdVWVB4ZEpQYlp3c3JiY2VGYUVGdF82OHlJbDluSXI1M2JKbFZFMVFaZGZTeFFxbnNGVlh2c2ZIRkpMcExyQQ?oc=5",
+   "headline": "Trieste, 35enne uccide il padre nella notte tagliandogli la gola",
+   "srcs": [
+    "RaiNews"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-27/n-2026-11-27-421cd9f1.json"
+  },
+  {
+   "id": "n-2026-11-28-4de7c944",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "L'Euro 7 e il futuro delle auto",
+   "summary": "L'Euro 7, entrato in vigore il 29 novembre 2026, cambia le regole per le auto nuove, con nuovi limiti di inquinamento e nuove norme per la sicurezza.",
+   "date": "2026-11-28",
+   "ref": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOSVcwbURDclJJNFo1ejNFTEdtelg2dWlhc2xsTVJCWllTRUVySEo3U1ptdkxoS1I3MWNuWUU2SHFCWXc2el9nRlJ3SjA5NWdXTzFhVi1jSjRpaWh5UVhKM3FLVEJiRW1JZ2d1c1ZmMUlOaTlpYm5MU2plbVBfZnpJdw?oc=5",
+   "headline": "Arriva l'Euro 7, cosa è e cosa cambia per le auto",
+   "srcs": [
+    "Motor1.com Italia",
+    "alVolante"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-28/n-2026-11-28-4de7c944.json"
+  },
+  {
+   "id": "n-2026-11-28-9a927262",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Francesca Albanese e il Costa Rica: un caso di blocco all'ingresso",
+   "summary": "Francesca Albanese, relatrice Onu, è stata bloccata all'ingresso in Costa Rica per «legami terroristici», ma è riuscita a uscire dall'aeroporto.",
+   "date": "2026-11-28",
+   "ref": "https://news.google.com/rss/articles/CBMidEFVX3lxTFBpUlBWM1BMcjV6UTVYVUZMX1J5RVN2OTh1Z2hzWDBuVEhNdWlsQWhnTzVYS1U5S2RpbEd2UUhDZ1dlWVpLVTZjZnVPSVdoQ2ZBSGFuLWFHOFFnaHFLSll1Z3VxS2hERmNZTGRsU0RwRDk0Y3pu?oc=5",
+   "headline": "Francesca Albanese respinta in Costa Rica: “Finalmente sono uscita dall'aeroporto”",
+   "srcs": [
+    "Sky TG24",
+    "Il Fatto Quotidiano"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-28/n-2026-11-28-9a927262.json"
+  },
+  {
+   "id": "n-2026-11-28-b113f4b2",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Data center e fiume: il Belgio blocca un progetto di Google",
+   "summary": "Il Belgio ha fermato la costruzione di un data center di Google a causa di preoccupazioni per l’impatto sull’acqua del fiume Sambre.",
+   "date": "2026-11-28",
+   "ref": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQbmkxQ2lyRHlZWVphRUh4eEdibXoxN0tJZmZCYU5hT3hlX1NYVmpjY0dVM09PWnhmRW5DZm5oaGhIZ19rZHFmQzlLUzlBYjBfS1pnYzNjV05wSWtkZWdmbV8xR3FBMHZBYTRQMjhQdHNXVEstdk5MM3E1cnBnOHhWWnhkZjNyZkRVVlVyb01sQTF3MlFuNzM0X0hmQmlkSU10cmZsOUtlZENqa3VnOUVnWVAyUdIBsgFBVV95cUxPeDFUYnY2a2YybGozUV9kUHFKLXVJeWRRTG10TWxxcXJldjByczVTU2otOHBQWHhfOU9Tb041X09NUmlmZEtNRTJkVkNWSHBVYXBISEZHcC1TWjJJMXN4YTU4WXVEWHdmQjllLUVFalhkelBXYy1sY3VoR01Rdmh1Nkx4Y295cFl1dDdIakxyeWpmNTJHUUVHVWdkMG4wY0o1VUg3XzFQcEUtVklSYW9WaDV3?oc=5",
+   "headline": "Il Belgio ferma il data center di Google quasi finito: previsti 600 metri cubi d’acqua all’ora dal fiume Sambre",
+   "srcs": [
+    "Il Messaggero",
+    "Media INAF"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-28/n-2026-11-28-b113f4b2.json"
+  },
+  {
+   "id": "n-2026-11-28-d5b32eb8",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "Un arresto nel giallo dei cacciatori uccisi nel Messinese",
+   "summary": "Un uomo è stato arrestato per l'omicidio di tre cacciatori morti in provincia di Messina, dopo anni di indagini.",
+   "date": "2026-11-28",
+   "ref": "https://www.ansa.it/sito/notizie/cronaca/2026/11/28/svolta-nel-giallo-dei-cacciatori-uccisi-nel-messinese-un-arresto-_3c7f37fd-7c54-41a9-94ee-23f1d3463981.html",
+   "headline": "Svolta nel giallo dei cacciatori uccisi nel Messinese, un arresto",
+   "srcs": [
+    "Corriere della Sera"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-28/n-2026-11-28-d5b32eb8.json"
+  },
+  {
+   "id": "n-2026-11-28-b50f63cb",
+   "kind": "notizia",
+   "mode": "quick",
+   "title": "L'assistente sociale della famiglia del bosco e il dibattito",
+   "summary": "L'assistente sociale Veruska D'Angelo è stata sospesa per 70 giorni per violazioni del codice deontologico, ma l'avvocato difensore dice che i rilievi sono marginali.",
+   "date": "2026-11-28",
+   "ref": "https://www.ansa.it/sito/notizie/cronaca/2026/11/28/famiglia-del-bosco-sospesa-assistente-sociale-solo-rilievi-marginali_058bcc71-d6d5-4a28-8a9f-28b5f2046463.html",
+   "headline": "Sospesa l'assistente sociale della famiglia del bosco. L'avvocato: \"Solo rilievi marginali\"",
+   "srcs": [
+    "La Stampa"
+   ],
+   "topic": null,
+   "chapters": 3,
+   "file": "contenuti/2026-11-28/n-2026-11-28-b50f63cb.json"
+  }
+ ],
+ "aggiornato": "2026-11-28T15:06:35.687860Z",
+ "modello": "qwen3:8b"
+}
